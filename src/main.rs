@@ -81,6 +81,10 @@ impl Vector {
     fn new(x: f64, y: f64, z: f64, w: f64) -> Vector {
         return Vector { x, y, z, w };
     }
+
+    fn magnitude(&self) -> f64 {
+        return (self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)).sqrt();
+    }
 }
 
 impl PartialEq<Self> for Vector {
@@ -264,5 +268,14 @@ mod tests {
             Vector::new(1., -2., 3., -4.) / 2.,
             Vector::new(0.5, -1., 1.5, -2.)
         );
+    }
+
+    #[test]
+    fn vector_magnitude() {
+        assert_eq!(Vector::new(1., 0., 0., 0.).magnitude(), 1.);
+        assert_eq!(Vector::new(0., 1., 0., 0.).magnitude(), 1.);
+        assert_eq!(Vector::new(0., 0., 1., 0.).magnitude(), 1.);
+        assert_eq!(Vector::new(1., 2., 3., 0.).magnitude(), 14_f64.sqrt());
+        assert_eq!(Vector::new(-1., -2., -3., 0.).magnitude(), 14_f64.sqrt());
     }
 }
