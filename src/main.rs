@@ -177,6 +177,15 @@ fn dot(a: &Vector, b: &Vector) -> f64 {
     return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
+fn cross(a: &Vector, b: &Vector) -> Vector {
+    return Vector::new(
+        a.y * b.z - a.z * b.y,
+        a.z * b.x - a.x * b.z,
+        a.x * b.y - a.y * b.x,
+        0.,
+    );
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -321,5 +330,13 @@ mod tests {
             dot(&Vector::new(1., 2., 3., 0.), &Vector::new(2., 3., 4., 0.)),
             20.
         );
+    }
+
+    #[test]
+    fn vector_cross_product() {
+        let a = Vector::new(1., 2., 3., 0.);
+        let b = Vector::new(2., 3., 4., 0.);
+        assert_eq!(cross(&a, &b), Vector::new(-1., 2., -1., 0.));
+        assert_eq!(cross(&b, &a), Vector::new(1., -2., 1., 0.));
     }
 }
