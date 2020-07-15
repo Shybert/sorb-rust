@@ -146,97 +146,91 @@ mod tests {
 
     #[test]
     fn point_equality() {
-        assert_eq!(Point::new(4.0, -4.0, 3.0), Point::new(4.0, -4.0, 3.0));
+        assert_eq!(Point::new(4., -4., 3.), Point::new(4., -4., 3.));
 
-        assert_eq!(Point::new(1.000000001, 0.0, 0.0), Point::new(1.0, 0.0, 0.0));
+        assert_eq!(Point::new(1.000000001, 0., 0.), Point::new(1., 0., 0.));
     }
 
     #[test]
     fn point_addition() {
         assert_eq!(
-            Point::new(3.0, -2.0, 5.0) + Point::new(-2.0, 3.0, 1.0),
-            Point::new(1.0, 1.0, 6.0)
+            Point::new(3., -2., 5.) + Point::new(-2., 3., 1.),
+            Point::new(1., 1., 6.)
         )
     }
 
     #[test]
     fn point_subtraction() {
         assert_eq!(
-            Point::new(3.0, 2.0, 1.0) - Point::new(5.0, 6.0, 7.0),
-            Point::new(-2.0, -4.0, -6.0)
+            Point::new(3., 2., 1.) - Point::new(5., 6., 7.),
+            Point::new(-2., -4., -6.)
         )
     }
 
     #[test]
     fn point_negation() {
-        assert_eq!(-Point::new(1.0, -2.0, 3.0), Point::new(-1.0, 2.0, -3.0))
+        assert_eq!(-Point::new(1., -2., 3.), Point::new(-1., 2., -3.))
     }
 
     #[test]
     fn point_scalar_multiplication() {
-        assert_eq!(
-            Point::new(1.0, -2.0, 3.0) * 3.5,
-            Point::new(3.5, -7.0, 10.5)
-        );
-        assert_eq!(
-            3.5 * Point::new(1.0, -2.0, 3.0),
-            Point::new(3.5, -7.0, 10.5)
-        );
+        assert_eq!(Point::new(1., -2., 3.) * 3.5, Point::new(3.5, -7., 10.5));
+        assert_eq!(3.5 * Point::new(1., -2., 3.), Point::new(3.5, -7., 10.5));
 
-        assert_eq!(0.5 * Point::new(1.0, -2.0, 3.0), Point::new(0.5, -1.0, 1.5));
+        assert_eq!(0.5 * Point::new(1., -2., 3.), Point::new(0.5, -1., 1.5));
     }
 
     #[test]
     fn vector_equality() {
         assert_eq!(
-            Vector::new(4.0, -4.0, 3.0, -42.0),
-            Vector::new(4.0, -4.0, 3.0, -42.0)
+            Vector::new(4., -4., 3., -42.),
+            Vector::new(4., -4., 3., -42.)
         );
 
         assert_eq!(
-            Vector::new(1.000000001, 0.0, 0.0, 0.0),
-            Vector::new(1.0, 0.0, 0.0, 0.0)
+            Vector::new(1.000000001, 0., 0., 0.),
+            Vector::new(1., 0., 0., 0.)
         );
     }
 
     #[test]
     fn vector_addition() {
         assert_eq!(
-            Vector::new(3.0, -2.0, 5.0, 0.0) + Vector::new(-2.0, 3.0, 1.0, 0.0),
-            Vector::new(1.0, 1.0, 6.0, 0.0)
+            Vector::new(3., -2., 5., 0.) + Vector::new(-2., 3., 1., 0.),
+            Vector::new(1., 1., 6., 0.)
         )
     }
 
     #[test]
     fn vector_subtraction() {
         assert_eq!(
-            Vector::new(3.0, 2.0, 1.0, 0.0) - Vector::new(5.0, 6.0, 7.0, 0.0),
-            Vector::new(-2.0, -4.0, -6.0, 0.0)
+            Vector::new(3., 2., 1., 0.) - Vector::new(5., 6., 7., 0.),
+            Vector::new(-2., -4., -6., 0.)
         )
     }
 
     #[test]
     fn vector_negation() {
         assert_eq!(
-            -Vector::new(1.0, -2.0, 3.0, -4.0),
-            Vector::new(-1.0, 2.0, -3.0, 4.0)
+            -Vector::new(1., -2., 3., -4.),
+            Vector::new(-1., 2., -3., 4.)
         )
     }
 
     #[test]
     fn vector_scalar_multiplication() {
         assert_eq!(
-            Vector::new(1.0, -2.0, 3.0, -4.0) * 3.5,
-            Vector::new(3.5, -7.0, 10.5, -14.0)
+            Vector::new(1., -2., 3., -4.) * 3.5,
+            Vector::new(3.5, -7., 10.5, -14.)
         );
         assert_eq!(
-            3.5 * Vector::new(1.0, -2.0, 3.0, -4.0),
-            Vector::new(3.5, -7.0, 10.5, -14.0)
+            3.5 * Vector::new(1., -2., 3., -4.),
+            Vector::new(3.5, -7., 10.5, -14.)
         );
 
         assert_eq!(
-            0.5 * Vector::new(1.0, -2.0, 3.0, -4.0),
-            Vector::new(0.5, -1.0, 1.5, -2.0)
+            0.5 * Vector::new(1., -2., 3., -4.),
+            Vector::new(0.5, -1., 1.5, -2.)
         );
     }
 }
