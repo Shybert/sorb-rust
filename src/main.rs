@@ -2,7 +2,7 @@ fn main() {
     println!("Hello, world!");
 }
 
-use std::ops::{Add, Neg, Sub};
+use std::ops::{Add, Mul, Neg, Sub};
 
 fn approx_equals(a: f64, b: f64) -> bool {
     return (a - b).abs() < 0.00001;
@@ -46,6 +46,20 @@ impl Neg for Point {
 
     fn neg(self) -> Self {
         return Self::new(-self.x, -self.y, -self.z);
+    }
+}
+impl Mul<f64> for Point {
+    type Output = Self;
+
+    fn mul(self, scalar: f64) -> Self {
+        return Self::new(scalar * self.x, scalar * self.y, scalar * self.z);
+    }
+}
+impl Mul<Point> for f64 {
+    type Output = Point;
+
+    fn mul(self, point: Point) -> Point {
+        return Point::new(self * point.x, self * point.y, self * point.z);
     }
 }
 
@@ -101,6 +115,30 @@ impl Neg for Vector {
         return Self::new(-self.x, -self.y, -self.z, -self.w);
     }
 }
+impl Mul<f64> for Vector {
+    type Output = Self;
+
+    fn mul(self, scalar: f64) -> Self {
+        return Self::new(
+            scalar * self.x,
+            scalar * self.y,
+            scalar * self.z,
+            scalar * self.w,
+        );
+    }
+}
+impl Mul<Vector> for f64 {
+    type Output = Vector;
+
+    fn mul(self, vector: Vector) -> Vector {
+        return Vector::new(
+            self * vector.x,
+            self * vector.y,
+            self * vector.z,
+            self * vector.w,
+        );
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -132,6 +170,20 @@ mod tests {
     #[test]
     fn point_negation() {
         assert_eq!(-Point::new(1.0, -2.0, 3.0), Point::new(-1.0, 2.0, -3.0))
+    }
+
+    #[test]
+    fn point_scalar_multiplication() {
+        assert_eq!(
+            Point::new(1.0, -2.0, 3.0) * 3.5,
+            Point::new(3.5, -7.0, 10.5)
+        );
+        assert_eq!(
+            3.5 * Point::new(1.0, -2.0, 3.0),
+            Point::new(3.5, -7.0, 10.5)
+        );
+
+        assert_eq!(0.5 * Point::new(1.0, -2.0, 3.0), Point::new(0.5, -1.0, 1.5));
     }
 
     #[test]
@@ -169,5 +221,22 @@ mod tests {
             -Vector::new(1.0, -2.0, 3.0, -4.0),
             Vector::new(-1.0, 2.0, -3.0, 4.0)
         )
+    }
+
+    #[test]
+    fn vector_scalar_multiplication() {
+        assert_eq!(
+            Vector::new(1.0, -2.0, 3.0, -4.0) * 3.5,
+            Vector::new(3.5, -7.0, 10.5, -14.0)
+        );
+        assert_eq!(
+            3.5 * Vector::new(1.0, -2.0, 3.0, -4.0),
+            Vector::new(3.5, -7.0, 10.5, -14.0)
+        );
+
+        assert_eq!(
+            0.5 * Vector::new(1.0, -2.0, 3.0, -4.0),
+            Vector::new(0.5, -1.0, 1.5, -2.0)
+        );
     }
 }
