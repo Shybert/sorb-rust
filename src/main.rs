@@ -2,7 +2,7 @@ fn main() {
     println!("Hello, world!");
 }
 
-use std::ops::{Add, Sub};
+use std::ops::{Add, Neg, Sub};
 
 fn approx_equals(a: f64, b: f64) -> bool {
     return (a - b).abs() < 0.00001;
@@ -39,6 +39,13 @@ impl Sub for Point {
 
     fn sub(self, other: Self) -> Self {
         return Self::new(self.x - other.x, self.y - other.y, self.z - other.z);
+    }
+}
+impl Neg for Point {
+    type Output = Self;
+
+    fn neg(self) -> Self {
+        return Self::new(-self.x, -self.y, -self.z);
     }
 }
 
@@ -87,6 +94,13 @@ impl Sub for Vector {
         );
     }
 }
+impl Neg for Vector {
+    type Output = Self;
+
+    fn neg(self) -> Self {
+        return Self::new(-self.x, -self.y, -self.z, -self.w);
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -116,6 +130,11 @@ mod tests {
     }
 
     #[test]
+    fn point_negation() {
+        assert_eq!(-Point::new(1.0, -2.0, 3.0), Point::new(-1.0, 2.0, -3.0))
+    }
+
+    #[test]
     fn vector_equality() {
         assert_eq!(
             Vector::new(4.0, -4.0, 3.0, -42.0),
@@ -141,6 +160,14 @@ mod tests {
         assert_eq!(
             Vector::new(3.0, 2.0, 1.0, 0.0) - Vector::new(5.0, 6.0, 7.0, 0.0),
             Vector::new(-2.0, -4.0, -6.0, 0.0)
+        )
+    }
+
+    #[test]
+    fn vector_negation() {
+        assert_eq!(
+            -Vector::new(1.0, -2.0, 3.0, -4.0),
+            Vector::new(-1.0, 2.0, -3.0, 4.0)
         )
     }
 }
