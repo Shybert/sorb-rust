@@ -13,6 +13,12 @@ struct Point {
     z: f64,
 }
 
+impl Point {
+    fn new(x: f64, y: f64, z: f64) -> Point {
+        return Point { x, y, z };
+    }
+}
+
 impl PartialEq<Point> for Point {
     fn eq(&self, other: &Point) -> bool {
         return approx_equals(self.x, other.x)
@@ -27,6 +33,12 @@ struct Vector {
     y: f64,
     z: f64,
     w: f64,
+}
+
+impl Vector {
+    fn new(x: f64, y: f64, z: f64, w: f64) -> Vector {
+        return Vector { x, y, z, w };
+    }
 }
 
 impl PartialEq<Vector> for Vector {
@@ -44,63 +56,21 @@ mod tests {
 
     #[test]
     fn point_equality() {
-        assert_eq!(
-            Point {
-                x: 4.0,
-                y: -4.0,
-                z: 3.0
-            },
-            Point {
-                x: 4.0,
-                y: -4.0,
-                z: 3.0
-            }
-        );
+        assert_eq!(Point::new(4.0, -4.0, 3.0), Point::new(4.0, -4.0, 3.0));
 
-        assert_eq!(
-            Point {
-                x: 1.000000001,
-                y: 0.0,
-                z: 0.0
-            },
-            Point {
-                x: 1.0,
-                y: 0.0,
-                z: 0.0
-            }
-        );
+        assert_eq!(Point::new(1.000000001, 0.0, 0.0), Point::new(1.0, 0.0, 0.0));
     }
 
     #[test]
     fn vector_equality() {
         assert_eq!(
-            Vector {
-                x: 4.0,
-                y: -4.0,
-                z: 3.0,
-                w: -42.0
-            },
-            Vector {
-                x: 4.0,
-                y: -4.0,
-                z: 3.0,
-                w: -42.0
-            }
+            Vector::new(4.0, -4.0, 3.0, -42.0),
+            Vector::new(4.0, -4.0, 3.0, -42.0)
         );
 
         assert_eq!(
-            Vector {
-                x: 1.000000001,
-                y: 0.0,
-                z: 0.0,
-                w: 0.0
-            },
-            Vector {
-                x: 1.0,
-                y: 0.0,
-                z: 0.0,
-                w: 0.0
-            }
+            Vector::new(1.000000001, 0.0, 0.0, 0.0),
+            Vector::new(1.0, 0.0, 0.0, 0.0)
         );
     }
 }
