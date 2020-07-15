@@ -2,7 +2,7 @@ fn main() {
     println!("Hello, world!");
 }
 
-use std::ops::{Add, Mul, Neg, Sub};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 fn approx_equals(a: f64, b: f64) -> bool {
     return (a - b).abs() < 0.00001;
@@ -60,6 +60,13 @@ impl Mul<Point> for f64 {
 
     fn mul(self, point: Point) -> Point {
         return Point::new(self * point.x, self * point.y, self * point.z);
+    }
+}
+impl Div<f64> for Point {
+    type Output = Self;
+
+    fn div(self, scalar: f64) -> Self {
+        return Self::new(self.x / scalar, self.y / scalar, self.z / scalar);
     }
 }
 
@@ -139,6 +146,18 @@ impl Mul<Vector> for f64 {
         );
     }
 }
+impl Div<f64> for Vector {
+    type Output = Self;
+
+    fn div(self, scalar: f64) -> Self {
+        return Self::new(
+            self.x / scalar,
+            self.y / scalar,
+            self.z / scalar,
+            self.w / scalar,
+        );
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -178,6 +197,11 @@ mod tests {
         assert_eq!(3.5 * Point::new(1., -2., 3.), Point::new(3.5, -7., 10.5));
 
         assert_eq!(0.5 * Point::new(1., -2., 3.), Point::new(0.5, -1., 1.5));
+    }
+
+    #[test]
+    fn point_scalar_division() {
+        assert_eq!(Point::new(1., -2., 3.) / 2., Point::new(0.5, -1., 1.5));
     }
 
     #[test]
@@ -230,6 +254,14 @@ mod tests {
 
         assert_eq!(
             0.5 * Vector::new(1., -2., 3., -4.),
+            Vector::new(0.5, -1., 1.5, -2.)
+        );
+    }
+
+    #[test]
+    fn vector_scalar_division() {
+        assert_eq!(
+            Vector::new(1., -2., 3., -4.) / 2.,
             Vector::new(0.5, -1., 1.5, -2.)
         );
     }
