@@ -173,6 +173,10 @@ impl Div<f64> for Vector {
     }
 }
 
+fn dot(a: &Vector, b: &Vector) -> f64 {
+    return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -309,5 +313,13 @@ mod tests {
     #[test]
     fn vector_normalize_length() {
         assert_eq!(Vector::new(1., 2., 3., 0.).normalize().magnitude(), 1.);
+    }
+
+    #[test]
+    fn vector_dot_product() {
+        assert_eq!(
+            dot(&Vector::new(1., 2., 3., 0.), &Vector::new(2., 3., 4., 0.)),
+            20.
+        );
     }
 }
