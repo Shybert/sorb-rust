@@ -15,7 +15,7 @@ struct Point {
     z: f64,
 }
 impl Point {
-    fn new(x: f64, y: f64, z: f64) -> Point {
+    fn new(x: f64, y: f64, z: f64) -> Self {
         return Point { x, y, z };
     }
 }
@@ -78,7 +78,7 @@ struct Vector {
     w: f64,
 }
 impl Vector {
-    fn new(x: f64, y: f64, z: f64, w: f64) -> Vector {
+    fn new(x: f64, y: f64, z: f64, w: f64) -> Self {
         return Vector { x, y, z, w };
     }
 
