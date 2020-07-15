@@ -20,8 +20,8 @@ impl Point {
     }
 }
 
-impl PartialEq<Point> for Point {
-    fn eq(&self, other: &Point) -> bool {
+impl PartialEq<Self> for Point {
+    fn eq(&self, other: &Self) -> bool {
         return approx_equals(self.x, other.x)
             && approx_equals(self.y, other.y)
             && approx_equals(self.z, other.z);
@@ -48,8 +48,8 @@ impl Vector {
     }
 }
 
-impl PartialEq<Vector> for Vector {
-    fn eq(&self, other: &Vector) -> bool {
+impl PartialEq<Self> for Vector {
+    fn eq(&self, other: &Self) -> bool {
         return approx_equals(self.x, other.x)
             && approx_equals(self.y, other.y)
             && approx_equals(self.z, other.z)
