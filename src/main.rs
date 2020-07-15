@@ -85,6 +85,16 @@ impl Vector {
     fn magnitude(&self) -> f64 {
         return (self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)).sqrt();
     }
+
+    fn normalize(&self) -> Self {
+        let magnitude = self.magnitude();
+        return Self::new(
+            self.x / magnitude,
+            self.y / magnitude,
+            self.z / magnitude,
+            self.w / magnitude,
+        );
+    }
 }
 
 impl PartialEq<Self> for Vector {
@@ -277,5 +287,27 @@ mod tests {
         assert_eq!(Vector::new(0., 0., 1., 0.).magnitude(), 1.);
         assert_eq!(Vector::new(1., 2., 3., 0.).magnitude(), 14_f64.sqrt());
         assert_eq!(Vector::new(-1., -2., -3., 0.).magnitude(), 14_f64.sqrt());
+    }
+
+    #[test]
+    fn vector_normalize() {
+        assert_eq!(
+            Vector::new(4., 0., 0., 0.).normalize(),
+            Vector::new(1., 0., 0., 0.)
+        );
+        assert_eq!(
+            Vector::new(1., 2., 3., 0.).normalize(),
+            Vector::new(
+                1. / 14_f64.sqrt(),
+                2. / 14_f64.sqrt(),
+                3. / 14_f64.sqrt(),
+                0.
+            )
+        );
+    }
+
+    #[test]
+    fn vector_normalize_length() {
+        assert_eq!(Vector::new(1., 2., 3., 0.).normalize().magnitude(), 1.);
     }
 }
