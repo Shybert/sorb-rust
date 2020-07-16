@@ -45,9 +45,11 @@ impl Canvas {
   fn get_pixel_index(&self, x: usize, y: usize) -> usize {
     return y * self.get_width() + x;
   }
-
   fn get_pixel(&self, x: usize, y: usize) -> &Color {
     return &self.pixels[self.get_pixel_index(x, y)];
+  }
+  fn get_pixels(&self) -> &[Color] {
+    return &self.pixels[..];
   }
 }
 
@@ -60,6 +62,18 @@ mod tests {
     assert_eq!(Color::new(4., -4., 3.), Color::new(4., -4., 3.));
 
     assert_eq!(Color::new(1.000000001, 0., 0.), Color::new(1., 0., 0.));
+  }
+
+  #[test]
+  fn canvas_init() {
+    let black = Color::new(0., 0., 0.);
+    assert!(
+      Canvas::new(10, 20)
+        .get_pixels()
+        .iter()
+        .all(|pixel| pixel == &black),
+      "Not all pixels were initialized to black"
+    );
   }
 
   #[test]
@@ -79,5 +93,10 @@ mod tests {
       Canvas::new(10, 20).get_pixel(7, 15),
       &Color::new(0., 0., 0.)
     );
+  }
+
+  #[test]
+  fn canvas_get_pixels() {
+    assert_eq!(Canvas::new(10, 20).get_pixels().len(), 200);
   }
 }
