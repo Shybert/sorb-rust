@@ -2,6 +2,7 @@ fn main() {
   println!("Hello, world!");
 }
 
+mod canvas;
 mod utils;
 
 use std::ops::{Add, Div, Mul, Neg, Sub};
