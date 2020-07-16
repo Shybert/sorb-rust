@@ -41,6 +41,14 @@ impl Canvas {
   fn get_height(&self) -> usize {
     return self.height;
   }
+
+  fn get_pixel_index(&self, x: usize, y: usize) -> usize {
+    return y * self.get_width() + x;
+  }
+
+  fn get_pixel(&self, x: usize, y: usize) -> &Color {
+    return &self.pixels[self.get_pixel_index(x, y)];
+  }
 }
 
 #[cfg(test)]
@@ -64,8 +72,12 @@ mod tests {
     assert_eq!(Canvas::new(10, 20).get_height(), 20);
   }
 
-  // #[test]
-  // fn canvas_get_pixel() {
-  //   assert_eq!(Canvas::new(10, 20).get_pixel(0, 0), Color::new(0., 0., 0.));
-  // }
+  #[test]
+  fn canvas_get_pixel() {
+    assert_eq!(Canvas::new(10, 20).get_pixel(0, 0), &Color::new(0., 0., 0.));
+    assert_eq!(
+      Canvas::new(10, 20).get_pixel(7, 15),
+      &Color::new(0., 0., 0.)
+    );
+  }
 }
