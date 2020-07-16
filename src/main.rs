@@ -2,11 +2,9 @@ fn main() {
   println!("Hello, world!");
 }
 
-use std::ops::{Add, Div, Mul, Neg, Sub};
+mod utils;
 
-fn approx_equals(a: f64, b: f64) -> bool {
-  return (a - b).abs() < 0.00001;
-}
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 #[derive(Debug)]
 struct Point {
@@ -22,9 +20,9 @@ impl Point {
 
 impl PartialEq<Self> for Point {
   fn eq(&self, other: &Self) -> bool {
-    return approx_equals(self.x, other.x)
-      && approx_equals(self.y, other.y)
-      && approx_equals(self.z, other.z);
+    return utils::approx_equals(self.x, other.x)
+      && utils::approx_equals(self.y, other.y)
+      && utils::approx_equals(self.z, other.z);
   }
 }
 impl Add for Point {
@@ -93,9 +91,9 @@ impl Vector {
 
 impl PartialEq<Self> for Vector {
   fn eq(&self, other: &Self) -> bool {
-    return approx_equals(self.x, other.x)
-      && approx_equals(self.y, other.y)
-      && approx_equals(self.z, other.z);
+    return utils::approx_equals(self.x, other.x)
+      && utils::approx_equals(self.y, other.y)
+      && utils::approx_equals(self.z, other.z);
   }
 }
 impl Add for Vector {
