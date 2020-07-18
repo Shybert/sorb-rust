@@ -1,4 +1,4 @@
-use super::utils;
+use crate::utils;
 
 #[derive(Debug, Clone)]
 struct Color {
@@ -60,6 +60,20 @@ impl Canvas {
   fn set_pixel(&mut self, x: usize, y: usize, color: &Color) {
     let index = self.get_pixel_index(x, y);
     self.pixels[index].set(color);
+  }
+
+  fn to_ppm(&self) -> String {
+    let mut data = format!("P3\n{} {}\n255\n", self.get_width(), self.get_height());
+    for pixel in self.get_pixels() {
+      data.push_str(&format!(
+        "{} {} {} ",
+        utils::clamp_number(pixel.r * 255., 0., 255.).round(),
+        utils::clamp_number(pixel.g * 255., 0., 255.).round(),
+        utils::clamp_number(pixel.b * 255., 0., 255.).round()
+      ));
+    }
+
+    return data;
   }
 }
 
