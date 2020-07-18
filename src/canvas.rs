@@ -10,6 +10,12 @@ impl Color {
   fn new(r: f64, g: f64, b: f64) -> Self {
     return Color { r, g, b };
   }
+
+  fn set(&mut self, new: &Color) {
+    self.r = new.r;
+    self.g = new.g;
+    self.b = new.b;
+  }
 }
 
 impl PartialEq<Self> for Color {
@@ -62,6 +68,14 @@ mod tests {
     assert_eq!(Color::new(4., -4., 3.), Color::new(4., -4., 3.));
 
     assert_eq!(Color::new(1.000000001, 0., 0.), Color::new(1., 0., 0.));
+  }
+
+  #[test]
+  fn color_set() {
+    let mut old = Color::new(0., 0., 0.);
+    let new = Color::new(-0.3, 0.45, 1.);
+    old.set(&new);
+    assert_eq!(old, new);
   }
 
   #[test]
