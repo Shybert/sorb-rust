@@ -57,6 +57,10 @@ impl Canvas {
   fn get_pixels(&self) -> &[Color] {
     return &self.pixels[..];
   }
+  fn set_pixel(&mut self, x: usize, y: usize, color: &Color) {
+    let index = self.get_pixel_index(x, y);
+    self.pixels[index].set(color);
+  }
 }
 
 #[cfg(test)]
@@ -112,5 +116,13 @@ mod tests {
   #[test]
   fn canvas_get_pixels() {
     assert_eq!(Canvas::new(10, 20).get_pixels().len(), 200);
+  }
+
+  #[test]
+  fn canvas_set_pixel() {
+    let mut canvas = Canvas::new(10, 20);
+    let color = Color::new(-0.3, 0.45, 1.);
+    canvas.set_pixel(3, 14, &color);
+    assert_eq!(canvas.get_pixel(3, 14), &color);
   }
 }
