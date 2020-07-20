@@ -1,4 +1,4 @@
-use crate::utils;
+use crate::utils::{approx_equals, clamp_number};
 
 #[derive(Debug, Clone)]
 struct Color {
@@ -20,9 +20,9 @@ impl Color {
 
 impl PartialEq<Self> for Color {
   fn eq(&self, other: &Self) -> bool {
-    return utils::approx_equals(self.r, other.r)
-      && utils::approx_equals(self.g, other.g)
-      && utils::approx_equals(self.b, other.b);
+    return approx_equals(&self.r, &other.r)
+      && approx_equals(&self.g, &other.g)
+      && approx_equals(&self.b, &other.b);
   }
 }
 
@@ -67,9 +67,9 @@ impl Canvas {
     for pixel in self.get_pixels() {
       data.push_str(&format!(
         "{} {} {} ",
-        utils::clamp_number(pixel.r * 255., 0., 255.).round(),
-        utils::clamp_number(pixel.g * 255., 0., 255.).round(),
-        utils::clamp_number(pixel.b * 255., 0., 255.).round()
+        clamp_number(pixel.r * 255., 0., 255.).round(),
+        clamp_number(pixel.g * 255., 0., 255.).round(),
+        clamp_number(pixel.b * 255., 0., 255.).round()
       ));
     }
 
