@@ -1,3 +1,6 @@
+use crate::utils::approx_equals;
+
+#[derive(Debug)]
 struct Matrix {
   elements: [[f64; 4]; 4],
 }
@@ -15,6 +18,18 @@ impl Matrix {
 
   fn from(elements: [[f64; 4]; 4]) -> Self {
     return Self { elements };
+  }
+}
+impl PartialEq<Self> for Matrix {
+  fn eq(&self, other: &Self) -> bool {
+    for i in 0..4 {
+      for j in 0..4 {
+        if !(approx_equals(&self.elements[i][j], &other.elements[i][j])) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
 
@@ -45,5 +60,39 @@ mod tests {
     ];
 
     assert_eq!(Matrix::from(elements).elements, elements);
+  }
+
+  #[test]
+  fn equality_identical() {
+    let elements = [
+      [1., 2., 3., 4.],
+      [5., 6., 7., 8.],
+      [9., 8., 7., 6.],
+      [5., 4., 3., 2.],
+    ];
+    let a = Matrix::from(elements);
+    let mut b = Matrix::from(elements);
+
+    assert_eq!(a, b);
+    b.elements[0][0] = 1.000000001;
+    assert_eq!(a, b);
+  }
+
+  #[test]
+  fn equality_different() {
+    let a = Matrix::from([
+      [1., 2., 3., 4.],
+      [5., 6., 7., 8.],
+      [9., 8., 7., 6.],
+      [5., 4., 3., 2.],
+    ]);
+    let b = Matrix::from([
+      [2., 3., 4., 5.],
+      [6., 7., 8., 9.],
+      [8., 7., 6., 5.],
+      [4., 3., 2., 1.],
+    ]);
+
+    assert_ne!(a, b);
   }
 }
