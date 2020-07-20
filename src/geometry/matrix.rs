@@ -1,4 +1,5 @@
 use crate::utils::approx_equals;
+use std::ops::{Index, IndexMut};
 
 #[derive(Debug)]
 struct Matrix {
@@ -24,12 +25,24 @@ impl PartialEq<Self> for Matrix {
   fn eq(&self, other: &Self) -> bool {
     for i in 0..4 {
       for j in 0..4 {
-        if !(approx_equals(&self.elements[i][j], &other.elements[i][j])) {
+        if !(approx_equals(&self[(i, j)], &other[(i, j)])) {
           return false;
         }
       }
     }
     return true;
+  }
+}
+impl Index<(usize, usize)> for Matrix {
+  type Output = f64;
+
+  fn index(&self, (row, col): (usize, usize)) -> &Self::Output {
+    return &self.elements[row][col];
+  }
+}
+impl IndexMut<(usize, usize)> for Matrix {
+  fn index_mut(&mut self, (row, col): (usize, usize)) -> &mut Self::Output {
+    return &mut self.elements[row][col];
   }
 }
 
@@ -63,6 +76,20 @@ mod tests {
   }
 
   #[test]
+  fn index_get() {
+    let matrix = Matrix::new();
+    assert_eq!(matrix[(0, 0)], 1.);
+    assert_eq!(matrix[(2, 1)], 0.);
+  }
+
+  #[test]
+  fn index_set() {
+    let mut matrix = Matrix::new();
+    matrix[(1, 2)] = 1.5;
+    assert_eq!(matrix[(1, 2)], 1.5);
+  }
+
+  #[test]
   fn equality_identical() {
     let elements = [
       [1., 2., 3., 4.],
@@ -74,7 +101,7 @@ mod tests {
     let mut b = Matrix::from(elements);
 
     assert_eq!(a, b);
-    b.elements[0][0] = 1.000000001;
+    b[(0, 0)] = 1.000000001;
     assert_eq!(a, b);
   }
 
