@@ -79,7 +79,7 @@ mod tests {
   use super::*;
 
   #[test]
-  fn new() {
+  fn init_new() {
     assert_eq!(
       Matrix::new().elements,
       [
@@ -92,7 +92,7 @@ mod tests {
   }
 
   #[test]
-  fn from() {
+  fn init_from() {
     let elements = [
       [1., 2., 3., 4.],
       [5.5, 6.5, 7.5, 8.5],
