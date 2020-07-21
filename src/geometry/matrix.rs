@@ -202,4 +202,20 @@ mod tests {
     let expected = Vector::from(14., 22., 32.);
     assert_eq!(matrix * vector, expected);
   }
+
+  #[test]
+  fn identity_matrix_does_nothing() {
+    let identity = Matrix::new();
+    let matrix = Matrix::from([
+      [0., 1., 2., 4.],
+      [1., 2., 4., 8.],
+      [2., 4., 8., 16.],
+      [4., 8., 16., 32.],
+    ]);
+    let vector = Vector::from(1., 2., 3.);
+
+    assert_eq!(identity * matrix, matrix);
+    assert_eq!(matrix * identity, matrix);
+    assert_eq!(identity * vector, vector);
+  }
 }

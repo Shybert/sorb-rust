@@ -1,7 +1,7 @@
 use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Vector {
   pub x: f64,
   pub y: f64,
