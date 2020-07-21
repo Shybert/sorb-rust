@@ -21,6 +21,15 @@ impl Matrix {
   fn from(elements: [[f64; 4]; 4]) -> Self {
     return Self { elements };
   }
+
+  fn transpose(&self) -> Self {
+    return Matrix::from([
+      [self[(0, 0)], self[(1, 0)], self[(2, 0)], self[(3, 0)]],
+      [self[(0, 1)], self[(1, 1)], self[(2, 1)], self[(3, 1)]],
+      [self[(0, 2)], self[(1, 2)], self[(2, 2)], self[(3, 2)]],
+      [self[(0, 3)], self[(1, 3)], self[(2, 3)], self[(3, 3)]],
+    ]);
+  }
 }
 impl Index<(usize, usize)> for Matrix {
   type Output = f64;
@@ -204,7 +213,26 @@ mod tests {
   }
 
   #[test]
-  fn identity_matrix_does_nothing() {
+  fn transpose() {
+    let matrix = Matrix::from([
+      [0., 9., 3., 0.],
+      [9., 8., 0., 8.],
+      [1., 8., 5., 3.],
+      [0., 0., 5., 8.],
+    ]);
+    let transposed_matrix = Matrix::from([
+      [0., 9., 1., 0.],
+      [9., 8., 8., 0.],
+      [3., 0., 5., 5.],
+      [0., 8., 3., 8.],
+    ]);
+
+    assert_eq!(matrix.transpose(), transposed_matrix);
+    assert_eq!(matrix.transpose().transpose(), matrix);
+  }
+
+  #[test]
+  fn multiplying_identity_matrix_does_nothing() {
     let identity = Matrix::new();
     let matrix = Matrix::from([
       [0., 1., 2., 4.],
@@ -214,8 +242,15 @@ mod tests {
     ]);
     let vector = Vector::from(1., 2., 3.);
 
+    assert_eq!(identity * identity, identity);
     assert_eq!(identity * matrix, matrix);
     assert_eq!(matrix * identity, matrix);
     assert_eq!(identity * vector, vector);
+  }
+
+  #[test]
+  fn transposing_identity_matrix_does_nothing() {
+    let identity = Matrix::new();
+    assert_eq!(identity.transpose(), identity);
   }
 }
