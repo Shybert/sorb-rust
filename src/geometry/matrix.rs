@@ -21,18 +21,6 @@ impl Matrix {
     return Self { elements };
   }
 }
-impl PartialEq<Self> for Matrix {
-  fn eq(&self, other: &Self) -> bool {
-    for i in 0..4 {
-      for j in 0..4 {
-        if !(approx_equals(&self[(i, j)], &other[(i, j)])) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-}
 impl Index<(usize, usize)> for Matrix {
   type Output = f64;
 
@@ -43,6 +31,18 @@ impl Index<(usize, usize)> for Matrix {
 impl IndexMut<(usize, usize)> for Matrix {
   fn index_mut(&mut self, (row, col): (usize, usize)) -> &mut Self::Output {
     return &mut self.elements[row][col];
+  }
+}
+impl PartialEq<Self> for Matrix {
+  fn eq(&self, other: &Self) -> bool {
+    for row in 0..4 {
+      for col in 0..4 {
+        if !(approx_equals(&self[(row, col)], &other[(row, col)])) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
 
