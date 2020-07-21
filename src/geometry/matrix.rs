@@ -66,7 +66,7 @@ impl Mul<Vector> for Matrix {
   type Output = Vector;
 
   fn mul(self, vector: Vector) -> Vector {
-    return Vector::new(
+    return Vector::from(
       vector.x * self[(0, 0)] + vector.y * self[(0, 1)] + vector.z * self[(0, 2)],
       vector.x * self[(1, 0)] + vector.y * self[(1, 1)] + vector.z * self[(1, 2)],
       vector.x * self[(2, 0)] + vector.y * self[(2, 1)] + vector.z * self[(2, 2)],
@@ -197,9 +197,9 @@ mod tests {
       [8., 6., 4., 1.],
       [0., 0., 0., 1.],
     ]);
-    let vector = Vector::new(1., 2., 3.);
+    let vector = Vector::from(1., 2., 3.);
 
-    let expected = Vector::new(14., 22., 32.);
+    let expected = Vector::from(14., 22., 32.);
     assert_eq!(matrix * vector, expected);
   }
 }
