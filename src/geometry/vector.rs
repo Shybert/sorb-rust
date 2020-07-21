@@ -2,13 +2,13 @@ use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 #[derive(Debug)]
-struct Vector {
-  x: f64,
-  y: f64,
-  z: f64,
+pub struct Vector {
+  pub x: f64,
+  pub y: f64,
+  pub z: f64,
 }
 impl Vector {
-  fn new(x: f64, y: f64, z: f64) -> Self {
+  pub fn new(x: f64, y: f64, z: f64) -> Self {
     return Vector { x, y, z };
   }
 
