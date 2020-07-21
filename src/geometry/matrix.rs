@@ -1,7 +1,7 @@
 use crate::utils::approx_equals;
-use std::ops::{Index, IndexMut};
+use std::ops::{Index, IndexMut, Mul};
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 struct Matrix {
   elements: [[f64; 4]; 4],
 }
@@ -43,6 +43,22 @@ impl PartialEq<Self> for Matrix {
       }
     }
     return true;
+  }
+}
+impl Mul<Self> for Matrix {
+  type Output = Self;
+
+  fn mul(self, rhs: Self) -> Self {
+    let mut new_matrix = Matrix::new();
+    for row in 0..4 {
+      for col in 0..4 {
+        new_matrix[(row, col)] = self[(row, 0)] * rhs[(0, col)]
+          + self[(row, 1)] * rhs[(1, col)]
+          + self[(row, 2)] * rhs[(2, col)]
+          + self[(row, 3)] * rhs[(3, col)]
+      }
+    }
+    return new_matrix;
   }
 }
 
@@ -121,5 +137,43 @@ mod tests {
     ]);
 
     assert_ne!(a, b);
+  }
+
+  #[test]
+  fn matrix_matrix_multiplication() {
+    let a = Matrix::from([
+      [1., 2., 3., 4.],
+      [5., 6., 7., 8.],
+      [9., 8., 7., 6.],
+      [5., 4., 3., 2.],
+    ]);
+    let b = Matrix::from([
+      [-2., 1., 2., 3.],
+      [3., 2., 1., -1.],
+      [4., 3., 6., 5.],
+      [1., 2., 7., 8.],
+    ]);
+    let c = Matrix::from([
+      [2., 4., 6., 8.],
+      [1., 2., 3., 4.],
+      [4., 3., 2., 1.],
+      [8., 6., 4., 2.],
+    ]);
+
+    let expected = Matrix::from([
+      [20., 22., 50., 48.],
+      [44., 54., 114., 108.],
+      [40., 58., 110., 102.],
+      [16., 26., 46., 42.],
+    ]);
+    assert_eq!(a * b, expected);
+
+    let expected = Matrix::from([
+      [646., 562., 478., 394.],
+      [1462., 1274., 1086., 898.],
+      [1394., 1218., 1042., 866.],
+      [578., 506., 434., 362.],
+    ]);
+    assert_eq!(a * b * c, expected);
   }
 }
