@@ -30,6 +30,48 @@ impl Matrix {
       [self[(0, 3)], self[(1, 3)], self[(2, 3)], self[(3, 3)]],
     ]);
   }
+
+  fn inverse(&self) -> Self {
+    let mut inverse = Matrix::new();
+    let mut copy = self.clone();
+
+    for i in 0..4 {
+      let mut pivot = copy[(i, i)];
+
+      if pivot == 0. {
+        for j in i..4 {
+          if copy[(j, i)] != 0. {
+            copy.elements.swap(i, j);
+            inverse.elements.swap(i, j);
+          }
+        }
+
+        pivot = copy[(i, i)];
+        if pivot == 0. {
+          panic!("Matrix is singular and not invertible");
+        }
+      }
+
+      if pivot != 1. {
+        for j in 0..4 {
+          copy[(i, j)] /= pivot;
+          inverse[(i, j)] /= pivot;
+        }
+      }
+
+      for j in 0..4 {
+        if j != i && copy[(j, i)] != 0. {
+          let scalar = copy[(j, i)];
+          for k in 0..4 {
+            copy[(j, k)] -= scalar * copy[(i, k)];
+            inverse[(j, k)] -= scalar * inverse[(i, k)];
+          }
+        }
+      }
+    }
+
+    return inverse;
+  }
 }
 impl Index<(usize, usize)> for Matrix {
   type Output = f64;
@@ -232,6 +274,84 @@ mod tests {
   }
 
   #[test]
+  fn invert() {
+    let matrix = Matrix::from([
+      [-5., 2., 6., -8.],
+      [1., -5., 1., 8.],
+      [7., 7., -6., -7.],
+      [1., -3., 7., 4.],
+    ]);
+    let inverse = Matrix::from([
+      [0.21805, 0.45113, 0.24060, -0.04511],
+      [-0.80827, -1.45677, -0.44361, 0.52068],
+      [-0.07895, -0.22368, -0.05263, 0.19737],
+      [-0.52256, -0.81391, -0.30075, 0.30639],
+    ]);
+    assert_eq!(matrix.inverse(), inverse);
+
+    let matrix = Matrix::from([
+      [8., -5., 9., 2.],
+      [7., 5., 6., 1.],
+      [-6., 0., 9., 6.],
+      [-3., 0., -9., -4.],
+    ]);
+    let inverse = Matrix::from([
+      [-0.15385, -0.15385, -0.28205, -0.53846],
+      [-0.07692, 0.12308, 0.02564, 0.03077],
+      [0.35897, 0.35897, 0.43590, 0.92308],
+      [-0.69231, -0.69231, -0.76923, -1.92308],
+    ]);
+    assert_eq!(matrix.inverse(), inverse);
+
+    let matrix = Matrix::from([
+      [9., 3., 0., 9.],
+      [-5., -2., -6., -3.],
+      [-4., 9., 6., 4.],
+      [-7., 6., 6., 2.],
+    ]);
+    let inverse = Matrix::from([
+      [-0.04074, -0.07778, 0.14444, -0.22222],
+      [-0.07778, 0.03333, 0.36667, -0.33333],
+      [-0.02901, -0.14630, -0.10926, 0.12963],
+      [0.17778, 0.06667, -0.26667, 0.33333],
+    ]);
+    assert_eq!(matrix.inverse(), inverse);
+  }
+
+  #[test]
+  #[should_panic(expected = "singular")]
+  fn invert_panics_if_singular_matrix() {
+    let matrix = Matrix::from([
+      [-4., 2., -2., -3.],
+      [9., 6., 2., 6.],
+      [0., -5., 1., -5.],
+      [0., 0., 0., 0.],
+    ]);
+    matrix.inverse();
+  }
+
+  #[test]
+  fn multiplying_by_inverse_gives_identity_matrix() {
+    let identity = Matrix::new();
+    let a = Matrix::from([
+      [3., -9., 7., 3.],
+      [3., -8., 2., -9.],
+      [-4., 4., 4., 1.],
+      [-6., 5., -1., 1.],
+    ]);
+    let b = Matrix::from([
+      [8., 2., 2., 2.],
+      [3., -1., 7., 0.],
+      [7., 0., 5., 4.],
+      [6., -2., 0., 5.],
+    ]);
+
+    assert_eq!(a * a.inverse(), identity);
+    assert_eq!(a.inverse() * a, identity);
+    assert_eq!(a * b * b.inverse(), a);
+  }
+
+  #[test]
   fn multiplying_identity_matrix_does_nothing() {
     let identity = Matrix::new();
     let matrix = Matrix::from([
@@ -252,5 +372,10 @@ mod tests {
   fn transposing_identity_matrix_does_nothing() {
     let identity = Matrix::new();
     assert_eq!(identity.transpose(), identity);
+  }
+  #[test]
+  fn inverting_identity_matrix_does_nothing() {
+    let identity = Matrix::new();
+    assert_eq!(identity.inverse(), identity);
   }
 }
