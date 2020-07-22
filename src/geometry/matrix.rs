@@ -83,6 +83,17 @@ impl Matrix {
 
     return translation * self;
   }
+
+  fn scale(self, x: f64, y: f64, z: f64) -> Self {
+    let scaling = Matrix::from([
+      [x, 0., 0., 0.],
+      [0., y, 0., 0.],
+      [0., 0., z, 0.],
+      [0., 0., 0., 1.],
+    ]);
+
+    return scaling * self;
+  }
 }
 impl Index<(usize, usize)> for Matrix {
   type Output = f64;
@@ -424,9 +435,9 @@ mod tests {
 
   #[test]
   fn translation_inverse_moves_points_in_reverse() {
-    let translation_inverse = Matrix::new().translate(5., -3., 2.).inverse();
+    let translation = Matrix::new().translate(5., -3., 2.);
     let point = Point::from(-3., 4., 5.);
-    assert_eq!(translation_inverse * point, Point::from(-8., 7., 3.));
+    assert_eq!(translation.inverse() * point, Point::from(-8., 7., 3.));
   }
 
   #[test]
@@ -434,5 +445,33 @@ mod tests {
     let translation = Matrix::new().translate(5., -3., 2.);
     let vector = Vector::from(-3., 4., 5.);
     assert_eq!(translation * vector, vector);
+  }
+
+  #[test]
+  fn scaling_scales_points() {
+    let scaling = Matrix::new().scale(2., 3., 4.);
+    let point = Point::from(-4., 6., 8.);
+    assert_eq!(scaling * point, Point::from(-8., 18., 32.));
+  }
+
+  #[test]
+  fn scaling_scales_vectors() {
+    let scaling = Matrix::new().scale(2., 3., 4.);
+    let vector = Vector::from(-4., 6., 8.);
+    assert_eq!(scaling * vector, Vector::from(-8., 18., 32.));
+  }
+
+  #[test]
+  fn scaling_inverse_scales_in_reverse() {
+    let scaling = Matrix::new().scale(2., 3., 4.);
+    let vector = Vector::from(-4., 6., 8.);
+    assert_eq!(scaling.inverse() * vector, Vector::from(-2., 2., 2.));
+  }
+
+  #[test]
+  fn scaling_by_negative_value_is_reflection() {
+    let reflection = Matrix::new().scale(-1., 1., 1.);
+    let vector = Vector::from(2., 3., 4.);
+    assert_eq!(reflection * vector, Vector::from(-2., 3., 4.));
   }
 }
