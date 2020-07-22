@@ -72,6 +72,17 @@ impl Matrix {
 
     return inverse;
   }
+
+  fn translate(self, x: f64, y: f64, z: f64) -> Self {
+    let translation = Matrix::from([
+      [1., 0., 0., x],
+      [0., 1., 0., y],
+      [0., 0., 1., z],
+      [0., 0., 0., 1.],
+    ]);
+
+    return translation * self;
+  }
 }
 impl Index<(usize, usize)> for Matrix {
   type Output = f64;
@@ -402,5 +413,26 @@ mod tests {
   fn inverting_identity_matrix_does_nothing() {
     let identity = Matrix::new();
     assert_eq!(identity.inverse(), identity);
+  }
+
+  #[test]
+  fn translation_moves_points() {
+    let translation = Matrix::new().translate(5., -3., 2.);
+    let point = Point::from(-3., 4., 5.);
+    assert_eq!(translation * point, Point::from(2., 1., 7.));
+  }
+
+  #[test]
+  fn translation_inverse_moves_points_in_reverse() {
+    let translation_inverse = Matrix::new().translate(5., -3., 2.).inverse();
+    let point = Point::from(-3., 4., 5.);
+    assert_eq!(translation_inverse * point, Point::from(-8., 7., 3.));
+  }
+
+  #[test]
+  fn translation_does_not_affect_vectors() {
+    let translation = Matrix::new().translate(5., -3., 2.);
+    let vector = Vector::from(-3., 4., 5.);
+    assert_eq!(translation * vector, vector);
   }
 }
