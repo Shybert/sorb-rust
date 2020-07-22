@@ -2,10 +2,10 @@ use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 #[derive(Debug)]
-struct Point {
-  x: f64,
-  y: f64,
-  z: f64,
+pub struct Point {
+  pub x: f64,
+  pub y: f64,
+  pub z: f64,
 }
 impl Point {
   fn new() -> Self {
@@ -16,7 +16,7 @@ impl Point {
     };
   }
 
-  fn from(x: f64, y: f64, z: f64) -> Self {
+  pub fn from(x: f64, y: f64, z: f64) -> Self {
     return Point { x, y, z };
   }
 }
