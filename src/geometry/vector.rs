@@ -1,7 +1,7 @@
 use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Vector {
   pub x: f64,
   pub y: f64,
@@ -9,11 +9,7 @@ pub struct Vector {
 }
 impl Vector {
   pub fn new() -> Self {
-    return Vector {
-      x: 0.,
-      y: 0.,
-      z: 0.,
-    };
+    return Vector::default();
   }
 
   pub fn from(x: f64, y: f64, z: f64) -> Self {
