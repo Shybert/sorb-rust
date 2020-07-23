@@ -131,6 +131,17 @@ impl Matrix {
 
     return rotation * self;
   }
+
+  fn shear(self, xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Self {
+    let shear = Matrix::from([
+      [1., xy, xz, 0.],
+      [yx, 1., yz, 0.],
+      [zx, zy, 1., 0.],
+      [0., 0., 0., 1.],
+    ]);
+
+    return shear * self;
+  }
 }
 impl Index<(usize, usize)> for Matrix {
   type Output = f64;
@@ -570,5 +581,28 @@ mod tests {
     let point = Point::from(1., 0., 0.);
     let half_rotation = Matrix::new().rotate_z(PI / 2.);
     assert_eq!(half_rotation.inverse() * point, Point::from(0., -1., 0.,));
+  }
+
+  #[test]
+  fn shear() {
+    let point = Point::from(2., 3., 4.);
+
+    let shear = Matrix::new().shear(1., 0., 0., 0., 0., 0.);
+    assert_eq!(shear * point, Point::from(5., 3., 4.));
+
+    let shear = Matrix::new().shear(0., 1., 0., 0., 0., 0.);
+    assert_eq!(shear * point, Point::from(6., 3., 4.));
+
+    let shear = Matrix::new().shear(0., 0., 1., 0., 0., 0.);
+    assert_eq!(shear * point, Point::from(2., 5., 4.));
+
+    let shear = Matrix::new().shear(0., 0., 0., 1., 0., 0.);
+    assert_eq!(shear * point, Point::from(2., 7., 4.));
+
+    let shear = Matrix::new().shear(0., 0., 0., 0., 1., 0.);
+    assert_eq!(shear * point, Point::from(2., 3., 6.));
+
+    let shear = Matrix::new().shear(0., 0., 0., 0., 0., 1.);
+    assert_eq!(shear * point, Point::from(2., 3., 7.));
   }
 }
