@@ -119,6 +119,18 @@ impl Matrix {
 
     return rotation * self;
   }
+
+  fn rotate_z(self, angle: f64) -> Self {
+    let (angle_sin, angle_cos) = angle.sin_cos();
+    let rotation = Matrix::from([
+      [angle_cos, -angle_sin, 0., 0.],
+      [angle_sin, angle_cos, 0., 0.],
+      [0., 0., 1., 0.],
+      [0., 0., 0., 1.],
+    ]);
+
+    return rotation * self;
+  }
 }
 impl Index<(usize, usize)> for Matrix {
   type Output = f64;
@@ -538,5 +550,25 @@ mod tests {
     let point = Point::from(0., 0., 1.);
     let half_rotation = Matrix::new().rotate_y(PI / 2.);
     assert_eq!(half_rotation.inverse() * point, Point::from(-1., 0., 0.,));
+  }
+
+  #[test]
+  fn rotate_z() {
+    let point = Point::from(1., 0., 0.);
+    let quarter_rotation = Matrix::new().rotate_z(PI / 4.);
+    let half_rotation = Matrix::new().rotate_z(PI / 2.);
+
+    assert_eq!(
+      quarter_rotation * point,
+      Point::from(2_f64.sqrt() / 2., 2_f64.sqrt() / 2., 0.),
+    );
+    assert_eq!(half_rotation * point, Point::from(0., 1., 0.),);
+  }
+
+  #[test]
+  fn rotate_z_inverse_rotates_in_reverse() {
+    let point = Point::from(1., 0., 0.);
+    let half_rotation = Matrix::new().rotate_z(PI / 2.);
+    assert_eq!(half_rotation.inverse() * point, Point::from(0., -1., 0.,));
   }
 }
