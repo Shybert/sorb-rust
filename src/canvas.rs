@@ -1,17 +1,17 @@
 use crate::utils::{approx_equals, clamp_number};
 
 #[derive(Clone, Debug)]
-struct Color {
+pub struct Color {
   r: f64,
   g: f64,
   b: f64,
 }
 impl Color {
-  fn from(r: f64, g: f64, b: f64) -> Self {
+  pub fn from(r: f64, g: f64, b: f64) -> Self {
     return Color { r, g, b };
   }
 
-  fn set(&mut self, new: &Color) {
+  pub fn set(&mut self, new: &Color) {
     self.r = new.r;
     self.g = new.g;
     self.b = new.b;
@@ -26,13 +26,13 @@ impl PartialEq<Self> for Color {
   }
 }
 
-struct Canvas {
+pub struct Canvas {
   width: usize,
   height: usize,
   pixels: Vec<Color>,
 }
 impl Canvas {
-  fn new(width: usize, height: usize) -> Self {
+  pub fn new(width: usize, height: usize) -> Self {
     return Canvas {
       width,
       height,
@@ -40,29 +40,29 @@ impl Canvas {
     };
   }
 
-  fn get_width(&self) -> usize {
+  pub fn get_width(&self) -> usize {
     return self.width;
   }
 
-  fn get_height(&self) -> usize {
+  pub fn get_height(&self) -> usize {
     return self.height;
   }
 
   fn get_pixel_index(&self, x: usize, y: usize) -> usize {
     return y * self.get_width() + x;
   }
-  fn get_pixel(&self, x: usize, y: usize) -> &Color {
+  pub fn get_pixel(&self, x: usize, y: usize) -> &Color {
     return &self.pixels[self.get_pixel_index(x, y)];
   }
-  fn get_pixels(&self) -> &[Color] {
+  pub fn get_pixels(&self) -> &[Color] {
     return &self.pixels[..];
   }
-  fn set_pixel(&mut self, x: usize, y: usize, color: &Color) {
+  pub fn set_pixel(&mut self, x: usize, y: usize, color: &Color) {
     let index = self.get_pixel_index(x, y);
     self.pixels[index].set(color);
   }
 
-  fn to_ppm(&self) -> String {
+  pub fn to_ppm(&self) -> String {
     let mut data = format!("P3\n{} {}\n255\n", self.get_width(), self.get_height());
     for pixel in self.get_pixels() {
       data.push_str(&format!(

@@ -16,11 +16,11 @@ impl Vector {
     return Vector { x, y, z };
   }
 
-  fn magnitude(&self) -> f64 {
+  pub fn magnitude(&self) -> f64 {
     return (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt();
   }
 
-  fn normalize(&self) -> Self {
+  pub fn normalize(&self) -> Self {
     let magnitude = self.magnitude();
     return Self::from(self.x / magnitude, self.y / magnitude, self.z / magnitude);
   }
@@ -76,11 +76,11 @@ impl Div<f64> for Vector {
   }
 }
 
-fn dot(a: &Vector, b: &Vector) -> f64 {
+pub fn dot(a: &Vector, b: &Vector) -> f64 {
   return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-fn cross(a: &Vector, b: &Vector) -> Vector {
+pub fn cross(a: &Vector, b: &Vector) -> Vector {
   return Vector::from(
     a.y * b.z - a.z * b.y,
     a.z * b.x - a.x * b.z,

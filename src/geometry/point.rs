@@ -8,7 +8,7 @@ pub struct Point {
   pub z: f64,
 }
 impl Point {
-  fn new() -> Self {
+  pub fn new() -> Self {
     return Point::default();
   }
 

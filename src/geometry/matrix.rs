@@ -4,11 +4,11 @@ use std::f64::consts::PI;
 use std::ops::{Index, IndexMut, Mul};
 
 #[derive(Clone, Copy, Debug)]
-struct Matrix {
+pub struct Matrix {
   elements: [[f64; 4]; 4],
 }
 impl Matrix {
-  fn new() -> Self {
+  pub fn new() -> Self {
     return Matrix {
       elements: [
         [1., 0., 0., 0.],
@@ -19,11 +19,11 @@ impl Matrix {
     };
   }
 
-  fn from(elements: [[f64; 4]; 4]) -> Self {
+  pub fn from(elements: [[f64; 4]; 4]) -> Self {
     return Self { elements };
   }
 
-  fn transpose(&self) -> Self {
+  pub fn transpose(&self) -> Self {
     return Matrix::from([
       [self[(0, 0)], self[(1, 0)], self[(2, 0)], self[(3, 0)]],
       [self[(0, 1)], self[(1, 1)], self[(2, 1)], self[(3, 1)]],
@@ -32,7 +32,7 @@ impl Matrix {
     ]);
   }
 
-  fn inverse(&self) -> Self {
+  pub fn inverse(&self) -> Self {
     let mut inverse = Matrix::new();
     let mut copy = self.clone();
 
@@ -74,7 +74,7 @@ impl Matrix {
     return inverse;
   }
 
-  fn translate(self, x: f64, y: f64, z: f64) -> Self {
+  pub fn translate(self, x: f64, y: f64, z: f64) -> Self {
     let translation = Matrix::from([
       [1., 0., 0., x],
       [0., 1., 0., y],
@@ -85,7 +85,7 @@ impl Matrix {
     return translation * self;
   }
 
-  fn scale(self, x: f64, y: f64, z: f64) -> Self {
+  pub fn scale(self, x: f64, y: f64, z: f64) -> Self {
     let scaling = Matrix::from([
       [x, 0., 0., 0.],
       [0., y, 0., 0.],
@@ -96,7 +96,7 @@ impl Matrix {
     return scaling * self;
   }
 
-  fn rotate_x(self, angle: f64) -> Self {
+  pub fn rotate_x(self, angle: f64) -> Self {
     let (angle_sin, angle_cos) = angle.sin_cos();
     let rotation = Matrix::from([
       [1., 0., 0., 0.],
@@ -108,7 +108,7 @@ impl Matrix {
     return rotation * self;
   }
 
-  fn rotate_y(self, angle: f64) -> Self {
+  pub fn rotate_y(self, angle: f64) -> Self {
     let (angle_sin, angle_cos) = angle.sin_cos();
     let rotation = Matrix::from([
       [angle_cos, 0., angle_sin, 0.],
@@ -120,7 +120,7 @@ impl Matrix {
     return rotation * self;
   }
 
-  fn rotate_z(self, angle: f64) -> Self {
+  pub fn rotate_z(self, angle: f64) -> Self {
     let (angle_sin, angle_cos) = angle.sin_cos();
     let rotation = Matrix::from([
       [angle_cos, -angle_sin, 0., 0.],
@@ -132,7 +132,7 @@ impl Matrix {
     return rotation * self;
   }
 
-  fn shear(self, xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Self {
+  pub fn shear(self, xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Self {
     let shear = Matrix::from([
       [1., xy, xz, 0.],
       [yx, 1., yz, 0.],
