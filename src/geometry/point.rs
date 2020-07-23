@@ -1,7 +1,7 @@
 use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
-#[derive(Debug, Default)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Point {
   pub x: f64,
   pub y: f64,

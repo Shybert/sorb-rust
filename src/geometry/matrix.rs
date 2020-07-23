@@ -1,5 +1,6 @@
 use crate::geometry::{point::Point, vector::Vector};
 use crate::utils::approx_equals;
+use std::f64::consts::PI;
 use std::ops::{Index, IndexMut, Mul};
 
 #[derive(Clone, Copy, Debug)]
@@ -93,6 +94,18 @@ impl Matrix {
     ]);
 
     return scaling * self;
+  }
+
+  fn rotate_x(self, angle: f64) -> Self {
+    let (angle_sin, angle_cos) = angle.sin_cos();
+    let rotation = Matrix::from([
+      [1., 0., 0., 0.],
+      [0., angle_cos, -angle_sin, 0.],
+      [0., angle_sin, angle_cos, 0.],
+      [0., 0., 0., 1.],
+    ]);
+
+    return rotation * self;
   }
 }
 impl Index<(usize, usize)> for Matrix {
@@ -473,5 +486,25 @@ mod tests {
     let reflection = Matrix::new().scale(-1., 1., 1.);
     let vector = Vector::from(2., 3., 4.);
     assert_eq!(reflection * vector, Vector::from(-2., 3., 4.));
+  }
+
+  #[test]
+  fn rotate_x() {
+    let point = Point::from(0., 1., 0.);
+    let quarter_rotation = Matrix::new().rotate_x(PI / 4.);
+    let half_rotation = Matrix::new().rotate_x(PI / 2.);
+
+    assert_eq!(
+      quarter_rotation * point,
+      Point::from(0., 2_f64.sqrt() / 2., 2_f64.sqrt() / 2.),
+    );
+    assert_eq!(half_rotation * point, Point::from(0., 0., 1.),);
+  }
+
+  #[test]
+  fn rotate_x_inverse_rotates_in_reverse() {
+    let point = Point::from(0., 1., 0.);
+    let half_rotation = Matrix::new().rotate_x(PI / 2.);
+    assert_eq!(half_rotation.inverse() * point, Point::from(0., 0., -1.,));
   }
 }
