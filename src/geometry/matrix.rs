@@ -605,4 +605,15 @@ mod tests {
     let shear = Matrix::new().shear(0., 0., 0., 0., 0., 1.);
     assert_eq!(shear * point, Point::from(2., 3., 7.));
   }
+
+  #[test]
+  fn chained_transformations() {
+    let point = Point::from(1., 0., 1.);
+    let transform = Matrix::new()
+      .rotate_x(PI / 2.)
+      .scale(5., 5., 5.)
+      .translate(10., 5., 7.);
+
+    assert_eq!(transform * point, Point::from(15., 0., 7.));
+  }
 }
