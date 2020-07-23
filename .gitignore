@@ -1,1 +1,4 @@
 /target
+
+# Ray-traced image
+output.ppm
