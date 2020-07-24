@@ -9,7 +9,7 @@ pub struct Matrix {
 }
 impl Matrix {
   pub fn new() -> Self {
-    return Matrix {
+    return Self {
       elements: [
         [1., 0., 0., 0.],
         [0., 1., 0., 0.],
@@ -155,7 +155,7 @@ impl IndexMut<(usize, usize)> for Matrix {
     return &mut self.elements[row][col];
   }
 }
-impl PartialEq<Self> for Matrix {
+impl PartialEq for Matrix {
   fn eq(&self, other: &Self) -> bool {
     for row in 0..4 {
       for col in 0..4 {
@@ -167,7 +167,7 @@ impl PartialEq<Self> for Matrix {
     return true;
   }
 }
-impl Mul<Self> for Matrix {
+impl Mul for Matrix {
   type Output = Self;
 
   fn mul(self, rhs: Self) -> Self {

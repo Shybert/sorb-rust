@@ -8,17 +8,17 @@ pub struct Color {
 }
 impl Color {
   pub fn from(r: f64, g: f64, b: f64) -> Self {
-    return Color { r, g, b };
+    return Self { r, g, b };
   }
 
-  pub fn set(&mut self, new: &Color) {
+  pub fn set(&mut self, new: &Self) {
     self.r = new.r;
     self.g = new.g;
     self.b = new.b;
   }
 }
 
-impl PartialEq<Self> for Color {
+impl PartialEq for Color {
   fn eq(&self, other: &Self) -> bool {
     return approx_equals(&self.r, &other.r)
       && approx_equals(&self.g, &other.g)
@@ -33,7 +33,7 @@ pub struct Canvas {
 }
 impl Canvas {
   pub fn new(width: usize, height: usize) -> Self {
-    return Canvas {
+    return Self {
       width,
       height,
       pixels: vec![Color::from(0., 0., 0.); width * height],

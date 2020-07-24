@@ -9,15 +9,15 @@ pub struct Point {
 }
 impl Point {
   pub fn new() -> Self {
-    return Point::default();
+    return Self::default();
   }
 
   pub fn from(x: f64, y: f64, z: f64) -> Self {
-    return Point { x, y, z };
+    return Self { x, y, z };
   }
 }
 
-impl PartialEq<Self> for Point {
+impl PartialEq for Point {
   fn eq(&self, other: &Self) -> bool {
     return approx_equals(&self.x, &other.x)
       && approx_equals(&self.y, &other.y)

@@ -9,11 +9,11 @@ pub struct Vector {
 }
 impl Vector {
   pub fn new() -> Self {
-    return Vector::default();
+    return Self::default();
   }
 
   pub fn from(x: f64, y: f64, z: f64) -> Self {
-    return Vector { x, y, z };
+    return Self { x, y, z };
   }
 
   pub fn magnitude(&self) -> f64 {
@@ -26,7 +26,7 @@ impl Vector {
   }
 }
 
-impl PartialEq<Self> for Vector {
+impl PartialEq for Vector {
   fn eq(&self, other: &Self) -> bool {
     return approx_equals(&self.x, &other.x)
       && approx_equals(&self.y, &other.y)
