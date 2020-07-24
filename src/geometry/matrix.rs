@@ -143,6 +143,11 @@ impl Matrix {
     return shear * self;
   }
 }
+impl Default for Matrix {
+  fn default() -> Self {
+    return Self::new();
+  }
+}
 impl Index<(usize, usize)> for Matrix {
   type Output = f64;
 

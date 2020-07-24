@@ -2,7 +2,7 @@ use crate::geometry::Vector;
 use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Copy, Debug)]
 pub struct Point {
   pub x: f64,
   pub y: f64,
@@ -10,7 +10,11 @@ pub struct Point {
 }
 impl Point {
   pub fn new() -> Self {
-    return Self::default();
+    return Self {
+      x: 0.,
+      y: 0.,
+      z: 0.,
+    };
   }
 
   pub fn from(x: f64, y: f64, z: f64) -> Self {
@@ -18,6 +22,11 @@ impl Point {
   }
 }
 
+impl Default for Point {
+  fn default() -> Self {
+    return Self::new();
+  }
+}
 impl PartialEq for Point {
   fn eq(&self, other: &Self) -> bool {
     return approx_equals(&self.x, &other.x)

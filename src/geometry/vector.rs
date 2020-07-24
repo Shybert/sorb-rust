@@ -1,7 +1,7 @@
 use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Copy, Debug)]
 pub struct Vector {
   pub x: f64,
   pub y: f64,
@@ -9,7 +9,11 @@ pub struct Vector {
 }
 impl Vector {
   pub fn new() -> Self {
-    return Self::default();
+    return Self {
+      x: 0.,
+      y: 0.,
+      z: 0.,
+    };
   }
 
   pub fn from(x: f64, y: f64, z: f64) -> Self {
@@ -26,6 +30,11 @@ impl Vector {
   }
 }
 
+impl Default for Vector {
+  fn default() -> Self {
+    return Self::new();
+  }
+}
 impl PartialEq for Vector {
   fn eq(&self, other: &Self) -> bool {
     return approx_equals(&self.x, &other.x)
