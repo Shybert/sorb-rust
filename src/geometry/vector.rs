@@ -74,7 +74,7 @@ impl Mul<Vector> for f64 {
   type Output = Vector;
 
   fn mul(self, vector: Vector) -> Vector {
-    return Vector::from(self * vector.x, self * vector.y, self * vector.z);
+    return vector * self;
   }
 }
 impl Div<f64> for Vector {

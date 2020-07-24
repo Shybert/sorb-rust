@@ -73,7 +73,7 @@ impl Mul<Point> for f64 {
   type Output = Point;
 
   fn mul(self, point: Point) -> Point {
-    return Point::from(self * point.x, self * point.y, self * point.z);
+    return point * self;
   }
 }
 impl Div<f64> for Point {
