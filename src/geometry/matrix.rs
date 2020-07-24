@@ -23,7 +23,7 @@ impl Matrix {
   }
 
   pub fn transpose(&self) -> Self {
-    return Matrix::from([
+    return Self::from([
       [self[(0, 0)], self[(1, 0)], self[(2, 0)], self[(3, 0)]],
       [self[(0, 1)], self[(1, 1)], self[(2, 1)], self[(3, 1)]],
       [self[(0, 2)], self[(1, 2)], self[(2, 2)], self[(3, 2)]],
@@ -32,7 +32,7 @@ impl Matrix {
   }
 
   pub fn inverse(&self) -> Self {
-    let mut inverse = Matrix::new();
+    let mut inverse = Self::new();
     let mut copy = self.clone();
 
     for i in 0..4 {
@@ -74,7 +74,7 @@ impl Matrix {
   }
 
   pub fn translate(self, x: f64, y: f64, z: f64) -> Self {
-    let translation = Matrix::from([
+    let translation = Self::from([
       [1., 0., 0., x],
       [0., 1., 0., y],
       [0., 0., 1., z],
@@ -85,7 +85,7 @@ impl Matrix {
   }
 
   pub fn scale(self, x: f64, y: f64, z: f64) -> Self {
-    let scaling = Matrix::from([
+    let scaling = Self::from([
       [x, 0., 0., 0.],
       [0., y, 0., 0.],
       [0., 0., z, 0.],
@@ -97,7 +97,7 @@ impl Matrix {
 
   pub fn rotate_x(self, angle: f64) -> Self {
     let (angle_sin, angle_cos) = angle.sin_cos();
-    let rotation = Matrix::from([
+    let rotation = Self::from([
       [1., 0., 0., 0.],
       [0., angle_cos, -angle_sin, 0.],
       [0., angle_sin, angle_cos, 0.],
@@ -109,7 +109,7 @@ impl Matrix {
 
   pub fn rotate_y(self, angle: f64) -> Self {
     let (angle_sin, angle_cos) = angle.sin_cos();
-    let rotation = Matrix::from([
+    let rotation = Self::from([
       [angle_cos, 0., angle_sin, 0.],
       [0., 1., 0., 0.],
       [-angle_sin, 0., angle_cos, 0.],
@@ -121,7 +121,7 @@ impl Matrix {
 
   pub fn rotate_z(self, angle: f64) -> Self {
     let (angle_sin, angle_cos) = angle.sin_cos();
-    let rotation = Matrix::from([
+    let rotation = Self::from([
       [angle_cos, -angle_sin, 0., 0.],
       [angle_sin, angle_cos, 0., 0.],
       [0., 0., 1., 0.],
@@ -132,7 +132,7 @@ impl Matrix {
   }
 
   pub fn shear(self, xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Self {
-    let shear = Matrix::from([
+    let shear = Self::from([
       [1., xy, xz, 0.],
       [yx, 1., yz, 0.],
       [zx, zy, 1., 0.],
@@ -175,7 +175,7 @@ impl Mul for Matrix {
   type Output = Self;
 
   fn mul(self, rhs: Self) -> Self {
-    let mut new_matrix = Matrix::new();
+    let mut new_matrix = Self::new();
     for row in 0..4 {
       for col in 0..4 {
         new_matrix[(row, col)] = self[(row, 0)] * rhs[(0, col)]
