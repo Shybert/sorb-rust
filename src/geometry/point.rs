@@ -1,3 +1,4 @@
+use crate::geometry::Vector;
 use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
@@ -29,6 +30,13 @@ impl Add for Point {
 
   fn add(self, other: Self) -> Self {
     return Self::from(self.x + other.x, self.y + other.y, self.z + other.z);
+  }
+}
+impl Add<Vector> for Point {
+  type Output = Self;
+
+  fn add(self, vector: Vector) -> Self {
+    return Self::from(self.x + vector.x, self.y + vector.y, self.z + vector.z);
   }
 }
 impl Sub for Point {
@@ -95,11 +103,19 @@ mod tests {
   }
 
   #[test]
-  fn addition() {
+  fn addition_point() {
     assert_eq!(
       Point::from(3., -2., 5.) + Point::from(-2., 3., 1.),
       Point::from(1., 1., 6.)
     )
+  }
+
+  #[test]
+  fn addition_vector() {
+    assert_eq!(
+      Point::from(3., -2., 5.) + Vector::from(-2., 3., 1.),
+      Point::from(1., 1., 6.)
+    );
   }
 
   #[test]
