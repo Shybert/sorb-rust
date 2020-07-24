@@ -1,4 +1,4 @@
-use crate::geometry::{point::Point, vector::Vector};
+use crate::geometry::{Point, Vector};
 
 pub struct Ray {
   origin: Point,
