@@ -1,6 +1,6 @@
 use crate::utils::{approx_equals, clamp_number};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Color {
   r: f64,
   g: f64,
@@ -26,6 +26,7 @@ impl PartialEq for Color {
   }
 }
 
+#[derive(Clone)]
 pub struct Canvas {
   width: usize,
   height: usize,
