@@ -1,6 +1,5 @@
 use crate::geometry::{Point, Vector};
 use crate::utils::approx_equals;
-use std::f64::consts::PI;
 use std::ops::{Index, IndexMut, Mul};
 
 #[derive(Clone, Copy, Debug)]
@@ -214,6 +213,7 @@ impl Mul<Point> for Matrix {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use std::f64::consts::PI;
 
   #[test]
   fn init_new() {
