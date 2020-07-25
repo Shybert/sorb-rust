@@ -6,15 +6,19 @@ pub struct Ray {
   direction: Vector,
 }
 impl Ray {
-  fn from(origin: Point, direction: Vector) -> Self {
+  pub fn from(origin: Point, direction: Vector) -> Self {
     return Self { origin, direction };
   }
 
-  fn get_origin(&self) -> &Point {
+  pub fn get_origin(&self) -> &Point {
     return &self.origin;
   }
-  fn get_direction(&self) -> &Vector {
+  pub fn get_direction(&self) -> &Vector {
     return &self.direction;
+  }
+
+  pub fn position(&self, t: f64) -> Point {
+    return *self.get_origin() + *self.get_direction() * t;
   }
 }
 
@@ -35,5 +39,14 @@ mod tests {
     let direction = Vector::from(4., 5., 6.);
     let ray = Ray::from(origin, direction);
     assert_eq!(ray.get_direction(), &direction);
+  }
+
+  #[test]
+  fn position() {
+    let ray = Ray::from(Point::from(2., 3., 4.), Vector::from(1., 0., 0.));
+    assert_eq!(ray.position(0.), Point::from(2., 3., 4.,));
+    assert_eq!(ray.position(1.), Point::from(3., 3., 4.,));
+    assert_eq!(ray.position(-1.), Point::from(1., 3., 4.,));
+    assert_eq!(ray.position(2.5), Point::from(4.5, 3., 4.,));
   }
 }
