@@ -163,7 +163,7 @@ impl PartialEq for Matrix {
   fn eq(&self, other: &Self) -> bool {
     for row in 0..4 {
       for col in 0..4 {
-        if !(approx_equals(&self[(row, col)], &other[(row, col)])) {
+        if !(approx_equals(self[(row, col)], other[(row, col)])) {
           return false;
         }
       }

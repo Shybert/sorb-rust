@@ -20,9 +20,9 @@ impl Color {
 
 impl PartialEq for Color {
   fn eq(&self, other: &Self) -> bool {
-    return approx_equals(&self.r, &other.r)
-      && approx_equals(&self.g, &other.g)
-      && approx_equals(&self.b, &other.b);
+    return approx_equals(self.r, other.r)
+      && approx_equals(self.g, other.g)
+      && approx_equals(self.b, other.b);
   }
 }
 

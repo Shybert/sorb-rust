@@ -29,9 +29,9 @@ impl Default for Point {
 }
 impl PartialEq for Point {
   fn eq(&self, other: &Self) -> bool {
-    return approx_equals(&self.x, &other.x)
-      && approx_equals(&self.y, &other.y)
-      && approx_equals(&self.z, &other.z);
+    return approx_equals(self.x, other.x)
+      && approx_equals(self.y, other.y)
+      && approx_equals(self.z, other.z);
   }
 }
 impl Add for Point {
