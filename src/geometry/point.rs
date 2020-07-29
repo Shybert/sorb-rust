@@ -89,7 +89,7 @@ mod tests {
   use super::*;
 
   #[test]
-  fn init_new() {
+  fn init_origin() {
     let point = Point::origin();
     assert_eq!(point.x, 0.);
     assert_eq!(point.y, 0.);
@@ -97,7 +97,7 @@ mod tests {
   }
 
   #[test]
-  fn init_from() {
+  fn init_new() {
     let point = Point::new(1., 2., 3.);
     assert_eq!(point.x, 1.);
     assert_eq!(point.y, 2.);

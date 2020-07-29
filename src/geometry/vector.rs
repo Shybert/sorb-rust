@@ -102,7 +102,7 @@ mod tests {
   use super::*;
 
   #[test]
-  fn init_new() {
+  fn init_zero() {
     let vector = Vector::zero();
     assert_eq!(vector.x, 0.);
     assert_eq!(vector.y, 0.);
@@ -110,7 +110,7 @@ mod tests {
   }
 
   #[test]
-  fn init_from() {
+  fn init_new() {
     let vector = Vector::new(1., 2., 3.);
     assert_eq!(vector.x, 1.);
     assert_eq!(vector.y, 2.);
