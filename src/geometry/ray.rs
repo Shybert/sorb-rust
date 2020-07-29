@@ -44,14 +44,14 @@ mod tests {
 
   #[test]
   fn get_origin() {
-    let origin = Point::from(1., 2., 3.);
+    let origin = Point::new(1., 2., 3.);
     let direction = Vector::from(4., 5., 6.);
     let ray = Ray::from(origin, direction);
     assert_eq!(ray.get_origin(), &origin);
   }
   #[test]
   fn get_direction() {
-    let origin = Point::from(1., 2., 3.);
+    let origin = Point::new(1., 2., 3.);
     let direction = Vector::from(4., 5., 6.);
     let ray = Ray::from(origin, direction);
     assert_eq!(ray.get_direction(), &direction);
@@ -59,10 +59,10 @@ mod tests {
 
   #[test]
   fn position() {
-    let ray = Ray::from(Point::from(2., 3., 4.), Vector::from(1., 0., 0.));
-    assert_eq!(ray.position(0.), Point::from(2., 3., 4.,));
-    assert_eq!(ray.position(1.), Point::from(3., 3., 4.,));
-    assert_eq!(ray.position(-1.), Point::from(1., 3., 4.,));
-    assert_eq!(ray.position(2.5), Point::from(4.5, 3., 4.,));
+    let ray = Ray::from(Point::new(2., 3., 4.), Vector::from(1., 0., 0.));
+    assert_eq!(ray.position(0.), Point::new(2., 3., 4.,));
+    assert_eq!(ray.position(1.), Point::new(3., 3., 4.,));
+    assert_eq!(ray.position(-1.), Point::new(1., 3., 4.,));
+    assert_eq!(ray.position(2.5), Point::new(4.5, 3., 4.,));
   }
 }

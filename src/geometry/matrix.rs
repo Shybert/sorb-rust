@@ -202,7 +202,7 @@ impl Mul<Point> for Matrix {
   type Output = Point;
 
   fn mul(self, point: Point) -> Point {
-    return Point::from(
+    return Point::new(
       point.x * self[(0, 0)] + point.y * self[(0, 1)] + point.z * self[(0, 2)] + self[(0, 3)],
       point.x * self[(1, 0)] + point.y * self[(1, 1)] + point.z * self[(1, 2)] + self[(1, 3)],
       point.x * self[(2, 0)] + point.y * self[(2, 1)] + point.z * self[(2, 2)] + self[(2, 3)],
@@ -353,9 +353,9 @@ mod tests {
       [8., 6., 4., 2.],
       [0., 0., 0., 1.],
     ]);
-    let point = Point::from(1., 2., 3.);
+    let point = Point::new(1., 2., 3.);
 
-    let expected = Point::from(18., 24., 34.);
+    let expected = Point::new(18., 24., 34.);
     assert_eq!(matrix * point, expected);
   }
 
@@ -487,15 +487,15 @@ mod tests {
   #[test]
   fn translation_moves_points() {
     let translation = Matrix::identity().translate(5., -3., 2.);
-    let point = Point::from(-3., 4., 5.);
-    assert_eq!(translation * point, Point::from(2., 1., 7.));
+    let point = Point::new(-3., 4., 5.);
+    assert_eq!(translation * point, Point::new(2., 1., 7.));
   }
 
   #[test]
   fn translation_inverse_moves_points_in_reverse() {
     let translation = Matrix::identity().translate(5., -3., 2.);
-    let point = Point::from(-3., 4., 5.);
-    assert_eq!(translation.inverse() * point, Point::from(-8., 7., 3.));
+    let point = Point::new(-3., 4., 5.);
+    assert_eq!(translation.inverse() * point, Point::new(-8., 7., 3.));
   }
 
   #[test]
@@ -508,8 +508,8 @@ mod tests {
   #[test]
   fn scaling_scales_points() {
     let scaling = Matrix::identity().scale(2., 3., 4.);
-    let point = Point::from(-4., 6., 8.);
-    assert_eq!(scaling * point, Point::from(-8., 18., 32.));
+    let point = Point::new(-4., 6., 8.);
+    assert_eq!(scaling * point, Point::new(-8., 18., 32.));
   }
 
   #[test]
@@ -535,95 +535,95 @@ mod tests {
 
   #[test]
   fn rotate_x() {
-    let point = Point::from(0., 1., 0.);
+    let point = Point::new(0., 1., 0.);
     let quarter_rotation = Matrix::identity().rotate_x(PI / 4.);
     let half_rotation = Matrix::identity().rotate_x(PI / 2.);
 
     assert_eq!(
       quarter_rotation * point,
-      Point::from(0., 2_f64.sqrt() / 2., 2_f64.sqrt() / 2.),
+      Point::new(0., 2_f64.sqrt() / 2., 2_f64.sqrt() / 2.),
     );
-    assert_eq!(half_rotation * point, Point::from(0., 0., 1.),);
+    assert_eq!(half_rotation * point, Point::new(0., 0., 1.),);
   }
 
   #[test]
   fn rotate_x_inverse_rotates_in_reverse() {
-    let point = Point::from(0., 1., 0.);
+    let point = Point::new(0., 1., 0.);
     let half_rotation = Matrix::identity().rotate_x(PI / 2.);
-    assert_eq!(half_rotation.inverse() * point, Point::from(0., 0., -1.,));
+    assert_eq!(half_rotation.inverse() * point, Point::new(0., 0., -1.,));
   }
 
   #[test]
   fn rotate_y() {
-    let point = Point::from(0., 0., 1.);
+    let point = Point::new(0., 0., 1.);
     let quarter_rotation = Matrix::identity().rotate_y(PI / 4.);
     let half_rotation = Matrix::identity().rotate_y(PI / 2.);
 
     assert_eq!(
       quarter_rotation * point,
-      Point::from(2_f64.sqrt() / 2., 0., 2_f64.sqrt() / 2.),
+      Point::new(2_f64.sqrt() / 2., 0., 2_f64.sqrt() / 2.),
     );
-    assert_eq!(half_rotation * point, Point::from(1., 0., 0.),);
+    assert_eq!(half_rotation * point, Point::new(1., 0., 0.),);
   }
 
   #[test]
   fn rotate_y_inverse_rotates_in_reverse() {
-    let point = Point::from(0., 0., 1.);
+    let point = Point::new(0., 0., 1.);
     let half_rotation = Matrix::identity().rotate_y(PI / 2.);
-    assert_eq!(half_rotation.inverse() * point, Point::from(-1., 0., 0.,));
+    assert_eq!(half_rotation.inverse() * point, Point::new(-1., 0., 0.,));
   }
 
   #[test]
   fn rotate_z() {
-    let point = Point::from(1., 0., 0.);
+    let point = Point::new(1., 0., 0.);
     let quarter_rotation = Matrix::identity().rotate_z(PI / 4.);
     let half_rotation = Matrix::identity().rotate_z(PI / 2.);
 
     assert_eq!(
       quarter_rotation * point,
-      Point::from(2_f64.sqrt() / 2., 2_f64.sqrt() / 2., 0.),
+      Point::new(2_f64.sqrt() / 2., 2_f64.sqrt() / 2., 0.),
     );
-    assert_eq!(half_rotation * point, Point::from(0., 1., 0.),);
+    assert_eq!(half_rotation * point, Point::new(0., 1., 0.),);
   }
 
   #[test]
   fn rotate_z_inverse_rotates_in_reverse() {
-    let point = Point::from(1., 0., 0.);
+    let point = Point::new(1., 0., 0.);
     let half_rotation = Matrix::identity().rotate_z(PI / 2.);
-    assert_eq!(half_rotation.inverse() * point, Point::from(0., -1., 0.,));
+    assert_eq!(half_rotation.inverse() * point, Point::new(0., -1., 0.,));
   }
 
   #[test]
   fn shear() {
-    let point = Point::from(2., 3., 4.);
+    let point = Point::new(2., 3., 4.);
 
     let shear = Matrix::identity().shear(1., 0., 0., 0., 0., 0.);
-    assert_eq!(shear * point, Point::from(5., 3., 4.));
+    assert_eq!(shear * point, Point::new(5., 3., 4.));
 
     let shear = Matrix::identity().shear(0., 1., 0., 0., 0., 0.);
-    assert_eq!(shear * point, Point::from(6., 3., 4.));
+    assert_eq!(shear * point, Point::new(6., 3., 4.));
 
     let shear = Matrix::identity().shear(0., 0., 1., 0., 0., 0.);
-    assert_eq!(shear * point, Point::from(2., 5., 4.));
+    assert_eq!(shear * point, Point::new(2., 5., 4.));
 
     let shear = Matrix::identity().shear(0., 0., 0., 1., 0., 0.);
-    assert_eq!(shear * point, Point::from(2., 7., 4.));
+    assert_eq!(shear * point, Point::new(2., 7., 4.));
 
     let shear = Matrix::identity().shear(0., 0., 0., 0., 1., 0.);
-    assert_eq!(shear * point, Point::from(2., 3., 6.));
+    assert_eq!(shear * point, Point::new(2., 3., 6.));
 
     let shear = Matrix::identity().shear(0., 0., 0., 0., 0., 1.);
-    assert_eq!(shear * point, Point::from(2., 3., 7.));
+    assert_eq!(shear * point, Point::new(2., 3., 7.));
   }
 
   #[test]
   fn chained_transformations() {
-    let point = Point::from(1., 0., 1.);
+    let point = Point::new(1., 0., 1.);
     let transform = Matrix::identity()
       .rotate_x(PI / 2.)
       .scale(5., 5., 5.)
       .translate(10., 5., 7.);
 
-    assert_eq!(transform * point, Point::from(15., 0., 7.));
+    assert_eq!(transform * point, Point::new(15., 0., 7.));
   }
 }
