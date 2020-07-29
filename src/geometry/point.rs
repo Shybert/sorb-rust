@@ -9,16 +9,12 @@ pub struct Point {
   pub z: f64,
 }
 impl Point {
-  pub fn origin() -> Self {
-    return Self {
-      x: 0.,
-      y: 0.,
-      z: 0.,
-    };
-  }
-
   pub fn new(x: f64, y: f64, z: f64) -> Self {
     return Self { x, y, z };
+  }
+
+  pub fn origin() -> Self {
+    return Self::new(0., 0., 0.);
   }
 }
 
@@ -89,24 +85,21 @@ mod tests {
   use super::*;
 
   #[test]
-  fn init_origin() {
-    let point = Point::origin();
-    assert_eq!(point.x, 0.);
-    assert_eq!(point.y, 0.);
-    assert_eq!(point.z, 0.);
-  }
-
-  #[test]
-  fn init_default() {
-    assert_eq!(Point::default(), Point::origin());
-  }
-
-  #[test]
   fn init_new() {
     let point = Point::new(1., 2., 3.);
     assert_eq!(point.x, 1.);
     assert_eq!(point.y, 2.);
     assert_eq!(point.z, 3.);
+  }
+
+  #[test]
+  fn init_origin() {
+    assert_eq!(Point::origin(), Point::new(0., 0., 0.,));
+  }
+
+  #[test]
+  fn init_default() {
+    assert_eq!(Point::default(), Point::origin());
   }
 
   #[test]

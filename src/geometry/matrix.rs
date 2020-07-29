@@ -7,19 +7,17 @@ pub struct Matrix {
   elements: [[f64; 4]; 4],
 }
 impl Matrix {
-  pub fn identity() -> Self {
-    return Self {
-      elements: [
-        [1., 0., 0., 0.],
-        [0., 1., 0., 0.],
-        [0., 0., 1., 0.],
-        [0., 0., 0., 1.],
-      ],
-    };
-  }
-
   pub fn new(elements: [[f64; 4]; 4]) -> Self {
     return Self { elements };
+  }
+
+  pub fn identity() -> Self {
+    return Self::new([
+      [1., 0., 0., 0.],
+      [0., 1., 0., 0.],
+      [0., 0., 1., 0.],
+      [0., 0., 0., 1.],
+    ]);
   }
 
   pub fn transpose(&self) -> Self {
@@ -216,24 +214,6 @@ mod tests {
   use std::f64::consts::PI;
 
   #[test]
-  fn init_identity() {
-    assert_eq!(
-      Matrix::identity().elements,
-      [
-        [1., 0., 0., 0.],
-        [0., 1., 0., 0.],
-        [0., 0., 1., 0.],
-        [0., 0., 0., 1.],
-      ]
-    );
-  }
-
-  #[test]
-  fn init_default() {
-    assert_eq!(Matrix::default(), Matrix::identity());
-  }
-
-  #[test]
   fn init_new() {
     let elements = [
       [1., 2., 3., 4.],
@@ -243,6 +223,24 @@ mod tests {
     ];
 
     assert_eq!(Matrix::new(elements).elements, elements);
+  }
+
+  #[test]
+  fn init_identity() {
+    assert_eq!(
+      Matrix::identity(),
+      Matrix::new([
+        [1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.],
+      ])
+    );
+  }
+
+  #[test]
+  fn init_default() {
+    assert_eq!(Matrix::default(), Matrix::identity());
   }
 
   #[test]

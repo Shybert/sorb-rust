@@ -8,16 +8,12 @@ pub struct Vector {
   pub z: f64,
 }
 impl Vector {
-  pub fn zero() -> Self {
-    return Self {
-      x: 0.,
-      y: 0.,
-      z: 0.,
-    };
-  }
-
   pub fn new(x: f64, y: f64, z: f64) -> Self {
     return Self { x, y, z };
+  }
+
+  pub fn zero() -> Self {
+    return Self::new(0., 0., 0.);
   }
 
   pub fn magnitude(&self) -> f64 {
@@ -102,24 +98,21 @@ mod tests {
   use super::*;
 
   #[test]
-  fn init_zero() {
-    let vector = Vector::zero();
-    assert_eq!(vector.x, 0.);
-    assert_eq!(vector.y, 0.);
-    assert_eq!(vector.z, 0.);
-  }
-
-  #[test]
-  fn init_default() {
-    assert_eq!(Vector::default(), Vector::zero());
-  }
-
-  #[test]
   fn init_new() {
     let vector = Vector::new(1., 2., 3.);
     assert_eq!(vector.x, 1.);
     assert_eq!(vector.y, 2.);
     assert_eq!(vector.z, 3.);
+  }
+
+  #[test]
+  fn init_zero() {
+    assert_eq!(Vector::zero(), Vector::new(0., 0., 0.,));
+  }
+
+  #[test]
+  fn init_default() {
+    assert_eq!(Vector::default(), Vector::zero());
   }
 
   #[test]
