@@ -97,6 +97,11 @@ mod tests {
   }
 
   #[test]
+  fn init_default() {
+    assert_eq!(Point::default(), Point::origin());
+  }
+
+  #[test]
   fn init_new() {
     let point = Point::new(1., 2., 3.);
     assert_eq!(point.x, 1.);

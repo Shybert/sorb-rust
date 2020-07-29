@@ -110,6 +110,11 @@ mod tests {
   }
 
   #[test]
+  fn init_default() {
+    assert_eq!(Vector::default(), Vector::zero());
+  }
+
+  #[test]
   fn init_new() {
     let vector = Vector::new(1., 2., 3.);
     assert_eq!(vector.x, 1.);
