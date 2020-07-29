@@ -229,6 +229,11 @@ mod tests {
   }
 
   #[test]
+  fn init_default() {
+    assert_eq!(Matrix::default(), Matrix::identity());
+  }
+
+  #[test]
   fn init_new() {
     let elements = [
       [1., 2., 3., 4.],
