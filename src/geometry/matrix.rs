@@ -191,7 +191,7 @@ impl Mul<Vector> for Matrix {
   type Output = Vector;
 
   fn mul(self, vector: Vector) -> Vector {
-    return Vector::from(
+    return Vector::new(
       vector.x * self[(0, 0)] + vector.y * self[(0, 1)] + vector.z * self[(0, 2)],
       vector.x * self[(1, 0)] + vector.y * self[(1, 1)] + vector.z * self[(1, 2)],
       vector.x * self[(2, 0)] + vector.y * self[(2, 1)] + vector.z * self[(2, 2)],
@@ -339,9 +339,9 @@ mod tests {
       [8., 6., 4., 1.],
       [0., 0., 0., 1.],
     ]);
-    let vector = Vector::from(1., 2., 3.);
+    let vector = Vector::new(1., 2., 3.);
 
-    let expected = Vector::from(14., 22., 32.);
+    let expected = Vector::new(14., 22., 32.);
     assert_eq!(matrix * vector, expected);
   }
 
@@ -465,7 +465,7 @@ mod tests {
       [2., 4., 8., 16.],
       [4., 8., 16., 32.],
     ]);
-    let vector = Vector::from(1., 2., 3.);
+    let vector = Vector::new(1., 2., 3.);
 
     assert_eq!(identity * identity, identity);
     assert_eq!(identity * matrix, matrix);
@@ -501,7 +501,7 @@ mod tests {
   #[test]
   fn translation_does_not_affect_vectors() {
     let translation = Matrix::identity().translate(5., -3., 2.);
-    let vector = Vector::from(-3., 4., 5.);
+    let vector = Vector::new(-3., 4., 5.);
     assert_eq!(translation * vector, vector);
   }
 
@@ -515,22 +515,22 @@ mod tests {
   #[test]
   fn scaling_scales_vectors() {
     let scaling = Matrix::identity().scale(2., 3., 4.);
-    let vector = Vector::from(-4., 6., 8.);
-    assert_eq!(scaling * vector, Vector::from(-8., 18., 32.));
+    let vector = Vector::new(-4., 6., 8.);
+    assert_eq!(scaling * vector, Vector::new(-8., 18., 32.));
   }
 
   #[test]
   fn scaling_inverse_scales_in_reverse() {
     let scaling = Matrix::identity().scale(2., 3., 4.);
-    let vector = Vector::from(-4., 6., 8.);
-    assert_eq!(scaling.inverse() * vector, Vector::from(-2., 2., 2.));
+    let vector = Vector::new(-4., 6., 8.);
+    assert_eq!(scaling.inverse() * vector, Vector::new(-2., 2., 2.));
   }
 
   #[test]
   fn scaling_by_negative_value_is_reflection() {
     let reflection = Matrix::identity().scale(-1., 1., 1.);
-    let vector = Vector::from(2., 3., 4.);
-    assert_eq!(reflection * vector, Vector::from(-2., 3., 4.));
+    let vector = Vector::new(2., 3., 4.);
+    assert_eq!(reflection * vector, Vector::new(-2., 3., 4.));
   }
 
   #[test]

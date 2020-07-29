@@ -122,7 +122,7 @@ mod tests {
   #[test]
   fn addition_vector() {
     assert_eq!(
-      Point::new(3., -2., 5.) + Vector::from(-2., 3., 1.),
+      Point::new(3., -2., 5.) + Vector::new(-2., 3., 1.),
       Point::new(1., 1., 6.)
     );
   }
