@@ -1,6 +1,19 @@
 pub fn approx_equals(a: f64, b: f64) -> bool {
   return (a - b).abs() < 0.00001;
 }
+#[macro_export]
+macro_rules! assert_ae {
+  ($left:expr, $right:expr) => {
+    if !approx_equals($left, $right) {
+      panic!(
+        "assertion failed: `(left == right)`
+left:  `{}`
+right: `{}`",
+        $left, $right
+      )
+    }
+  };
+}
 
 pub fn clamp_number(number: f64, min: f64, max: f64) -> f64 {
   return if number < min {

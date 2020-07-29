@@ -81,6 +81,15 @@ impl Canvas {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::assert_ae;
+
+  #[test]
+  fn color_init() {
+    let color = Color::new(0.5, 0.7, 0.12443);
+    assert_ae!(color.r, 0.5);
+    assert_ae!(color.g, 0.7);
+    assert_ae!(color.b, 0.12443);
+  }
 
   #[test]
   fn color_equality() {
