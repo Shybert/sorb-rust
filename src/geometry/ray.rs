@@ -5,7 +5,7 @@ pub struct Intersection {
   pub t: f64,
 }
 impl Intersection {
-  pub fn from(t: f64) -> Self {
+  pub fn new(t: f64) -> Self {
     return Self { t };
   }
 }
@@ -38,7 +38,7 @@ mod tests {
 
   #[test]
   fn intersection_init() {
-    let intersection = Intersection::from(5.);
+    let intersection = Intersection::new(5.);
     assert_eq!(intersection.t, 5.)
   }
 
