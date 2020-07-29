@@ -7,7 +7,7 @@ pub struct Color {
   b: f64,
 }
 impl Color {
-  pub fn from(r: f64, g: f64, b: f64) -> Self {
+  pub fn new(r: f64, g: f64, b: f64) -> Self {
     return Self { r, g, b };
   }
 
@@ -37,7 +37,7 @@ impl Canvas {
     return Self {
       width,
       height,
-      pixels: vec![Color::from(0., 0., 0.); width * height],
+      pixels: vec![Color::new(0., 0., 0.); width * height],
     };
   }
 
@@ -84,22 +84,22 @@ mod tests {
 
   #[test]
   fn color_equality() {
-    assert_eq!(Color::from(4., -4., 3.), Color::from(4., -4., 3.));
+    assert_eq!(Color::new(4., -4., 3.), Color::new(4., -4., 3.));
 
-    assert_eq!(Color::from(1.000000001, 0., 0.), Color::from(1., 0., 0.));
+    assert_eq!(Color::new(1.000000001, 0., 0.), Color::new(1., 0., 0.));
   }
 
   #[test]
   fn color_set() {
-    let mut old = Color::from(0., 0., 0.);
-    let new = Color::from(-0.3, 0.45, 1.);
+    let mut old = Color::new(0., 0., 0.);
+    let new = Color::new(-0.3, 0.45, 1.);
     old.set(&new);
     assert_eq!(old, new);
   }
 
   #[test]
   fn canvas_init() {
-    let black = Color::from(0., 0., 0.);
+    let black = Color::new(0., 0., 0.);
     assert!(
       Canvas::new(10, 20)
         .get_pixels()
@@ -121,13 +121,10 @@ mod tests {
 
   #[test]
   fn canvas_get_pixel() {
-    assert_eq!(
-      Canvas::new(10, 20).get_pixel(0, 0),
-      &Color::from(0., 0., 0.)
-    );
+    assert_eq!(Canvas::new(10, 20).get_pixel(0, 0), &Color::new(0., 0., 0.));
     assert_eq!(
       Canvas::new(10, 20).get_pixel(7, 15),
-      &Color::from(0., 0., 0.)
+      &Color::new(0., 0., 0.)
     );
   }
 
@@ -139,7 +136,7 @@ mod tests {
   #[test]
   fn canvas_set_pixel() {
     let mut canvas = Canvas::new(10, 20);
-    let color = Color::from(-0.3, 0.45, 1.);
+    let color = Color::new(-0.3, 0.45, 1.);
     canvas.set_pixel(3, 14, &color);
     assert_eq!(canvas.get_pixel(3, 14), &color);
   }
