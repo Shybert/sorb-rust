@@ -1,3 +1,4 @@
+use crate::geometry::Point;
 use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
@@ -29,6 +30,11 @@ impl Vector {
 impl Default for Vector {
   fn default() -> Self {
     return Self::zero();
+  }
+}
+impl From<&Point> for Vector {
+  fn from(point: &Point) -> Self {
+    return Self::new(point.x, point.y, point.z);
   }
 }
 impl PartialEq for Vector {
@@ -113,6 +119,24 @@ mod tests {
   #[test]
   fn init_default() {
     assert_eq!(Vector::default(), Vector::zero());
+  }
+
+  #[test]
+  fn vector_from_point() {
+    let point = Point::new(5., 4., 3.);
+    let vector = Vector::from(&point);
+    assert_eq!(point.x, vector.x);
+    assert_eq!(point.y, vector.y);
+    assert_eq!(point.z, vector.z);
+  }
+
+  #[test]
+  fn point_into_vector() {
+    let point = Point::new(5., 4., 3.);
+    let vector: Vector = (&point).into();
+    assert_eq!(point.x, vector.x);
+    assert_eq!(point.y, vector.y);
+    assert_eq!(point.z, vector.z);
   }
 
   #[test]
