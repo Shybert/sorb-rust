@@ -4,4 +4,5 @@ fn main() {
 
 mod canvas;
 mod geometry;
+mod shapes;
 mod utils;
