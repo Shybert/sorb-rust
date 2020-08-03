@@ -9,11 +9,11 @@ pub trait Shape {
 
 #[derive(Clone, Copy, Debug)]
 pub struct Intersection {
-  pub t: f64,
+  pub time: f64,
 }
 impl Intersection {
-  pub fn new(t: f64) -> Self {
-    return Self { t };
+  pub fn new(time: f64) -> Self {
+    return Self { time };
   }
 }
 
@@ -24,6 +24,6 @@ mod tests {
   #[test]
   fn intersection_init() {
     let intersection = Intersection::new(5.);
-    assert_eq!(intersection.t, 5.)
+    assert_eq!(intersection.time, 5.)
   }
 }

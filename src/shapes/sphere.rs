@@ -34,8 +34,8 @@ mod tests {
     let intersections = Sphere::new().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
-    assert_eq!(intersections[0].t, 4.);
-    assert_eq!(intersections[1].t, 6.);
+    assert_eq!(intersections[0].time, 4.);
+    assert_eq!(intersections[1].time, 6.);
   }
 
   #[test]
@@ -44,8 +44,8 @@ mod tests {
     let intersections = Sphere::new().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
-    assert_eq!(intersections[0].t, 5.);
-    assert_eq!(intersections[1].t, 5.);
+    assert_eq!(intersections[0].time, 5.);
+    assert_eq!(intersections[1].time, 5.);
   }
 
   #[test]
@@ -62,8 +62,8 @@ mod tests {
     let intersections = Sphere::new().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
-    assert_eq!(intersections[0].t, -1.);
-    assert_eq!(intersections[1].t, 1.);
+    assert_eq!(intersections[0].time, -1.);
+    assert_eq!(intersections[1].time, 1.);
   }
 
   #[test]
@@ -72,7 +72,7 @@ mod tests {
     let intersections = Sphere::new().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
-    assert_eq!(intersections[0].t, -6.);
-    assert_eq!(intersections[1].t, -4.);
+    assert_eq!(intersections[0].time, -6.);
+    assert_eq!(intersections[1].time, -4.);
   }
 }
