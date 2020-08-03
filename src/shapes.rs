@@ -1,7 +1,11 @@
+use crate::geometry::Ray;
+
 mod sphere;
 pub use sphere::*;
 
-pub trait Shape {}
+pub trait Shape {
+  fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
+}
 
 #[derive(Clone, Copy, Debug)]
 pub struct Intersection {
