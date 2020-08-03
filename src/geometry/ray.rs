@@ -1,15 +1,5 @@
 use crate::geometry::{Point, Vector};
 
-#[derive(Clone, Debug)]
-pub struct Intersection {
-  pub t: f64,
-}
-impl Intersection {
-  pub fn new(t: f64) -> Self {
-    return Self { t };
-  }
-}
-
 #[derive(Clone, Copy, Debug)]
 pub struct Ray {
   origin: Point,
@@ -35,12 +25,6 @@ impl Ray {
 #[cfg(test)]
 mod tests {
   use super::*;
-
-  #[test]
-  fn intersection_init() {
-    let intersection = Intersection::new(5.);
-    assert_eq!(intersection.t, 5.)
-  }
 
   #[test]
   fn get_origin() {
