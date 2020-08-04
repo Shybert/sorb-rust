@@ -1,10 +1,12 @@
-use crate::geometry::Ray;
+use crate::geometry::{Matrix, Ray};
 use std::cmp::Ordering::Equal;
 
 mod sphere;
 pub use sphere::*;
 
 pub trait Shape {
+  fn get_transformation(&self) -> &Matrix;
+  fn set_transformation(&mut self, transformation: Matrix);
   fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
 }
 

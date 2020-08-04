@@ -1,14 +1,25 @@
 use super::{Intersection, Shape};
-use crate::geometry::{dot, Ray};
+use crate::geometry::{dot, Matrix, Ray};
 use crate::utils::quadratic;
 
-pub struct Sphere {}
+pub struct Sphere {
+  transformation: Matrix,
+}
 impl Sphere {
   pub fn new() -> Self {
-    return Self {};
+    return Self {
+      transformation: Matrix::identity(),
+    };
   }
 }
 impl Shape for Sphere {
+  fn get_transformation(&self) -> &Matrix {
+    return &self.transformation;
+  }
+  fn set_transformation(&mut self, transformation: Matrix) {
+    self.transformation = transformation;
+  }
+
   fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
     let sphere_to_ray = ray.get_origin().into();
     let a = dot(ray.get_direction(), ray.get_direction());
@@ -27,6 +38,20 @@ impl Shape for Sphere {
 mod tests {
   use super::*;
   use crate::geometry::{Point, Vector};
+
+  #[test]
+  fn default_transformation_is_identity() {
+    let sphere = Sphere::new();
+    assert_eq!(sphere.get_transformation(), &Matrix::identity());
+  }
+
+  #[test]
+  fn set_transformation() {
+    let mut sphere = Sphere::new();
+    let translation = Matrix::identity().translate(5., 4., 3.);
+    sphere.set_transformation(translation);
+    assert_eq!(sphere.get_transformation(), &translation);
+  }
 
   #[test]
   fn intersection_ray_behind() {
