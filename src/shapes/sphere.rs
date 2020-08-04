@@ -29,7 +29,7 @@ mod tests {
   use crate::geometry::{Point, Vector};
 
   #[test]
-  fn ray_starts_behind_sphere() {
+  fn intersection_ray_behind() {
     let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
     let intersections = Sphere::new().intersect(&ray);
 
@@ -39,7 +39,7 @@ mod tests {
   }
 
   #[test]
-  fn ray_intersects_at_tangent() {
+  fn intersection_ray_at_tangent() {
     let ray = Ray::new(Point::new(0., 1., -5.), Vector::new(0., 0., 1.));
     let intersections = Sphere::new().intersect(&ray);
 
@@ -49,7 +49,7 @@ mod tests {
   }
 
   #[test]
-  fn ray_misses_sphere() {
+  fn intersection_ray_misses() {
     let ray = Ray::new(Point::new(0., 2., -5.), Vector::new(0., 0., 1.));
     let intersections = Sphere::new().intersect(&ray);
 
@@ -57,7 +57,7 @@ mod tests {
   }
 
   #[test]
-  fn ray_starts_inside_sphere() {
+  fn intersection_ray_inside() {
     let ray = Ray::new(Point::new(0., 0., 0.), Vector::new(0., 0., 1.));
     let intersections = Sphere::new().intersect(&ray);
 
@@ -67,7 +67,7 @@ mod tests {
   }
 
   #[test]
-  fn ray_starts_in_front_of_sphere() {
+  fn intersection_ray_in_front() {
     let ray = Ray::new(Point::new(0., 0., 5.), Vector::new(0., 0., 1.));
     let intersections = Sphere::new().intersect(&ray);
 
