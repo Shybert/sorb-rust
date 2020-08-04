@@ -1,4 +1,4 @@
-use crate::geometry::{Point, Vector};
+use crate::geometry::{Point, Ray, Vector};
 use crate::utils::approx_equals;
 use std::ops::{Index, IndexMut, Mul};
 
@@ -207,6 +207,13 @@ impl Mul<Point> for Matrix {
     );
   }
 }
+impl Mul<Ray> for Matrix {
+  type Output = Ray;
+
+  fn mul(self, ray: Ray) -> Ray {
+    return Ray::new(self * *ray.get_origin(), self * *ray.get_direction());
+  }
+}
 
 #[cfg(test)]
 mod tests {
@@ -355,6 +362,21 @@ mod tests {
 
     let expected = Point::new(18., 24., 34.);
     assert_eq!(matrix * point, expected);
+  }
+
+  #[test]
+  fn matrix_ray_multiplication() {
+    let ray = Ray::new(Point::new(1., 2., 3.), Vector::new(0., 1., 0.));
+
+    let translation = Matrix::identity().translate(3., 4., 5.);
+    let translated_ray = translation * ray;
+    assert_eq!(translated_ray.get_origin(), &Point::new(4., 6., 8.,));
+    assert_eq!(translated_ray.get_direction(), &Vector::new(0., 1., 0.,));
+
+    let scaling = Matrix::identity().scale(2., 3., 4.);
+    let scaled_ray = scaling * ray;
+    assert_eq!(scaled_ray.get_origin(), &Point::new(2., 6., 12.,));
+    assert_eq!(scaled_ray.get_direction(), &Vector::new(0., 3., 0.,));
   }
 
   #[test]
