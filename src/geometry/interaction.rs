@@ -1,14 +1,15 @@
 use crate::canvas::Color;
 
-struct Interaction {
+#[derive(Clone, Copy, Debug)]
+pub struct Interaction {
   color: Color,
 }
 impl Interaction {
-  fn new(color: Color) -> Self {
+  pub fn new(color: Color) -> Self {
     return Self { color };
   }
 
-  fn get_color(&self) -> &Color {
+  pub fn get_color(&self) -> &Color {
     return &self.color;
   }
 }
