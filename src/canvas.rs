@@ -18,6 +18,11 @@ impl Color {
   }
 }
 
+impl Default for Color {
+  fn default() -> Self {
+    return Self::new(0., 0., 0.);
+  }
+}
 impl PartialEq for Color {
   fn eq(&self, other: &Self) -> bool {
     return approx_equals(self.r, other.r)
@@ -84,11 +89,17 @@ mod tests {
   use crate::assert_ae;
 
   #[test]
-  fn color_init() {
+  fn color_init_new() {
     let color = Color::new(0.5, 0.7, 0.12443);
     assert_ae!(color.r, 0.5);
     assert_ae!(color.g, 0.7);
     assert_ae!(color.b, 0.12443);
+  }
+
+  #[test]
+  fn color_init_default() {
+    let black = Color::new(0., 0., 0.);
+    assert_eq!(Color::default(), black);
   }
 
   #[test]
