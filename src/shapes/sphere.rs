@@ -2,14 +2,13 @@ use super::{Intersection, Shape};
 use crate::geometry::{dot, Matrix, Ray};
 use crate::utils::quadratic;
 
+#[derive(Default)]
 pub struct Sphere {
   transformation: Matrix,
 }
 impl Sphere {
-  pub fn new() -> Self {
-    return Self {
-      transformation: Matrix::identity(),
-    };
+  pub fn new(transformation: Matrix) -> Self {
+    return Self { transformation };
   }
 }
 impl Shape for Sphere {
@@ -43,14 +42,21 @@ mod tests {
   use crate::geometry::{Point, Vector};
 
   #[test]
-  fn default_transformation_is_identity() {
-    let sphere = Sphere::new();
+  fn init_new() {
+    let scaling = Matrix::identity().scale(2., 2., 2.);
+    let sphere = Sphere::new(scaling);
+    assert_eq!(sphere.get_transformation(), &scaling);
+  }
+
+  #[test]
+  fn init_default() {
+    let sphere = Sphere::default();
     assert_eq!(sphere.get_transformation(), &Matrix::identity());
   }
 
   #[test]
-  fn set_transformation() {
-    let mut sphere = Sphere::new();
+  fn get_set_transformation() {
+    let mut sphere = Sphere::default();
     let translation = Matrix::identity().translate(5., 4., 3.);
     sphere.set_transformation(translation);
     assert_eq!(sphere.get_transformation(), &translation);
@@ -59,7 +65,7 @@ mod tests {
   #[test]
   fn intersection_ray_behind() {
     let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
-    let intersections = Sphere::new().intersect(&ray);
+    let intersections = Sphere::default().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
     assert_eq!(intersections[0].time, 4.);
@@ -69,7 +75,7 @@ mod tests {
   #[test]
   fn intersection_ray_at_tangent() {
     let ray = Ray::new(Point::new(0., 1., -5.), Vector::new(0., 0., 1.));
-    let intersections = Sphere::new().intersect(&ray);
+    let intersections = Sphere::default().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
     assert_eq!(intersections[0].time, 5.);
@@ -79,7 +85,7 @@ mod tests {
   #[test]
   fn intersection_ray_misses() {
     let ray = Ray::new(Point::new(0., 2., -5.), Vector::new(0., 0., 1.));
-    let intersections = Sphere::new().intersect(&ray);
+    let intersections = Sphere::default().intersect(&ray);
 
     assert_eq!(intersections.len(), 0);
   }
@@ -87,7 +93,7 @@ mod tests {
   #[test]
   fn intersection_ray_inside() {
     let ray = Ray::new(Point::new(0., 0., 0.), Vector::new(0., 0., 1.));
-    let intersections = Sphere::new().intersect(&ray);
+    let intersections = Sphere::default().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
     assert_eq!(intersections[0].time, -1.);
@@ -97,7 +103,7 @@ mod tests {
   #[test]
   fn intersection_ray_in_front() {
     let ray = Ray::new(Point::new(0., 0., 5.), Vector::new(0., 0., 1.));
-    let intersections = Sphere::new().intersect(&ray);
+    let intersections = Sphere::default().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
     assert_eq!(intersections[0].time, -6.);
@@ -107,7 +113,7 @@ mod tests {
   #[test]
   fn intersection_scaled_sphere() {
     let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
-    let mut sphere = Sphere::new();
+    let mut sphere = Sphere::default();
     sphere.set_transformation(Matrix::identity().scale(2., 2., 2.));
 
     let intersections = sphere.intersect(&ray);
@@ -119,7 +125,7 @@ mod tests {
   #[test]
   fn intersection_translated_sphere() {
     let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
-    let mut sphere = Sphere::new();
+    let mut sphere = Sphere::default();
     sphere.set_transformation(Matrix::identity().translate(5., 0., 0.));
 
     let intersections = sphere.intersect(&ray);
