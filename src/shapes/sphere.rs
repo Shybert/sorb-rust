@@ -21,9 +21,12 @@ impl Shape for Sphere {
   }
 
   fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
-    let sphere_to_ray = ray.get_origin().into();
-    let a = dot(ray.get_direction(), ray.get_direction());
-    let b = 2. * dot(ray.get_direction(), &sphere_to_ray);
+    let transformed_ray = self.get_transformation().inverse() * *ray;
+    let sphere_to_ray = transformed_ray.get_origin().into();
+    let direction = transformed_ray.get_direction();
+
+    let a = dot(direction, direction);
+    let b = 2. * dot(direction, &sphere_to_ray);
     let c = dot(&sphere_to_ray, &sphere_to_ray) - 1.;
 
     let intersections = quadratic(a, b, c);
@@ -99,5 +102,27 @@ mod tests {
     assert_eq!(intersections.len(), 2);
     assert_eq!(intersections[0].time, -6.);
     assert_eq!(intersections[1].time, -4.);
+  }
+
+  #[test]
+  fn intersection_scaled_sphere() {
+    let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+    let mut sphere = Sphere::new();
+    sphere.set_transformation(Matrix::identity().scale(2., 2., 2.));
+
+    let intersections = sphere.intersect(&ray);
+    assert_eq!(intersections.len(), 2);
+    assert_eq!(intersections[0].time, 3.);
+    assert_eq!(intersections[1].time, 7.);
+  }
+
+  #[test]
+  fn intersection_translated_sphere() {
+    let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+    let mut sphere = Sphere::new();
+    sphere.set_transformation(Matrix::identity().translate(5., 0., 0.));
+
+    let intersections = sphere.intersect(&ray);
+    assert_eq!(intersections.len(), 0);
   }
 }
