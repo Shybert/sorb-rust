@@ -1,3 +1,6 @@
+pub mod interaction;
+pub use interaction::*;
+
 pub mod matrix;
 pub use matrix::*;
 
