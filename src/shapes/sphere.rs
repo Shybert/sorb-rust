@@ -1,14 +1,26 @@
 use super::{Intersection, Shape};
+use crate::canvas::Color;
 use crate::geometry::{dot, Matrix, Ray};
 use crate::utils::quadratic;
 
 #[derive(Default)]
 pub struct Sphere {
+  color: Color,
   transformation: Matrix,
 }
 impl Sphere {
-  pub fn new(transformation: Matrix) -> Self {
-    return Self { transformation };
+  pub fn new(color: Color, transformation: Matrix) -> Self {
+    return Self {
+      color,
+      transformation,
+    };
+  }
+
+  pub fn get_color(&self) -> &Color {
+    return &self.color;
+  }
+  pub fn set_color(&mut self, color: Color) {
+    self.color = color;
   }
 }
 impl Shape for Sphere {
@@ -43,15 +55,26 @@ mod tests {
 
   #[test]
   fn init_new() {
+    let green = Color::new(0., 1., 0.);
     let scaling = Matrix::identity().scale(2., 2., 2.);
-    let sphere = Sphere::new(scaling);
+    let sphere = Sphere::new(green, scaling);
+    assert_eq!(sphere.get_color(), &green);
     assert_eq!(sphere.get_transformation(), &scaling);
   }
 
   #[test]
   fn init_default() {
     let sphere = Sphere::default();
+    assert_eq!(sphere.get_color(), &Color::default());
     assert_eq!(sphere.get_transformation(), &Matrix::identity());
+  }
+
+  #[test]
+  fn get_set_color() {
+    let mut sphere = Sphere::default();
+    let red = Color::new(1., 0., 0.);
+    sphere.set_color(red);
+    assert_eq!(sphere.get_color(), &red);
   }
 
   #[test]
