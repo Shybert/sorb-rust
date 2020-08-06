@@ -3,6 +3,7 @@ fn main() {
 }
 
 mod canvas;
+mod color;
 mod geometry;
 mod render;
 mod shapes;

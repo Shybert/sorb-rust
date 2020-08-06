@@ -30,7 +30,7 @@ pub fn get_hit(intersections: &[Intersection]) -> Option<&Intersection> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::canvas::Color;
+  use crate::color::Color;
 
   #[test]
   fn intersection_init() {

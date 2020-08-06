@@ -1,4 +1,4 @@
-use crate::canvas::Color;
+use crate::color::Color;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Interaction {

@@ -1,35 +1,5 @@
-use crate::utils::{approx_equals, clamp_number};
-
-#[derive(Clone, Copy, Debug)]
-pub struct Color {
-  r: f64,
-  g: f64,
-  b: f64,
-}
-impl Color {
-  pub fn new(r: f64, g: f64, b: f64) -> Self {
-    return Self { r, g, b };
-  }
-
-  pub fn set(&mut self, new: &Self) {
-    self.r = new.r;
-    self.g = new.g;
-    self.b = new.b;
-  }
-}
-
-impl Default for Color {
-  fn default() -> Self {
-    return Self::new(0., 0., 0.);
-  }
-}
-impl PartialEq for Color {
-  fn eq(&self, other: &Self) -> bool {
-    return approx_equals(self.r, other.r)
-      && approx_equals(self.g, other.g)
-      && approx_equals(self.b, other.b);
-  }
-}
+use crate::color::Color;
+use crate::utils::clamp_number;
 
 #[derive(Clone)]
 pub struct Canvas {
@@ -86,39 +56,9 @@ impl Canvas {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::assert_ae;
 
   #[test]
-  fn color_init_new() {
-    let color = Color::new(0.5, 0.7, 0.12443);
-    assert_ae!(color.r, 0.5);
-    assert_ae!(color.g, 0.7);
-    assert_ae!(color.b, 0.12443);
-  }
-
-  #[test]
-  fn color_init_default() {
-    let black = Color::new(0., 0., 0.);
-    assert_eq!(Color::default(), black);
-  }
-
-  #[test]
-  fn color_equality() {
-    assert_eq!(Color::new(4., -4., 3.), Color::new(4., -4., 3.));
-
-    assert_eq!(Color::new(1.000000001, 0., 0.), Color::new(1., 0., 0.));
-  }
-
-  #[test]
-  fn color_set() {
-    let mut old = Color::new(0., 0., 0.);
-    let new = Color::new(-0.3, 0.45, 1.);
-    old.set(&new);
-    assert_eq!(old, new);
-  }
-
-  #[test]
-  fn canvas_init() {
+  fn init() {
     let black = Color::new(0., 0., 0.);
     assert!(
       Canvas::new(10, 20)
@@ -130,17 +70,17 @@ mod tests {
   }
 
   #[test]
-  fn canvas_get_width() {
+  fn get_width() {
     assert_eq!(Canvas::new(10, 20).get_width(), 10);
   }
 
   #[test]
-  fn canvas_get_height() {
+  fn get_height() {
     assert_eq!(Canvas::new(10, 20).get_height(), 20);
   }
 
   #[test]
-  fn canvas_get_pixel() {
+  fn get_pixel() {
     assert_eq!(Canvas::new(10, 20).get_pixel(0, 0), &Color::new(0., 0., 0.));
     assert_eq!(
       Canvas::new(10, 20).get_pixel(7, 15),
@@ -149,12 +89,12 @@ mod tests {
   }
 
   #[test]
-  fn canvas_get_pixels() {
+  fn get_pixels() {
     assert_eq!(Canvas::new(10, 20).get_pixels().len(), 200);
   }
 
   #[test]
-  fn canvas_set_pixel() {
+  fn set_pixel() {
     let mut canvas = Canvas::new(10, 20);
     let color = Color::new(-0.3, 0.45, 1.);
     canvas.set_pixel(3, 14, &color);

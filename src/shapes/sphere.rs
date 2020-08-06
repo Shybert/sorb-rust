@@ -1,5 +1,5 @@
 use super::{Intersection, Shape};
-use crate::canvas::Color;
+use crate::color::Color;
 use crate::geometry::{dot, Interaction, Matrix, Ray};
 use crate::utils::quadratic;
 
