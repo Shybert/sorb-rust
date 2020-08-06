@@ -1,6 +1,6 @@
 use crate::canvas::Color;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Interaction {
   color: Color,
 }

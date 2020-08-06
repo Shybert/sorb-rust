@@ -1,6 +1,6 @@
 use super::{Intersection, Shape};
 use crate::canvas::Color;
-use crate::geometry::{dot, Matrix, Ray};
+use crate::geometry::{dot, Interaction, Matrix, Ray};
 use crate::utils::quadratic;
 
 #[derive(Default)]
@@ -42,7 +42,10 @@ impl Shape for Sphere {
 
     let intersections = quadratic(a, b, c);
     return match intersections {
-      Some((x1, x2)) => vec![Intersection::new(x1), Intersection::new(x2)],
+      Some((x1, x2)) => vec![
+        Intersection::new(x1, Interaction::new(*self.get_color())),
+        Intersection::new(x2, Interaction::new(*self.get_color())),
+      ],
       None => vec![],
     };
   }
@@ -83,6 +86,17 @@ mod tests {
     let translation = Matrix::identity().translate(5., 4., 3.);
     sphere.set_transformation(translation);
     assert_eq!(sphere.get_transformation(), &translation);
+  }
+
+  #[test]
+  fn intersect_interaction_has_sphere_color() {
+    let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+    let color = Color::new(1., 1., 0.);
+    let intersections = Sphere::new(color, Matrix::identity()).intersect(&ray);
+
+    assert_eq!(intersections.len(), 2);
+    assert_eq!(intersections[0].interaction.get_color(), &color);
+    assert_eq!(intersections[1].interaction.get_color(), &color);
   }
 
   #[test]

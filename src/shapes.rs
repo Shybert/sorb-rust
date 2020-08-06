@@ -1,4 +1,4 @@
-use crate::geometry::{Matrix, Ray};
+use crate::geometry::{Interaction, Matrix, Ray};
 use std::cmp::Ordering::Equal;
 
 mod sphere;
@@ -13,10 +13,11 @@ pub trait Shape {
 #[derive(Clone, Copy, Debug)]
 pub struct Intersection {
   pub time: f64,
+  pub interaction: Interaction,
 }
 impl Intersection {
-  pub fn new(time: f64) -> Self {
-    return Self { time };
+  pub fn new(time: f64, interaction: Interaction) -> Self {
+    return Self { time, interaction };
   }
 }
 pub fn get_hit(intersections: &[Intersection]) -> Option<&Intersection> {
@@ -29,30 +30,37 @@ pub fn get_hit(intersections: &[Intersection]) -> Option<&Intersection> {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::canvas::Color;
 
   #[test]
   fn intersection_init() {
-    let intersection = Intersection::new(5.);
-    assert_eq!(intersection.time, 5.)
+    let interaction = Interaction::new(Color::new(1., 0., 1.));
+    let intersection = Intersection::new(5., interaction);
+    assert_eq!(intersection.time, 5.);
+    assert_eq!(intersection.interaction, interaction);
+  }
+
+  fn intersection_time(time: f64) -> Intersection {
+    return Intersection::new(time, Interaction::new(Color::default()));
   }
 
   #[test]
   fn hit_when_all_positive() {
-    let intersections = vec![Intersection::new(1.), Intersection::new(2.)];
+    let intersections = vec![intersection_time(1.), intersection_time(2.)];
     let hit = get_hit(&intersections).expect("Expected hit");
     assert_eq!(hit.time, 1.);
   }
 
   #[test]
   fn hit_when_some_negative() {
-    let intersections = vec![Intersection::new(-1.), Intersection::new(1.)];
+    let intersections = vec![intersection_time(-1.), intersection_time(1.)];
     let hit = get_hit(&intersections).expect("Expected hit");
     assert_eq!(hit.time, 1.);
   }
 
   #[test]
   fn hit_when_all_negative() {
-    let intersections = vec![Intersection::new(-2.), Intersection::new(-1.)];
+    let intersections = vec![intersection_time(-2.), intersection_time(-1.)];
     let hit = get_hit(&intersections);
     assert!(hit.is_none());
   }
@@ -60,10 +68,10 @@ mod tests {
   #[test]
   fn hit_intersection_order_does_not_matter() {
     let intersections = vec![
-      Intersection::new(5.),
-      Intersection::new(7.),
-      Intersection::new(-3.),
-      Intersection::new(2.),
+      intersection_time(5.),
+      intersection_time(7.),
+      intersection_time(-3.),
+      intersection_time(2.),
     ];
     let hit = get_hit(&intersections).expect("Expected hit");
     assert_eq!(hit.time, 2.);
