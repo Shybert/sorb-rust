@@ -1,3 +1,6 @@
+pub mod camera;
+pub use camera::*;
+
 pub mod canvas;
 pub use canvas::*;
 
