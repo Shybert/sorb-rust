@@ -19,8 +19,8 @@ impl Sphere {
   pub fn get_color(&self) -> &Color {
     return &self.color;
   }
-  pub fn set_color(&mut self, color: Color) {
-    self.color = color;
+  pub fn set_color(&mut self, color: &Color) {
+    self.color.set(color);
   }
 }
 impl Shape for Sphere {
@@ -84,7 +84,7 @@ mod tests {
   fn get_set_color() {
     let mut sphere = Sphere::default();
     let red = Color::new(1., 0., 0.);
-    sphere.set_color(red);
+    sphere.set_color(&red);
     assert_eq!(sphere.get_color(), &red);
   }
 
