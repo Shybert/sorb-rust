@@ -32,11 +32,6 @@ impl Default for Vector {
     return Self::zero();
   }
 }
-impl From<&Point> for Vector {
-  fn from(point: &Point) -> Self {
-    return Self::new(point.x, point.y, point.z);
-  }
-}
 impl PartialEq for Vector {
   fn eq(&self, other: &Self) -> bool {
     return approx_equals(self.x, other.x)
@@ -119,24 +114,6 @@ mod tests {
   #[test]
   fn init_default() {
     assert_eq!(Vector::default(), Vector::zero());
-  }
-
-  #[test]
-  fn vector_from_point() {
-    let point = Point::new(5., 4., 3.);
-    let vector = Vector::from(&point);
-    assert_eq!(point.x, vector.x);
-    assert_eq!(point.y, vector.y);
-    assert_eq!(point.z, vector.z);
-  }
-
-  #[test]
-  fn point_into_vector() {
-    let point = Point::new(5., 4., 3.);
-    let vector: Vector = (&point).into();
-    assert_eq!(point.x, vector.x);
-    assert_eq!(point.y, vector.y);
-    assert_eq!(point.z, vector.z);
   }
 
   #[test]
