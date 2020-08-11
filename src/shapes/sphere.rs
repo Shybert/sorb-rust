@@ -1,6 +1,6 @@
 use super::{Intersection, Shape};
 use crate::color::Color;
-use crate::geometry::{dot, Interaction, Matrix, Ray};
+use crate::geometry::{dot, Interaction, Matrix, Point, Ray, Vector};
 use crate::utils::quadratic;
 
 #[derive(Default)]
@@ -49,12 +49,20 @@ impl Shape for Sphere {
       None => vec![],
     };
   }
+
+  fn normal_at(&self, point: &Point) -> Vector {
+    let object_point = self.get_transformation().inverse() * *point;
+    let object_normal = object_point - Point::new(0., 0., 0.);
+    let world_normal = self.get_transformation().inverse().transpose() * object_normal;
+    return world_normal.normalize();
+  }
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
   use crate::geometry::{Point, Vector};
+  use std::f64::consts::PI;
 
   #[test]
   fn init_new() {
@@ -167,5 +175,71 @@ mod tests {
 
     let intersections = sphere.intersect(&ray);
     assert_eq!(intersections.len(), 0);
+  }
+
+  #[test]
+  fn normal_at_x_axis() {
+    let sphere = Sphere::default();
+    let normal = sphere.normal_at(&Point::new(1., 0., 0.));
+    assert_eq!(normal, Vector::new(1., 0., 0.));
+  }
+
+  #[test]
+  fn normal_at_y_axis() {
+    let sphere = Sphere::default();
+    let normal = sphere.normal_at(&Point::new(0., 1., 0.));
+    assert_eq!(normal, Vector::new(0., 1., 0.));
+  }
+
+  #[test]
+  fn normal_at_z_axis() {
+    let sphere = Sphere::default();
+    let normal = sphere.normal_at(&Point::new(0., 0., 1.));
+    assert_eq!(normal, Vector::new(0., 0., 1.));
+  }
+
+  #[test]
+  fn normal_at_non_axial_point() {
+    let sphere = Sphere::default();
+    let normal = sphere.normal_at(&Point::new(
+      3_f64.sqrt() / 3.,
+      3_f64.sqrt() / 3.,
+      3_f64.sqrt() / 3.,
+    ));
+    assert_eq!(
+      normal,
+      Vector::new(3_f64.sqrt() / 3., 3_f64.sqrt() / 3., 3_f64.sqrt() / 3.)
+    );
+  }
+
+  #[test]
+  fn normal_is_normalized() {
+    let sphere = Sphere::default();
+    let normal = sphere.normal_at(&Point::new(
+      3_f64.sqrt() / 3.,
+      3_f64.sqrt() / 3.,
+      3_f64.sqrt() / 3.,
+    ));
+    assert_eq!(normal.normalize(), normal);
+  }
+
+  #[test]
+  fn normal_of_translated_sphere() {
+    let sphere = Sphere::new(Color::default(), Matrix::identity().translate(0., 1., 0.));
+    let normal = sphere.normal_at(&Point::new(0., (2_f64.sqrt() / 2.) + 1., 2_f64.sqrt() / 2.));
+    assert_eq!(
+      normal,
+      Vector::new(0., 2_f64.sqrt() / 2., 2_f64.sqrt() / 2.)
+    );
+  }
+
+  #[test]
+  fn normal_of_transformed_sphere() {
+    let sphere = Sphere::new(
+      Color::default(),
+      Matrix::identity().rotate_z(PI / 5.).scale(1., 0.5, 1.),
+    );
+    let normal = sphere.normal_at(&Point::new(0., 2_f64.sqrt() / 2., -(2_f64.sqrt() / 2.)));
+    assert_eq!(normal, Vector::new(0., 0.97014, -0.24254))
   }
 }

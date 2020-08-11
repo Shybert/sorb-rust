@@ -1,4 +1,4 @@
-use crate::geometry::{Interaction, Matrix, Ray};
+use crate::geometry::{Interaction, Matrix, Point, Ray, Vector};
 use std::cmp::Ordering::Equal;
 
 mod sphere;
@@ -8,6 +8,7 @@ pub trait Shape {
   fn get_transformation(&self) -> &Matrix;
   fn set_transformation(&mut self, transformation: Matrix);
   fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
+  fn normal_at(&self, point: &Point) -> Vector;
 }
 
 #[derive(Clone, Copy, Debug)]
