@@ -1,4 +1,3 @@
-use crate::geometry::Point;
 use crate::utils::approx_equals;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
