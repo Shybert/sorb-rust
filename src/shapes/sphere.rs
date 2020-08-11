@@ -32,9 +32,9 @@ impl Shape for Sphere {
   }
 
   fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
-    let transformed_ray = self.get_transformation().inverse() * *ray;
-    let sphere_to_ray = transformed_ray.get_origin().into();
-    let direction = transformed_ray.get_direction();
+    let object_ray = self.get_transformation().inverse() * *ray;
+    let sphere_to_ray = object_ray.get_origin().into();
+    let direction = object_ray.get_direction();
 
     let a = dot(direction, direction);
     let b = 2. * dot(direction, &sphere_to_ray);
