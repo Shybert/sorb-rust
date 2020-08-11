@@ -30,13 +30,6 @@ impl PartialEq for Point {
       && approx_equals(self.z, other.z);
   }
 }
-impl Add for Point {
-  type Output = Self;
-
-  fn add(self, other: Self) -> Self {
-    return Self::new(self.x + other.x, self.y + other.y, self.z + other.z);
-  }
-}
 impl Add<Vector> for Point {
   type Output = Self;
 
@@ -45,9 +38,16 @@ impl Add<Vector> for Point {
   }
 }
 impl Sub for Point {
+  type Output = Vector;
+
+  fn sub(self, other: Self) -> Vector {
+    return Vector::new(self.x - other.x, self.y - other.y, self.z - other.z);
+  }
+}
+impl Sub<Vector> for Point {
   type Output = Self;
 
-  fn sub(self, other: Self) -> Self {
+  fn sub(self, other: Vector) -> Self {
     return Self::new(self.x - other.x, self.y - other.y, self.z - other.z);
   }
 }
@@ -105,16 +105,7 @@ mod tests {
   #[test]
   fn equality() {
     assert_eq!(Point::new(4., -4., 3.), Point::new(4., -4., 3.));
-
     assert_eq!(Point::new(1.000000001, 0., 0.), Point::new(1., 0., 0.));
-  }
-
-  #[test]
-  fn addition_point() {
-    assert_eq!(
-      Point::new(3., -2., 5.) + Point::new(-2., 3., 1.),
-      Point::new(1., 1., 6.)
-    )
   }
 
   #[test]
@@ -126,11 +117,19 @@ mod tests {
   }
 
   #[test]
-  fn subtraction() {
+  fn subtracting_points_gives_vector_between() {
     assert_eq!(
       Point::new(3., 2., 1.) - Point::new(5., 6., 7.),
-      Point::new(-2., -4., -6.)
+      Vector::new(-2., -4., -6.)
     )
+  }
+
+  #[test]
+  fn subtracting_vector_gives_new_point() {
+    assert_eq!(
+      Point::new(8., 5., 3.) - Vector::new(-3., 2., 5.),
+      Point::new(11., 3., -2.)
+    );
   }
 
   #[test]
