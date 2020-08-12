@@ -12,7 +12,7 @@ impl Canvas {
     return Self {
       width,
       height,
-      pixels: vec![Color::new(0., 0., 0.); width * height],
+      pixels: vec![Color::black(); width * height],
     };
   }
 
@@ -59,7 +59,7 @@ mod tests {
 
   #[test]
   fn init() {
-    let black = Color::new(0., 0., 0.);
+    let black = Color::black();
     assert!(
       Canvas::new(10, 20)
         .get_pixels()
@@ -81,11 +81,8 @@ mod tests {
 
   #[test]
   fn get_pixel() {
-    assert_eq!(Canvas::new(10, 20).get_pixel(0, 0), &Color::new(0., 0., 0.));
-    assert_eq!(
-      Canvas::new(10, 20).get_pixel(7, 15),
-      &Color::new(0., 0., 0.)
-    );
+    assert_eq!(Canvas::new(10, 20).get_pixel(0, 0), &Color::black());
+    assert_eq!(Canvas::new(10, 20).get_pixel(7, 15), &Color::black());
   }
 
   #[test]

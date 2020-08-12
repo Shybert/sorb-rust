@@ -12,6 +12,38 @@ impl Color {
     return Self { r, g, b };
   }
 
+  pub fn black() -> Self {
+    return Self::new(0., 0., 0.);
+  }
+
+  pub fn white() -> Self {
+    return Self::new(1., 1., 1.);
+  }
+
+  pub fn red() -> Self {
+    return Self::new(1., 0., 0.);
+  }
+
+  pub fn green() -> Self {
+    return Self::new(0., 1., 0.);
+  }
+
+  pub fn blue() -> Self {
+    return Self::new(0., 0., 1.);
+  }
+
+  pub fn yellow() -> Self {
+    return Self::new(1., 1., 0.);
+  }
+
+  pub fn cyan() -> Self {
+    return Self::new(0., 1., 1.);
+  }
+
+  pub fn magenta() -> Self {
+    return Self::new(1., 0., 1.);
+  }
+
   pub fn set(&mut self, new: &Self) {
     self.r = new.r;
     self.g = new.g;
@@ -21,7 +53,7 @@ impl Color {
 
 impl Default for Color {
   fn default() -> Self {
-    return Self::new(0., 0., 0.);
+    return Self::black();
   }
 }
 impl PartialEq for Color {
@@ -81,9 +113,48 @@ mod tests {
   }
 
   #[test]
+  fn init_black() {
+    assert_eq!(Color::black(), Color::new(0., 0., 0.));
+  }
+
+  #[test]
+  fn init_white() {
+    assert_eq!(Color::white(), Color::new(1., 1., 1.));
+  }
+
+  #[test]
+  fn init_red() {
+    assert_eq!(Color::red(), Color::new(1., 0., 0.));
+  }
+
+  #[test]
+  fn init_green() {
+    assert_eq!(Color::green(), Color::new(0., 1., 0.));
+  }
+
+  #[test]
+  fn init_blue() {
+    assert_eq!(Color::blue(), Color::new(0., 0., 1.));
+  }
+
+  #[test]
+  fn init_yellow() {
+    assert_eq!(Color::yellow(), Color::new(1., 1., 0.));
+  }
+
+  #[test]
+  fn init_cyan() {
+    assert_eq!(Color::cyan(), Color::new(0., 1., 1.));
+  }
+
+  #[test]
+  fn init_magenta() {
+    assert_eq!(Color::magenta(), Color::new(1., 0., 1.));
+  }
+
+  #[test]
   fn init_default() {
-    let black = Color::new(0., 0., 0.);
-    assert_eq!(Color::default(), black);
+    assert_eq!(Color::default(), Color::black());
   }
 
   #[test]
@@ -127,7 +198,7 @@ mod tests {
 
   #[test]
   fn set() {
-    let mut old = Color::new(0., 0., 0.);
+    let mut old = Color::default();
     let new = Color::new(-0.3, 0.45, 1.);
     old.set(&new);
     assert_eq!(old, new);
