@@ -24,6 +24,10 @@ impl Vector {
     let magnitude = self.magnitude();
     return Self::new(self.x / magnitude, self.y / magnitude, self.z / magnitude);
   }
+
+  pub fn reflect(&self, normal: &Self) -> Self {
+    return *self - 2. * dot(&self, normal) * *normal;
+  }
 }
 
 impl Default for Vector {
@@ -177,6 +181,30 @@ mod tests {
   #[test]
   fn normalize_length() {
     assert_eq!(Vector::new(1., 2., 3.).normalize().magnitude(), 1.);
+  }
+
+  #[test]
+  fn reflect_at_45_degree_angle() {
+    let vector = Vector::new(1., -1., 0.);
+    let normal = Vector::new(0., 1., 0.);
+    assert_eq!(vector.reflect(&normal), Vector::new(1., 1., 0.));
+  }
+
+  #[test]
+  fn reflect_off_slanted_surface() {
+    let vector = Vector::new(0., -1., 0.);
+    let normal = Vector::new(2_f64.sqrt() / 2., 2_f64.sqrt() / 2., 0.);
+    assert_eq!(vector.reflect(&normal), Vector::new(1., 0., 0.));
+  }
+
+  #[test]
+  fn reflect_in_3d() {
+    let vector = Vector::new(0., -1., 0.);
+    let normal = Vector::new(3_f64.sqrt() / 3., 3_f64.sqrt() / 3., 3_f64.sqrt() / 3.);
+    assert_eq!(
+      vector.reflect(&normal),
+      Vector::new(2. / 3., -1. / 3., 2. / 3.)
+    );
   }
 
   #[test]
