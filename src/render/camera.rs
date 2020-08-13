@@ -27,7 +27,7 @@ impl Camera {
         let hit = get_hit(&intersections);
 
         if let Some(intersection) = hit {
-          canvas.set_pixel(i, j, intersection.interaction.get_color());
+          canvas.set_pixel(i, j, intersection.material.get_color());
         }
       }
     }

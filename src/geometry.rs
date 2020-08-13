@@ -1,5 +1,5 @@
-pub mod interaction;
-pub use interaction::*;
+pub mod material;
+pub use material::*;
 
 pub mod matrix;
 pub use matrix::*;

@@ -1,29 +1,28 @@
 use super::{Intersection, Shape};
-use crate::color::Color;
-use crate::geometry::{dot, Interaction, Matrix, Point, Ray, Vector};
+use crate::geometry::{dot, Material, Matrix, Point, Ray, Vector};
 use crate::utils::quadratic;
 
 #[derive(Default)]
 pub struct Sphere {
-  color: Color,
+  material: Material,
   transformation: Matrix,
 }
 impl Sphere {
-  pub fn new(color: Color, transformation: Matrix) -> Self {
+  pub fn new(material: Material, transformation: Matrix) -> Self {
     return Self {
-      color,
+      material,
       transformation,
     };
   }
-
-  pub fn get_color(&self) -> &Color {
-    return &self.color;
-  }
-  pub fn set_color(&mut self, color: &Color) {
-    self.color.set(color);
-  }
 }
 impl Shape for Sphere {
+  fn get_material(&self) -> &Material {
+    return &self.material;
+  }
+  fn set_material(&mut self, material: Material) {
+    self.material = material;
+  }
+
   fn get_transformation(&self) -> &Matrix {
     return &self.transformation;
   }
@@ -43,8 +42,8 @@ impl Shape for Sphere {
     let intersections = quadratic(a, b, c);
     return match intersections {
       Some((x1, x2)) => vec![
-        Intersection::new(x1, Interaction::new(*self.get_color())),
-        Intersection::new(x2, Interaction::new(*self.get_color())),
+        Intersection::new(x1, *self.get_material()),
+        Intersection::new(x2, *self.get_material()),
       ],
       None => vec![],
     };
@@ -62,30 +61,31 @@ impl Shape for Sphere {
 mod tests {
   use super::*;
   use crate::geometry::{Point, Vector};
+  use crate::Color;
   use std::f64::consts::PI;
 
   #[test]
   fn init_new() {
-    let green = Color::new(0., 1., 0.);
+    let material = Material::new(Color::yellow(), 0.3, 0.3, 0.3, 70.);
     let scaling = Matrix::identity().scale(2., 2., 2.);
-    let sphere = Sphere::new(green, scaling);
-    assert_eq!(sphere.get_color(), &green);
+    let sphere = Sphere::new(material, scaling);
+    assert_eq!(sphere.get_material(), &material);
     assert_eq!(sphere.get_transformation(), &scaling);
   }
 
   #[test]
   fn init_default() {
     let sphere = Sphere::default();
-    assert_eq!(sphere.get_color(), &Color::default());
+    assert_eq!(sphere.get_material(), &Material::default());
     assert_eq!(sphere.get_transformation(), &Matrix::identity());
   }
 
   #[test]
-  fn get_set_color() {
+  fn get_set_material() {
     let mut sphere = Sphere::default();
-    let red = Color::new(1., 0., 0.);
-    sphere.set_color(&red);
-    assert_eq!(sphere.get_color(), &red);
+    let material = Material::new(Color::cyan(), 0.1, 0.4, 0.5, 50.);
+    sphere.set_material(material);
+    assert_eq!(sphere.get_material(), &material);
   }
 
   #[test]
@@ -97,14 +97,13 @@ mod tests {
   }
 
   #[test]
-  fn intersect_interaction_has_sphere_color() {
+  fn intersect_interaction_has_sphere_material() {
     let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
-    let color = Color::new(1., 1., 0.);
-    let intersections = Sphere::new(color, Matrix::identity()).intersect(&ray);
+    let intersections = Sphere::default().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
-    assert_eq!(intersections[0].interaction.get_color(), &color);
-    assert_eq!(intersections[1].interaction.get_color(), &color);
+    assert_eq!(intersections[0].material, Material::default());
+    assert_eq!(intersections[1].material, Material::default());
   }
 
   #[test]
@@ -225,7 +224,8 @@ mod tests {
 
   #[test]
   fn normal_of_translated_sphere() {
-    let sphere = Sphere::new(Color::default(), Matrix::identity().translate(0., 1., 0.));
+    let mut sphere = Sphere::default();
+    sphere.set_transformation(Matrix::identity().translate(0., 1., 0.));
     let normal = sphere.normal_at(&Point::new(0., (2_f64.sqrt() / 2.) + 1., 2_f64.sqrt() / 2.));
     assert_eq!(
       normal,
@@ -235,10 +235,8 @@ mod tests {
 
   #[test]
   fn normal_of_transformed_sphere() {
-    let sphere = Sphere::new(
-      Color::default(),
-      Matrix::identity().rotate_z(PI / 5.).scale(1., 0.5, 1.),
-    );
+    let mut sphere = Sphere::default();
+    sphere.set_transformation(Matrix::identity().rotate_z(PI / 5.).scale(1., 0.5, 1.));
     let normal = sphere.normal_at(&Point::new(0., 2_f64.sqrt() / 2., -(2_f64.sqrt() / 2.)));
     assert_eq!(normal, Vector::new(0., 0.97014, -0.24254))
   }
