@@ -9,7 +9,7 @@ impl Scene {
     return Self { objects };
   }
 
-  pub fn get_objects(&self) -> &[Box<dyn Shape>] {
+  pub fn objects(&self) -> &[Box<dyn Shape>] {
     return &self.objects;
   }
 }
@@ -25,12 +25,12 @@ mod tests {
       Box::new(Sphere::default()),
       Box::new(Sphere::default()),
     ]);
-    assert_eq!(scene.get_objects().len(), 2);
+    assert_eq!(scene.objects().len(), 2);
   }
 
   #[test]
   fn init_default() {
     let scene = Scene::default();
-    assert_eq!(scene.get_objects().len(), 0);
+    assert_eq!(scene.objects().len(), 0);
   }
 }

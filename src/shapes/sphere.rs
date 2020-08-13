@@ -16,14 +16,14 @@ impl Sphere {
   }
 }
 impl Shape for Sphere {
-  fn get_material(&self) -> &Material {
+  fn material(&self) -> &Material {
     return &self.material;
   }
   fn set_material(&mut self, material: Material) {
     self.material = material;
   }
 
-  fn get_transformation(&self) -> &Matrix {
+  fn transformation(&self) -> &Matrix {
     return &self.transformation;
   }
   fn set_transformation(&mut self, transformation: Matrix) {
@@ -31,9 +31,9 @@ impl Shape for Sphere {
   }
 
   fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
-    let object_ray = self.get_transformation().inverse() * *ray;
-    let sphere_to_ray = *object_ray.get_origin() - Point::new(0., 0., 0.);
-    let direction = object_ray.get_direction();
+    let object_ray = self.transformation().inverse() * *ray;
+    let sphere_to_ray = *object_ray.origin() - Point::new(0., 0., 0.);
+    let direction = object_ray.direction();
 
     let a = dot(direction, direction);
     let b = 2. * dot(direction, &sphere_to_ray);
@@ -42,17 +42,17 @@ impl Shape for Sphere {
     let intersections = quadratic(a, b, c);
     return match intersections {
       Some((x1, x2)) => vec![
-        Intersection::new(x1, *self.get_material()),
-        Intersection::new(x2, *self.get_material()),
+        Intersection::new(x1, *self.material()),
+        Intersection::new(x2, *self.material()),
       ],
       None => vec![],
     };
   }
 
   fn normal_at(&self, point: &Point) -> Vector {
-    let object_point = self.get_transformation().inverse() * *point;
+    let object_point = self.transformation().inverse() * *point;
     let object_normal = object_point - Point::new(0., 0., 0.);
-    let world_normal = self.get_transformation().inverse().transpose() * object_normal;
+    let world_normal = self.transformation().inverse().transpose() * object_normal;
     return world_normal.normalize();
   }
 }
@@ -69,15 +69,15 @@ mod tests {
     let material = Material::new(Color::yellow(), 0.3, 0.3, 0.3, 70.);
     let scaling = Matrix::identity().scale(2., 2., 2.);
     let sphere = Sphere::new(material, scaling);
-    assert_eq!(sphere.get_material(), &material);
-    assert_eq!(sphere.get_transformation(), &scaling);
+    assert_eq!(sphere.material(), &material);
+    assert_eq!(sphere.transformation(), &scaling);
   }
 
   #[test]
   fn init_default() {
     let sphere = Sphere::default();
-    assert_eq!(sphere.get_material(), &Material::default());
-    assert_eq!(sphere.get_transformation(), &Matrix::identity());
+    assert_eq!(sphere.material(), &Material::default());
+    assert_eq!(sphere.transformation(), &Matrix::identity());
   }
 
   #[test]
@@ -85,7 +85,7 @@ mod tests {
     let mut sphere = Sphere::default();
     let material = Material::new(Color::cyan(), 0.1, 0.4, 0.5, 50.);
     sphere.set_material(material);
-    assert_eq!(sphere.get_material(), &material);
+    assert_eq!(sphere.material(), &material);
   }
 
   #[test]
@@ -93,7 +93,7 @@ mod tests {
     let mut sphere = Sphere::default();
     let translation = Matrix::identity().translate(5., 4., 3.);
     sphere.set_transformation(translation);
-    assert_eq!(sphere.get_transformation(), &translation);
+    assert_eq!(sphere.transformation(), &translation);
   }
 
   #[test]

@@ -10,15 +10,15 @@ impl Ray {
     return Self { origin, direction };
   }
 
-  pub fn get_origin(&self) -> &Point {
+  pub fn origin(&self) -> &Point {
     return &self.origin;
   }
-  pub fn get_direction(&self) -> &Vector {
+  pub fn direction(&self) -> &Vector {
     return &self.direction;
   }
 
   pub fn position(&self, t: f64) -> Point {
-    return *self.get_origin() + *self.get_direction() * t;
+    return *self.origin() + *self.direction() * t;
   }
 }
 
@@ -27,18 +27,18 @@ mod tests {
   use super::*;
 
   #[test]
-  fn get_origin() {
+  fn origin() {
     let origin = Point::new(1., 2., 3.);
     let direction = Vector::new(4., 5., 6.);
     let ray = Ray::new(origin, direction);
-    assert_eq!(ray.get_origin(), &origin);
+    assert_eq!(ray.origin(), &origin);
   }
   #[test]
-  fn get_direction() {
+  fn direction() {
     let origin = Point::new(1., 2., 3.);
     let direction = Vector::new(4., 5., 6.);
     let ray = Ray::new(origin, direction);
-    assert_eq!(ray.get_direction(), &direction);
+    assert_eq!(ray.direction(), &direction);
   }
 
   #[test]

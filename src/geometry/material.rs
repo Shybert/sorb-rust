@@ -19,19 +19,19 @@ impl Material {
     };
   }
 
-  pub fn get_color(&self) -> &Color {
+  pub fn color(&self) -> &Color {
     return &self.color;
   }
-  pub fn get_ambience(&self) -> &f64 {
+  pub fn ambience(&self) -> &f64 {
     return &self.ambience;
   }
-  pub fn get_diffuse(&self) -> &f64 {
+  pub fn diffuse(&self) -> &f64 {
     return &self.diffuse;
   }
-  pub fn get_specular(&self) -> &f64 {
+  pub fn specular(&self) -> &f64 {
     return &self.specular;
   }
-  pub fn get_shininess(&self) -> &f64 {
+  pub fn shininess(&self) -> &f64 {
     return &self.shininess;
   }
 }
@@ -54,20 +54,20 @@ mod tests {
     let shininess = 40.;
 
     let material = Material::new(color, ambience, diffuse, specular, shininess);
-    assert_eq!(material.get_color(), &color);
-    assert_eq!(material.get_ambience(), &ambience);
-    assert_eq!(material.get_diffuse(), &diffuse);
-    assert_eq!(material.get_specular(), &specular);
-    assert_eq!(material.get_shininess(), &shininess);
+    assert_eq!(material.color(), &color);
+    assert_eq!(material.ambience(), &ambience);
+    assert_eq!(material.diffuse(), &diffuse);
+    assert_eq!(material.specular(), &specular);
+    assert_eq!(material.shininess(), &shininess);
   }
 
   #[test]
   fn material_init_default() {
     let material = Material::default();
-    assert_eq!(material.get_color(), &Color::white());
-    assert_eq!(material.get_ambience(), &0.1);
-    assert_eq!(material.get_diffuse(), &0.9);
-    assert_eq!(material.get_specular(), &0.9);
-    assert_eq!(material.get_shininess(), &200.);
+    assert_eq!(material.color(), &Color::white());
+    assert_eq!(material.ambience(), &0.1);
+    assert_eq!(material.diffuse(), &0.9);
+    assert_eq!(material.specular(), &0.9);
+    assert_eq!(material.shininess(), &200.);
   }
 }

@@ -10,10 +10,10 @@ impl Light {
     return Self { position, color };
   }
 
-  pub fn get_position(&self) -> &Point {
+  pub fn position(&self) -> &Point {
     return &self.position;
   }
-  pub fn get_color(&self) -> &Color {
+  pub fn color(&self) -> &Color {
     return &self.color;
   }
 }
@@ -27,7 +27,7 @@ mod tests {
     let position = Point::origin();
     let color = Color::white();
     let light = Light::new(position, color);
-    assert_eq!(light.get_position(), &position);
-    assert_eq!(light.get_color(), &color);
+    assert_eq!(light.position(), &position);
+    assert_eq!(light.color(), &color);
   }
 }

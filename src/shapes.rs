@@ -5,10 +5,10 @@ mod sphere;
 pub use sphere::*;
 
 pub trait Shape {
-  fn get_material(&self) -> &Material;
+  fn material(&self) -> &Material;
   fn set_material(&mut self, material: Material);
 
-  fn get_transformation(&self) -> &Matrix;
+  fn transformation(&self) -> &Matrix;
   fn set_transformation(&mut self, transformation: Matrix);
 
   fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
@@ -25,7 +25,7 @@ impl Intersection {
     return Self { time, material };
   }
 }
-pub fn get_hit(intersections: &[Intersection]) -> Option<&Intersection> {
+pub fn find_hit(intersections: &[Intersection]) -> Option<&Intersection> {
   return intersections
     .iter()
     .filter(|intersection| intersection.time >= 0.)
@@ -50,21 +50,21 @@ mod tests {
   #[test]
   fn hit_when_all_positive() {
     let intersections = vec![intersection_time(1.), intersection_time(2.)];
-    let hit = get_hit(&intersections).expect("Expected hit");
+    let hit = find_hit(&intersections).expect("Expected hit");
     assert_eq!(hit.time, 1.);
   }
 
   #[test]
   fn hit_when_some_negative() {
     let intersections = vec![intersection_time(-1.), intersection_time(1.)];
-    let hit = get_hit(&intersections).expect("Expected hit");
+    let hit = find_hit(&intersections).expect("Expected hit");
     assert_eq!(hit.time, 1.);
   }
 
   #[test]
   fn hit_when_all_negative() {
     let intersections = vec![intersection_time(-2.), intersection_time(-1.)];
-    let hit = get_hit(&intersections);
+    let hit = find_hit(&intersections);
     assert!(hit.is_none());
   }
 
@@ -76,7 +76,7 @@ mod tests {
       intersection_time(-3.),
       intersection_time(2.),
     ];
-    let hit = get_hit(&intersections).expect("Expected hit");
+    let hit = find_hit(&intersections).expect("Expected hit");
     assert_eq!(hit.time, 2.);
   }
 }
