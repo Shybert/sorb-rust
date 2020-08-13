@@ -46,7 +46,7 @@ mod tests {
   use super::*;
 
   #[test]
-  fn material_init_new() {
+  fn init_new() {
     let color = Color::red();
     let ambience = 0.3;
     let diffuse = 0.5;
@@ -62,7 +62,7 @@ mod tests {
   }
 
   #[test]
-  fn material_init_default() {
+  fn init_default() {
     let material = Material::default();
     assert_eq!(material.color(), &Color::white());
     assert_eq!(material.ambience(), &0.1);
