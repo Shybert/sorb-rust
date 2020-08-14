@@ -25,8 +25,19 @@ impl Vector {
     return Self::new(self.x / magnitude, self.y / magnitude, self.z / magnitude);
   }
 
+  pub fn dot(&self, other: &Vector) -> f64 {
+    return self.x * other.x + self.y * other.y + self.z * other.z;
+  }
+  pub fn cross(&self, other: &Vector) -> Vector {
+    return Vector::new(
+      self.y * other.z - self.z * other.y,
+      self.z * other.x - self.x * other.z,
+      self.x * other.y - self.y * other.x,
+    );
+  }
+
   pub fn reflect(&self, normal: &Self) -> Self {
-    return *self - 2. * dot(&self, normal) * *normal;
+    return *self - 2. * self.dot(normal) * *normal;
   }
 }
 
@@ -83,18 +94,6 @@ impl Div<f64> for Vector {
   fn div(self, scalar: f64) -> Self {
     return Self::new(self.x / scalar, self.y / scalar, self.z / scalar);
   }
-}
-
-pub fn dot(a: &Vector, b: &Vector) -> f64 {
-  return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-
-pub fn cross(a: &Vector, b: &Vector) -> Vector {
-  return Vector::new(
-    a.y * b.z - a.z * b.y,
-    a.z * b.x - a.x * b.z,
-    a.x * b.y - a.y * b.x,
-  );
 }
 
 #[cfg(test)]
@@ -184,6 +183,21 @@ mod tests {
   }
 
   #[test]
+  fn dot_product() {
+    let a = Vector::new(1., 2., 3.);
+    let b = Vector::new(2., 3., 4.);
+    assert_eq!(a.dot(&b), 20.);
+  }
+
+  #[test]
+  fn cross_product() {
+    let a = Vector::new(1., 2., 3.);
+    let b = Vector::new(2., 3., 4.);
+    assert_eq!(a.cross(&b), Vector::new(-1., 2., -1.));
+    assert_eq!(b.cross(&a), Vector::new(1., -2., 1.));
+  }
+
+  #[test]
   fn reflect_at_45_degree_angle() {
     let vector = Vector::new(1., -1., 0.);
     let normal = Vector::new(0., 1., 0.);
@@ -205,18 +219,5 @@ mod tests {
       vector.reflect(&normal),
       Vector::new(2. / 3., -1. / 3., 2. / 3.)
     );
-  }
-
-  #[test]
-  fn dot_product() {
-    assert_eq!(dot(&Vector::new(1., 2., 3.), &Vector::new(2., 3., 4.)), 20.);
-  }
-
-  #[test]
-  fn cross_product() {
-    let a = Vector::new(1., 2., 3.);
-    let b = Vector::new(2., 3., 4.);
-    assert_eq!(cross(&a, &b), Vector::new(-1., 2., -1.));
-    assert_eq!(cross(&b, &a), Vector::new(1., -2., 1.));
   }
 }

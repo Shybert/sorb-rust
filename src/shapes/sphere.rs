@@ -1,5 +1,5 @@
 use super::{Intersection, Shape};
-use crate::geometry::{dot, Material, Matrix, Point, Ray, Vector};
+use crate::geometry::{Material, Matrix, Point, Ray, Vector};
 use crate::utils::quadratic;
 
 #[derive(Default)]
@@ -35,9 +35,9 @@ impl Shape for Sphere {
     let sphere_to_ray = *object_ray.origin() - Point::new(0., 0., 0.);
     let direction = object_ray.direction();
 
-    let a = dot(direction, direction);
-    let b = 2. * dot(direction, &sphere_to_ray);
-    let c = dot(&sphere_to_ray, &sphere_to_ray) - 1.;
+    let a = direction.dot(direction);
+    let b = 2. * direction.dot(&sphere_to_ray);
+    let c = sphere_to_ray.dot(&sphere_to_ray) - 1.;
 
     let intersections = quadratic(a, b, c);
     return match intersections {
