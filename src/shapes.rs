@@ -19,10 +19,15 @@ pub trait Shape {
 pub struct Intersection {
   pub time: f64,
   pub material: Material,
+  pub normal: Vector,
 }
 impl Intersection {
-  pub fn new(time: f64, material: Material) -> Self {
-    return Self { time, material };
+  pub fn new(time: f64, material: Material, normal: Vector) -> Self {
+    return Self {
+      time,
+      material,
+      normal,
+    };
   }
 }
 pub fn find_hit(intersections: &[Intersection]) -> Option<&Intersection> {
@@ -38,13 +43,18 @@ mod tests {
 
   #[test]
   fn intersection_init() {
-    let intersection = Intersection::new(5., Material::default());
-    assert_eq!(intersection.time, 5.);
-    assert_eq!(intersection.material, Material::default());
+    let time = 5.;
+    let material = Material::default();
+    let vector = Vector::new(1., -1., 1.);
+
+    let intersection = Intersection::new(time, material, vector);
+    assert_eq!(intersection.time, time);
+    assert_eq!(intersection.material, material);
+    assert_eq!(intersection.normal, vector);
   }
 
   fn intersection_time(time: f64) -> Intersection {
-    return Intersection::new(time, Material::default());
+    return Intersection::new(time, Material::default(), Vector::zero());
   }
 
   #[test]

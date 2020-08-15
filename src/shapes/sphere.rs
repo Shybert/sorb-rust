@@ -42,8 +42,8 @@ impl Shape for Sphere {
     let intersections = quadratic(a, b, c);
     return match intersections {
       Some((x1, x2)) => vec![
-        Intersection::new(x1, *self.material()),
-        Intersection::new(x2, *self.material()),
+        Intersection::new(x1, *self.material(), self.normal_at(&ray.position(x1))),
+        Intersection::new(x2, *self.material(), self.normal_at(&ray.position(x2))),
       ],
       None => vec![],
     };
@@ -97,13 +97,23 @@ mod tests {
   }
 
   #[test]
-  fn intersect_interaction_has_sphere_material() {
+  fn intersection_has_sphere_material() {
     let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
     let intersections = Sphere::default().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
     assert_eq!(intersections[0].material, Material::default());
     assert_eq!(intersections[1].material, Material::default());
+  }
+
+  #[test]
+  fn intersection_has_normal_at_intersection() {
+    let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+    let intersections = Sphere::default().intersect(&ray);
+
+    assert_eq!(intersections.len(), 2);
+    assert_eq!(intersections[0].normal, Vector::new(0., 0., -1.));
+    assert_eq!(intersections[1].normal, Vector::new(0., 0., 1.));
   }
 
   #[test]
