@@ -2,23 +2,16 @@ use crate::geometry::{Point, Vector};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Ray {
-  origin: Point,
-  direction: Vector,
+  pub origin: Point,
+  pub direction: Vector,
 }
 impl Ray {
   pub fn new(origin: Point, direction: Vector) -> Self {
     return Self { origin, direction };
   }
 
-  pub fn origin(&self) -> &Point {
-    return &self.origin;
-  }
-  pub fn direction(&self) -> &Vector {
-    return &self.direction;
-  }
-
   pub fn position(&self, t: f64) -> Point {
-    return *self.origin() + *self.direction() * t;
+    return self.origin + self.direction * t;
   }
 }
 
@@ -27,18 +20,12 @@ mod tests {
   use super::*;
 
   #[test]
-  fn origin() {
-    let origin = Point::new(1., 2., 3.);
-    let direction = Vector::new(4., 5., 6.);
+  fn init_new() {
+    let origin = Point::new(3., 2., 1.);
+    let direction = Vector::new(1., 2., 3.);
     let ray = Ray::new(origin, direction);
-    assert_eq!(ray.origin(), &origin);
-  }
-  #[test]
-  fn direction() {
-    let origin = Point::new(1., 2., 3.);
-    let direction = Vector::new(4., 5., 6.);
-    let ray = Ray::new(origin, direction);
-    assert_eq!(ray.direction(), &direction);
+    assert_eq!(ray.origin, origin);
+    assert_eq!(ray.direction, direction);
   }
 
   #[test]
