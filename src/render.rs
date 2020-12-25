@@ -10,5 +10,5 @@ pub use lighting::*;
 pub mod lights;
 pub use lights::*;
 
-pub mod scene;
-pub use scene::*;
+pub mod world;
+pub use world::*;

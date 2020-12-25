@@ -2,11 +2,11 @@ use crate::render::PointLight;
 use crate::shapes::Shape;
 
 #[derive(Default)]
-pub struct Scene {
+pub struct World {
   objects: Vec<Box<dyn Shape>>,
   lights: Vec<PointLight>,
 }
-impl Scene {
+impl World {
   pub fn new(objects: Vec<Box<dyn Shape>>, lights: Vec<PointLight>) -> Self {
     return Self { objects, lights };
   }
@@ -27,18 +27,18 @@ mod tests {
 
   #[test]
   fn init_new() {
-    let scene = Scene::new(
+    let world = World::new(
       vec![Box::new(Sphere::default()), Box::new(Sphere::default())],
       vec![PointLight::default(); 3],
     );
-    assert_eq!(scene.objects().len(), 2);
-    assert_eq!(scene.lights().len(), 3);
+    assert_eq!(world.objects().len(), 2);
+    assert_eq!(world.lights().len(), 3);
   }
 
   #[test]
   fn init_default() {
-    let scene = Scene::default();
-    assert_eq!(scene.objects().len(), 0);
-    assert_eq!(scene.lights().len(), 0);
+    let world = World::default();
+    assert_eq!(world.objects().len(), 0);
+    assert_eq!(world.lights().len(), 0);
   }
 }

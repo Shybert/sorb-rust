@@ -1,12 +1,12 @@
 use crate::geometry::{Matrix, Point, Ray, Vector};
-use crate::render::{lighting, Canvas, Scene};
+use crate::render::{lighting, Canvas, World};
 use crate::shapes::find_hit;
 
 pub struct Camera {
   pub fov: f64,
 }
 impl Camera {
-  pub fn render(&self, scene: &Scene, canvas: &mut Canvas, transform: Matrix) {
+  pub fn render(&self, world: &World, canvas: &mut Canvas, transform: Matrix) {
     let width = canvas.width() as f64;
     let height = canvas.height() as f64;
 
@@ -19,7 +19,7 @@ impl Camera {
         let y = (1. - 2. * ((j as f64 + 0.5) / height)) * computed_fov;
         let ray = transform * Ray::new(Point::new(0., 0., 0.), Vector::new(x, y, -1.));
 
-        let intersections: Vec<_> = scene
+        let intersections: Vec<_> = world
           .objects()
           .iter()
           .flat_map(|object| object.intersect(&ray))
