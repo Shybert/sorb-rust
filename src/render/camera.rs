@@ -1,5 +1,5 @@
-use super::{Canvas, Scene};
 use crate::geometry::{Matrix, Point, Ray, Vector};
+use crate::render::{lighting, Canvas, Scene};
 use crate::shapes::find_hit;
 
 pub struct Camera {
@@ -27,7 +27,15 @@ impl Camera {
         let hit = find_hit(&intersections);
 
         if let Some(intersection) = hit {
-          canvas.set_pixel(i, j, intersection.material.color());
+          let color = lighting(
+            intersection.material,
+            ray.position(intersection.time),
+            world.lights()[0],
+            (ray.origin - ray.position(intersection.time)).normalize(),
+            intersection.normal,
+          );
+
+          canvas.set_pixel(i, j, &color);
         }
       }
     }
