@@ -19,11 +19,7 @@ impl Camera {
         let y = (1. - 2. * ((j as f64 + 0.5) / height)) * computed_fov;
         let ray = transform * Ray::new(Point::new(0., 0., 0.), Vector::new(x, y, -1.));
 
-        let intersections: Vec<_> = world
-          .objects()
-          .iter()
-          .flat_map(|object| object.intersect(&ray))
-          .collect();
+        let intersections = world.intersect(&ray);
         let hit = find_hit(&intersections);
 
         if let Some(intersection) = hit {
