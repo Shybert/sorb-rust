@@ -139,6 +139,19 @@ impl Matrix {
 
     return shear * self;
   }
+
+  pub fn look_at(from: &Point, to: &Point, up: &Vector) -> Self {
+    let forward = (*to - *from).normalize();
+    let left = forward.cross(&up.normalize());
+    let new_up = left.cross(&forward);
+
+    return Self::new([
+      [left.x, new_up.x, -forward.x, from.x],
+      [left.y, new_up.y, -forward.y, from.y],
+      [left.z, new_up.z, -forward.z, from.z],
+      [0., 0., 0., 1.],
+    ]);
+  }
 }
 impl Default for Matrix {
   fn default() -> Self {
@@ -645,5 +658,49 @@ mod tests {
       .translate(10., 5., 7.);
 
     assert_eq!(transform * point, Point::new(15., 0., 7.));
+  }
+
+  #[test]
+  fn look_at_default_orientation() {
+    let from = Point::new(0., 0., 0.);
+    let to = Point::new(0., 0., -1.);
+    let up = Vector::new(0., 1., 0.);
+    let camera_to_world = Matrix::look_at(&from, &to, &up);
+    assert_eq!(camera_to_world, Matrix::identity());
+  }
+
+  #[test]
+  fn look_at_look_behind() {
+    let from = Point::new(0., 0., 0.);
+    let to = Point::new(0., 0., 1.);
+    let up = Vector::new(0., 1., 0.);
+    let camera_to_world = Matrix::look_at(&from, &to, &up);
+    assert_eq!(camera_to_world, Matrix::identity().scale(-1., 1., -1.));
+  }
+
+  #[test]
+  fn look_at_back_towards_origin() {
+    let from = Point::new(0., 0., 8.);
+    let to = Point::new(0., 0., 0.);
+    let up = Vector::new(0., 1., 0.);
+    let camera_to_world = Matrix::look_at(&from, &to, &up);
+    assert_eq!(camera_to_world, Matrix::identity().translate(0., 0., 8.));
+  }
+
+  #[test]
+  fn look_at_arbitrary_direction() {
+    let from = Point::new(1., 3., 2.);
+    let to = Point::new(4., -2., 8.);
+    let up = Vector::new(1., 1., 0.);
+    let camera_to_world = Matrix::look_at(&from, &to, &up);
+    assert_eq!(
+      camera_to_world,
+      Matrix::new([
+        [-0.507093, 0.767716, -0.358569, 1.],
+        [0.507093, 0.606092, 0.597614, 3.],
+        [0.676123, 0.121218, -0.717137, 2.],
+        [0., 0., 0., 1.]
+      ],)
+    );
   }
 }
