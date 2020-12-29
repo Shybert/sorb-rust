@@ -19,9 +19,11 @@ impl Canvas {
   pub fn width(&self) -> usize {
     return self.width;
   }
-
   pub fn height(&self) -> usize {
     return self.height;
+  }
+  pub fn aspect_ratio(&self) -> f64 {
+    return self.width() as f64 / self.height() as f64;
   }
 
   fn pixel_index(&self, x: usize, y: usize) -> usize {
@@ -77,6 +79,12 @@ mod tests {
   #[test]
   fn height() {
     assert_eq!(Canvas::new(10, 20).height(), 20);
+  }
+
+  #[test]
+  fn aspect_ratio() {
+    assert_eq!(Canvas::new(48, 32).aspect_ratio(), 3. / 2.);
+    assert_eq!(Canvas::new(32, 48).aspect_ratio(), 2. / 3.);
   }
 
   #[test]
