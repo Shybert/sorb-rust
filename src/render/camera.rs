@@ -24,6 +24,9 @@ impl Camera {
   pub fn canvas_height(&self) -> usize {
     return self.canvas_height;
   }
+  pub fn aspect_ratio(&self) -> f64 {
+    return self.canvas_width() as f64 / self.canvas_height() as f64;
+  }
 
   pub fn fov(&self) -> f64 {
     return self.fov;
@@ -97,5 +100,17 @@ mod tests {
     assert_eq!(camera.canvas_height(), 640);
     assert_eq!(camera.fov(), 90.);
     assert_eq!(camera.camera_to_world(), &Matrix::identity());
+  }
+
+  #[test]
+  fn aspect_ratio() {
+    assert_eq!(
+      Camera::new(48, 32, 90., Matrix::identity()).aspect_ratio(),
+      3. / 2.
+    );
+    assert_eq!(
+      Camera::new(32, 48, 90., Matrix::identity()).aspect_ratio(),
+      2. / 3.
+    );
   }
 }
