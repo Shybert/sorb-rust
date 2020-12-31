@@ -1,6 +1,7 @@
 use crate::geometry::Ray;
-use crate::render::PointLight;
-use crate::shapes::{Intersection, Shape};
+use crate::render::{lighting, PointLight};
+use crate::shapes::{find_hit, Intersection, Shape};
+use crate::Color;
 use std::cmp::Ordering::Equal;
 
 #[derive(Default)]
@@ -30,6 +31,25 @@ impl World {
     intersections.sort_unstable_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(Equal));
     return intersections;
   }
+
+  pub fn color_at(&self, ray: &Ray) -> Color {
+    let intersections = self.intersect(&ray);
+    let hit = find_hit(&intersections);
+    return match hit {
+      None => Color::black(),
+      Some(intersection) => {
+        let position = ray.position(intersection.time);
+        let eye_vector = (ray.origin - position).normalize();
+        lighting(
+          intersection.material,
+          position,
+          self.lights()[0],
+          eye_vector,
+          intersection.normal,
+        )
+      }
+    };
+  }
 }
 
 #[cfg(test)]
@@ -44,12 +64,16 @@ mod tests {
     return World::new(
       vec![
         Box::new(Sphere::new(
-          Material::new(Color::new(0.8, 1.2, 0.6), 0.1, 0.7, 0.2, 20.),
+          Material::new(Color::new(0.8, 1., 0.6), 0.1, 0.7, 0.2, 200.),
           Matrix::identity(),
         )),
         Box::new(Sphere::new(
-          Material::default(),
+          Material::new(Color::red(), 1., 0., 0., 0.),
           Matrix::identity().scale(0.5, 0.5, 0.5),
+        )),
+        Box::new(Sphere::new(
+          Material::default(),
+          Matrix::identity().translate(0., -5., 0.),
         )),
       ],
       vec![PointLight::new(
@@ -79,12 +103,38 @@ mod tests {
   #[test]
   fn intersect() {
     let world = test_world();
-    let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+    let ray = Ray::new(Point::new(0., -2., 0.), Vector::new(0., 1., 0.));
     let intersections = world.intersect(&ray);
-    assert_eq!(intersections.len(), 4);
-    assert_eq!(intersections[0].time, 4.);
-    assert_eq!(intersections[1].time, 4.5);
-    assert_eq!(intersections[2].time, 5.5);
-    assert_eq!(intersections[3].time, 6.);
+    assert_eq!(intersections.len(), 6);
+    assert_eq!(intersections[0].time, -4.);
+    assert_eq!(intersections[1].time, -2.);
+    assert_eq!(intersections[2].time, 1.);
+    assert_eq!(intersections[3].time, 1.5);
+    assert_eq!(intersections[4].time, 2.5);
+    assert_eq!(intersections[5].time, 3.);
+  }
+
+  #[test]
+  fn color_at_ray_misses() {
+    let world = test_world();
+    let ray = Ray::new(Point::new(0., 0., -2.), Vector::new(0., 1., 0.));
+    let color = world.color_at(&ray);
+    assert_eq!(color, Color::black());
+  }
+
+  #[test]
+  fn color_at_ray_hits() {
+    let world = test_world();
+    let ray = Ray::new(Point::new(0., 0., -2.), Vector::new(0., 0., 1.));
+    let color = world.color_at(&ray);
+    assert_eq!(color, Color::new(0.38066, 0.47583, 0.2855));
+  }
+
+  #[test]
+  fn color_at_intersection_behind_and_in_front() {
+    let world = test_world();
+    let ray = Ray::new(Point::new(0., 0., 0.75), Vector::new(0., 0., -1.));
+    let color = world.color_at(&ray);
+    assert_eq!(color, Color::red());
   }
 }

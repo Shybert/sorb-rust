@@ -1,6 +1,5 @@
 use crate::geometry::{Matrix, Point, Ray, Vector};
-use crate::render::{lighting, Canvas, World};
-use crate::shapes::find_hit;
+use crate::render::{Canvas, World};
 
 pub struct Camera {
   canvas_width: usize,
@@ -31,40 +30,42 @@ impl Camera {
   pub fn fov(&self) -> f64 {
     return self.fov;
   }
+  fn fov_scale(&self) -> f64 {
+    return (self.fov().to_radians() / 2.).tan();
+  }
 
   pub fn camera_to_world(&self) -> &Matrix {
     return &self.camera_to_world;
   }
 
+  fn pixel_size(&self) -> f64 {
+    return self.fov_scale() * 2. / self.canvas_height() as f64;
+  }
+  fn canvas_left_edge(&self) -> f64 {
+    return -1. * self.aspect_ratio() * self.fov_scale();
+  }
+  fn canvas_top_edge(&self) -> f64 {
+    return 1. * self.fov_scale();
+  }
+  pub fn ray_for_pixel(&self, x_pixel: usize, y_pixel: usize) -> Ray {
+    let x_offset = (x_pixel as f64 + 0.5) * self.pixel_size();
+    let y_offset = (y_pixel as f64 + 0.5) * self.pixel_size();
+
+    let x_world = self.canvas_left_edge() + x_offset;
+    let y_world = self.canvas_top_edge() - y_offset;
+
+    let direction = Vector::new(x_world, y_world, -1.).normalize();
+    return *self.camera_to_world() * Ray::new(Point::origin(), direction);
+  }
+
   pub fn render(&self, world: &World) -> Canvas {
     let mut canvas = Canvas::new(self.canvas_width(), self.canvas_height());
 
-    let width = canvas.width() as f64;
-    let height = canvas.height() as f64;
-    let aspect_ratio = canvas.aspect_ratio();
-    let computed_fov = (self.fov().to_radians() / 2.).tan();
-
     for i in 0..canvas.width() {
       for j in 0..canvas.height() {
-        let x = (-1. + 2. * ((i as f64 + 0.5) / width)) * aspect_ratio * computed_fov;
-        let y = (1. - 2. * ((j as f64 + 0.5) / height)) * computed_fov;
-        let ray =
-          *self.camera_to_world() * Ray::new(Point::new(0., 0., 0.), Vector::new(x, y, -1.));
-
-        let intersections = world.intersect(&ray);
-        let hit = find_hit(&intersections);
-
-        if let Some(intersection) = hit {
-          let color = lighting(
-            intersection.material,
-            ray.position(intersection.time),
-            world.lights()[0],
-            (ray.origin - ray.position(intersection.time)).normalize(),
-            intersection.normal,
-          );
-
-          canvas.set_pixel(i, j, &color);
-        }
+        let ray = self.ray_for_pixel(i, j);
+        let color = world.color_at(&ray);
+        canvas.set_pixel(i, j, &color);
       }
     }
 
@@ -111,6 +112,87 @@ mod tests {
     assert_eq!(
       Camera::new(32, 48, 90., Matrix::identity()).aspect_ratio(),
       2. / 3.
+    );
+  }
+
+  #[test]
+  fn ray_for_pixel_canvas_center() {
+    let camera = Camera::new(201, 101, 90., Matrix::identity());
+    let ray = camera.ray_for_pixel(100, 50);
+    assert_eq!(ray, Ray::new(Point::origin(), Vector::new(0., 0., -1.)));
+  }
+
+  #[test]
+  fn ray_for_pixel_canvas_corner() {
+    let camera = Camera::new(201, 101, 90., Matrix::identity());
+    let ray = camera.ray_for_pixel(0, 0);
+    assert_eq!(
+      ray,
+      Ray::new(Point::origin(), Vector::new(-0.815132, 0.407566, -0.411642))
+    );
+  }
+
+  #[test]
+  fn ray_for_pixel_transformed_camera() {
+    let camera = Camera::new(
+      201,
+      101,
+      90.,
+      Matrix::look_at(
+        &Point::new(0., 2., -5.),
+        &Point::new(5., -6., 1.),
+        &Vector::new(1., 1., 0.),
+      ),
+    );
+    let ray = camera.ray_for_pixel(60, 30);
+    assert_eq!(
+      ray,
+      Ray::new(
+        Point::new(0., 2., -5.),
+        Vector::new(0.794633, -0.591306, -0.055593)
+      )
+    );
+  }
+
+  #[test]
+  fn ray_for_pixel_small_fov() {
+    let camera = Camera::new(201, 101, 30., Matrix::identity());
+    let ray = camera.ray_for_pixel(60, 30);
+    assert_eq!(
+      ray,
+      Ray::new(Point::origin(), Vector::new(-0.206503, 0.103251, -0.972983))
+    );
+  }
+
+  #[test]
+  fn ray_for_pixel_large_fov() {
+    let camera = Camera::new(201, 101, 120., Matrix::identity());
+    let ray = camera.ray_for_pixel(60, 30);
+    assert_eq!(
+      ray,
+      Ray::new(Point::origin(), Vector::new(-0.749258, 0.374629, -0.546137))
+    );
+  }
+
+  #[test]
+  fn ray_for_pixel_large_fov_transformed_camera() {
+    let camera = Camera::new(
+      201,
+      101,
+      120.,
+      Matrix::look_at(
+        &Point::new(0., 2., -5.),
+        &Point::new(5., -6., 1.),
+        &Vector::new(1., 1., 0.),
+      ),
+    );
+    let ray = camera.ray_for_pixel(60, 30);
+    assert_eq!(
+      ray,
+      Ray::new(
+        Point::new(0., 2., -5.),
+        Vector::new(0.825254, -0.461065, -0.284800)
+      )
     );
   }
 }
