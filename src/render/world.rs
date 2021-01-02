@@ -32,23 +32,24 @@ impl World {
     return intersections;
   }
 
+  fn shade_hit(&self, ray: &Ray, hit: &Intersection) -> Color {
+    let position = ray.position(hit.time);
+    let eye_vector = (ray.origin - position).normalize();
+    return lighting(
+      hit.material,
+      position,
+      self.lights()[0],
+      eye_vector,
+      hit.normal,
+      false,
+    );
+  }
   pub fn color_at(&self, ray: &Ray) -> Color {
     let intersections = self.intersect(&ray);
     let hit = find_hit(&intersections);
     return match hit {
       None => Color::black(),
-      Some(intersection) => {
-        let position = ray.position(intersection.time);
-        let eye_vector = (ray.origin - position).normalize();
-        lighting(
-          intersection.material,
-          position,
-          self.lights()[0],
-          eye_vector,
-          intersection.normal,
-          false,
-        )
-      }
+      Some(intersection) => self.shade_hit(ray, intersection),
     };
   }
 }
