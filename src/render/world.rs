@@ -46,6 +46,7 @@ impl World {
           self.lights()[0],
           eye_vector,
           intersection.normal,
+          false,
         )
       }
     };

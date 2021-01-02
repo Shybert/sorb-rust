@@ -8,6 +8,7 @@ pub fn lighting(
   light: PointLight,
   eye_vector: Vector,
   normal: Vector,
+  in_shadow: bool,
 ) -> Color {
   let effective_color = *material.color() * *light.color();
   let light_to_point = (*light.position() - position).normalize();
@@ -17,7 +18,7 @@ pub fn lighting(
   let mut specular = Color::black();
 
   let light_dot_normal = light_to_point.dot(&normal);
-  if light_dot_normal > 0. {
+  if !in_shadow && light_dot_normal > 0. {
     diffuse = light_dot_normal * *material.diffuse() * effective_color;
 
     let reflection = (-light_to_point).reflect(&normal);
@@ -47,6 +48,7 @@ mod tests {
       light,
       eye_vector,
       normal,
+      false,
     );
     assert_eq!(result, Color::new(1.9, 1.9, 1.9));
   }
@@ -63,6 +65,7 @@ mod tests {
       light,
       eye_vector,
       normal,
+      false,
     );
     assert_eq!(result, Color::new(1.0, 1.0, 1.0));
   }
@@ -79,6 +82,7 @@ mod tests {
       light,
       eye_vector,
       normal,
+      false,
     );
     assert_eq!(result, Color::new(0.7364, 0.7364, 0.7364));
   }
@@ -95,6 +99,7 @@ mod tests {
       light,
       eye_vector,
       normal,
+      false,
     );
     assert_eq!(result, Color::new(1.6364, 1.6364, 1.6364));
   }
@@ -111,6 +116,24 @@ mod tests {
       light,
       eye_vector,
       normal,
+      false,
+    );
+    assert_eq!(result, Color::new(0.1, 0.1, 0.1));
+  }
+
+  #[test]
+  fn surface_in_shadow() {
+    let eye_vector = Vector::new(0., 0., -1.);
+    let normal = Vector::new(0., 0., -1.);
+    let light = PointLight::new(Point::new(0., 0., -10.), Color::white());
+
+    let result = lighting(
+      Material::default(),
+      Point::origin(),
+      light,
+      eye_vector,
+      normal,
+      true,
     );
     assert_eq!(result, Color::new(0.1, 0.1, 0.1));
   }
