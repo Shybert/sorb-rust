@@ -1,5 +1,6 @@
+pub const EPSILON: f64 = 0.00001;
 pub fn approx_equals(a: f64, b: f64) -> bool {
-  return (a - b).abs() < 0.00001;
+  return (a - b).abs() < EPSILON;
 }
 #[macro_export]
 macro_rules! assert_ae {
@@ -45,6 +46,16 @@ pub fn quadratic(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
 mod tests {
   use super::*;
   use crate::assert_ae;
+
+  #[test]
+  fn approx_equals_difference_less_than_epsilon() {
+    assert_eq!(approx_equals(0.000000001, 0.0000000001), true);
+  }
+
+  #[test]
+  fn approx_equals_difference_larger_than_epsilon() {
+    assert_eq!(approx_equals(0.00001, 0.00002), false);
+  }
 
   #[test]
   fn clamp_number_above_max() {
