@@ -35,11 +35,11 @@ impl World {
   fn shade_hit(&self, ray: &Ray, hit: &Intersection) -> Color {
     let eye_vector = (ray.origin - hit.point).normalize();
     return lighting(
-      hit.material,
-      hit.point,
-      self.lights()[0],
-      eye_vector,
-      hit.normal,
+      &hit.material,
+      &hit.point,
+      &self.lights()[0],
+      &eye_vector,
+      &hit.normal,
       false,
     );
   }

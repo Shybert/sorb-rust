@@ -3,15 +3,15 @@ use crate::render::PointLight;
 use crate::Color;
 
 pub fn lighting(
-  material: Material,
-  position: Point,
-  light: PointLight,
-  eye_vector: Vector,
-  normal: Vector,
+  material: &Material,
+  position: &Point,
+  light: &PointLight,
+  eye_vector: &Vector,
+  normal: &Vector,
   in_shadow: bool,
 ) -> Color {
   let effective_color = *material.color() * *light.color();
-  let light_to_point = (*light.position() - position).normalize();
+  let light_to_point = (*light.position() - *position).normalize();
 
   let ambient = effective_color * *material.ambience();
   let mut diffuse = Color::black();
@@ -43,11 +43,11 @@ mod tests {
     let light = PointLight::new(Point::new(0., 0., -10.), Color::white());
 
     let result = lighting(
-      Material::default(),
-      Point::origin(),
-      light,
-      eye_vector,
-      normal,
+      &Material::default(),
+      &Point::origin(),
+      &light,
+      &eye_vector,
+      &normal,
       false,
     );
     assert_eq!(result, Color::new(1.9, 1.9, 1.9));
@@ -60,11 +60,11 @@ mod tests {
     let light = PointLight::new(Point::new(0., 0., -10.), Color::white());
 
     let result = lighting(
-      Material::default(),
-      Point::origin(),
-      light,
-      eye_vector,
-      normal,
+      &Material::default(),
+      &Point::origin(),
+      &light,
+      &eye_vector,
+      &normal,
       false,
     );
     assert_eq!(result, Color::new(1.0, 1.0, 1.0));
@@ -77,11 +77,11 @@ mod tests {
     let light = PointLight::new(Point::new(0., 10., -10.), Color::white());
 
     let result = lighting(
-      Material::default(),
-      Point::origin(),
-      light,
-      eye_vector,
-      normal,
+      &Material::default(),
+      &Point::origin(),
+      &light,
+      &eye_vector,
+      &normal,
       false,
     );
     assert_eq!(result, Color::new(0.7364, 0.7364, 0.7364));
@@ -94,11 +94,11 @@ mod tests {
     let light = PointLight::new(Point::new(0., 10., -10.), Color::white());
 
     let result = lighting(
-      Material::default(),
-      Point::origin(),
-      light,
-      eye_vector,
-      normal,
+      &Material::default(),
+      &Point::origin(),
+      &light,
+      &eye_vector,
+      &normal,
       false,
     );
     assert_eq!(result, Color::new(1.6364, 1.6364, 1.6364));
@@ -111,11 +111,11 @@ mod tests {
     let light = PointLight::new(Point::new(0., 0., 10.), Color::white());
 
     let result = lighting(
-      Material::default(),
-      Point::origin(),
-      light,
-      eye_vector,
-      normal,
+      &Material::default(),
+      &Point::origin(),
+      &light,
+      &eye_vector,
+      &normal,
       false,
     );
     assert_eq!(result, Color::new(0.1, 0.1, 0.1));
@@ -128,11 +128,11 @@ mod tests {
     let light = PointLight::new(Point::new(0., 0., -10.), Color::white());
 
     let result = lighting(
-      Material::default(),
-      Point::origin(),
-      light,
-      eye_vector,
-      normal,
+      &Material::default(),
+      &Point::origin(),
+      &light,
+      &eye_vector,
+      &normal,
       true,
     );
     assert_eq!(result, Color::new(0.1, 0.1, 0.1));
