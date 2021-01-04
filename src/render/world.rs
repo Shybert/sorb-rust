@@ -1,4 +1,4 @@
-use crate::geometry::Ray;
+use crate::geometry::{Point, Ray};
 use crate::render::{lighting, PointLight};
 use crate::shapes::{find_hit, Intersection, Shape};
 use crate::Color;
@@ -30,6 +30,19 @@ impl World {
       .collect();
     intersections.sort_unstable_by(|a, b| a.time.partial_cmp(&b.time).unwrap_or(Equal));
     return intersections;
+  }
+
+  pub fn is_shadowed(&self, point: &Point, light: &PointLight) -> bool {
+    let point_to_light = *light.position() - *point;
+    let direction = point_to_light.normalize();
+    let distance = point_to_light.magnitude();
+
+    let intersections = &self.intersect(&Ray::new(*point, direction));
+    let hit = find_hit(intersections);
+    return match hit {
+      None => false,
+      Some(intersection) => intersection.time <= distance,
+    };
   }
 
   fn shade_hit(&self, ray: &Ray, hit: &Intersection) -> Color {
@@ -113,6 +126,42 @@ mod tests {
     assert_eq!(intersections[3].time, 1.5);
     assert_eq!(intersections[4].time, 2.5);
     assert_eq!(intersections[5].time, 3.);
+  }
+
+  #[test]
+  fn is_shadowed_nothing_between_point_and_light() {
+    let world = test_world();
+    assert_eq!(
+      world.is_shadowed(&Point::new(0., 10., 0.), &world.lights()[0]),
+      false
+    );
+  }
+
+  #[test]
+  fn is_shadowed_object_between_point_and_light() {
+    let world = test_world();
+    assert_eq!(
+      world.is_shadowed(&Point::new(10., -10., 10.), &world.lights()[0]),
+      true
+    );
+  }
+
+  #[test]
+  fn is_shadowed_point_between_light_and_object() {
+    let world = test_world();
+    assert_eq!(
+      world.is_shadowed(&Point::new(-5., 5., -5.), &world.lights()[0]),
+      false
+    );
+  }
+
+  #[test]
+  fn is_shadowed_light_between_point_and_object() {
+    let world = test_world();
+    assert_eq!(
+      world.is_shadowed(&Point::new(-15., 15., -15.), &world.lights()[0]),
+      false
+    )
   }
 
   #[test]
