@@ -18,13 +18,15 @@ pub trait Shape {
 #[derive(Clone, Copy, Debug)]
 pub struct Intersection {
   pub time: f64,
+  pub point: Point,
   pub material: Material,
   pub normal: Vector,
 }
 impl Intersection {
-  pub fn new(time: f64, material: Material, normal: Vector) -> Self {
+  pub fn new(time: f64, point: Point, material: Material, normal: Vector) -> Self {
     return Self {
       time,
+      point,
       material,
       normal,
     };
@@ -44,17 +46,19 @@ mod tests {
   #[test]
   fn intersection_init() {
     let time = 5.;
+    let point = Point::new(-1., 1., -1.);
     let material = Material::default();
     let vector = Vector::new(1., -1., 1.);
 
-    let intersection = Intersection::new(time, material, vector);
+    let intersection = Intersection::new(time, point, material, vector);
     assert_eq!(intersection.time, time);
+    assert_eq!(intersection.point, point);
     assert_eq!(intersection.material, material);
     assert_eq!(intersection.normal, vector);
   }
 
   fn intersection_time(time: f64) -> Intersection {
-    return Intersection::new(time, Material::default(), Vector::zero());
+    return Intersection::new(time, Point::origin(), Material::default(), Vector::zero());
   }
 
   #[test]

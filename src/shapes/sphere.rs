@@ -41,10 +41,14 @@ impl Shape for Sphere {
 
     let intersections = quadratic(a, b, c);
     return match intersections {
-      Some((x1, x2)) => vec![
-        Intersection::new(x1, *self.material(), self.normal_at(&ray.position(x1))),
-        Intersection::new(x2, *self.material(), self.normal_at(&ray.position(x2))),
-      ],
+      Some((x1, x2)) => {
+        let x1_point = ray.position(x1);
+        let x2_point = ray.position(x2);
+        return vec![
+          Intersection::new(x1, x1_point, *self.material(), self.normal_at(&x1_point)),
+          Intersection::new(x2, x2_point, *self.material(), self.normal_at(&x2_point)),
+        ];
+      }
       None => vec![],
     };
   }
@@ -94,6 +98,16 @@ mod tests {
     let translation = Matrix::identity().translate(5., 4., 3.);
     sphere.set_transformation(translation);
     assert_eq!(sphere.transformation(), &translation);
+  }
+
+  #[test]
+  fn intersection_has_intersection_point() {
+    let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+    let intersections = Sphere::default().intersect(&ray);
+
+    assert_eq!(intersections.len(), 2);
+    assert_eq!(intersections[0].point, Point::new(0., 0., -1.));
+    assert_eq!(intersections[1].point, Point::new(0., 0., 1.));
   }
 
   #[test]
