@@ -1,4 +1,5 @@
 use crate::geometry::{Material, Matrix, Point, Ray, Vector};
+use crate::utils::EPSILON;
 use std::cmp::Ordering::Equal;
 
 mod sphere;
@@ -31,7 +32,12 @@ impl Intersection {
       normal,
     };
   }
+
+  pub fn point_over(&self) -> Point {
+    return self.point + self.normal * EPSILON;
+  }
 }
+
 pub fn find_hit(intersections: &[Intersection]) -> Option<&Intersection> {
   return intersections
     .iter()
@@ -55,6 +61,14 @@ mod tests {
     assert_eq!(intersection.point, point);
     assert_eq!(intersection.material, material);
     assert_eq!(intersection.normal, vector);
+  }
+
+  #[test]
+  fn intersection_point_over() {
+    let point = Point::new(1., 1., 1.);
+    let normal = Vector::new(0., 1., 0.);
+    let intersection = Intersection::new(0., point, Material::default(), normal);
+    assert_eq!(intersection.point_over(), Point::new(1., 1. + EPSILON, 1.));
   }
 
   fn intersection_time(time: f64) -> Intersection {
