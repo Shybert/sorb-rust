@@ -33,7 +33,7 @@ impl Canvas {
     return &self.pixels[self.pixel_index(x, y)];
   }
   pub fn pixels(&self) -> &[Color] {
-    return &self.pixels[..];
+    return &self.pixels;
   }
   pub fn set_pixel(&mut self, x: usize, y: usize, color: &Color) {
     let index = self.pixel_index(x, y);
