@@ -53,11 +53,8 @@ impl Shape for Sphere {
     };
   }
 
-  fn normal_at(&self, point: &Point) -> Vector {
-    let object_point = self.transformation().inverse() * *point;
-    let object_normal = object_point - Point::new(0., 0., 0.);
-    let world_normal = self.transformation().inverse().transpose() * object_normal;
-    return world_normal.normalize();
+  fn normal_at_object_space(&self, point: &Point) -> Vector {
+    return *point - Point::origin();
   }
 }
 

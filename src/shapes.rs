@@ -13,7 +13,14 @@ pub trait Shape {
   fn set_transformation(&mut self, transformation: Matrix);
 
   fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
-  fn normal_at(&self, point: &Point) -> Vector;
+
+  fn normal_at_object_space(&self, point: &Point) -> Vector;
+  fn normal_at(&self, point: &Point) -> Vector {
+    let point_object = self.transformation().inverse() * *point;
+    let normal_object = self.normal_at_object_space(&point_object);
+    let normal_world = self.transformation().inverse().transpose() * normal_object;
+    return normal_world.normalize();
+  }
 }
 
 #[derive(Clone, Copy, Debug)]
