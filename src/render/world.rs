@@ -47,14 +47,20 @@ impl World {
 
   fn shade_hit(&self, ray: &Ray, hit: &Intersection) -> Color {
     let eye_vector = (ray.origin - hit.point).normalize();
-    return lighting(
-      &hit.material,
-      &hit.point,
-      &self.lights()[0],
-      &eye_vector,
-      &hit.normal,
-      self.is_shadowed(&hit.point_over(), &self.lights()[0]),
-    );
+    return self
+      .lights()
+      .iter()
+      .map(|light| {
+        lighting(
+          &hit.material,
+          &hit.point,
+          light,
+          &eye_vector,
+          &hit.normal,
+          self.is_shadowed(&hit.point_over(), light),
+        )
+      })
+      .sum();
   }
   pub fn color_at(&self, ray: &Ray) -> Color {
     let intersections = self.intersect(&ray);
