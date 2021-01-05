@@ -1,4 +1,5 @@
 use crate::utils::approx_equals;
+use std::iter::Sum;
 use std::ops::{Add, Mul, Sub};
 
 #[derive(Clone, Copy, Debug)]
@@ -68,6 +69,26 @@ impl Add for Color {
 
   fn add(self, other: Self) -> Self {
     return Self::new(self.r + other.r, self.g + other.g, self.b + other.b);
+  }
+}
+impl Sum for Color {
+  fn sum<I>(iter: I) -> Self
+  where
+    I: Iterator<Item = Self>,
+  {
+    return iter.fold(Color::black(), |final_color, current_color| {
+      final_color + current_color
+    });
+  }
+}
+impl<'a> Sum<&'a Self> for Color {
+  fn sum<I>(iter: I) -> Self
+  where
+    I: Iterator<Item = &'a Self>,
+  {
+    return iter.fold(Color::black(), |final_color, &current_color| {
+      final_color + current_color
+    });
   }
 }
 impl Sub for Color {
@@ -170,6 +191,27 @@ mod tests {
       Color::new(0.9, 0.6, 0.75) + Color::new(0.7, 0.1, 0.25),
       Color::new(1.6, 0.7, 1.)
     );
+  }
+
+  #[test]
+  fn sum() {
+    let colors = vec![
+      Color::new(0.1, 0.1, 0.1),
+      Color::new(0.2, 0.2, 0.2),
+      Color::new(0.3, 0.3, 0.3),
+    ];
+    let sum: Color = colors.into_iter().sum();
+    assert_eq!(sum, Color::new(0.6, 0.6, 0.6));
+  }
+  #[test]
+  fn sum_references() {
+    let colors = vec![
+      Color::new(0.1, 0.1, 0.1),
+      Color::new(0.2, 0.2, 0.2),
+      Color::new(0.3, 0.3, 0.3),
+    ];
+    let sum: Color = colors.iter().sum();
+    assert_eq!(sum, Color::new(0.6, 0.6, 0.6));
   }
 
   #[test]
