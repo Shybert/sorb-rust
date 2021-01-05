@@ -53,7 +53,7 @@ impl World {
       &self.lights()[0],
       &eye_vector,
       &hit.normal,
-      false,
+      self.is_shadowed(&hit.point_over(), &self.lights()[0]),
     );
   }
   pub fn color_at(&self, ray: &Ray) -> Color {
@@ -186,5 +186,13 @@ mod tests {
     let ray = Ray::new(Point::new(0., 0., 0.75), Vector::new(0., 0., -1.));
     let color = world.color_at(&ray);
     assert_eq!(color, Color::red());
+  }
+
+  #[test]
+  fn color_at_intersection_in_shadow() {
+    let world = test_world();
+    let ray = Ray::new(Point::new(1., -1., 1.), Vector::new(-1., 1., -1.));
+    let color = world.color_at(&ray);
+    assert_eq!(color, Color::new(0.08, 0.1, 0.06));
   }
 }
