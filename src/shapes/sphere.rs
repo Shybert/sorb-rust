@@ -1,4 +1,4 @@
-use super::{Intersection, Shape};
+use super::Shape;
 use crate::geometry::{Material, Matrix, Point, Ray, Vector};
 use crate::utils::quadratic;
 
@@ -30,25 +30,17 @@ impl Shape for Sphere {
     self.transformation = transformation;
   }
 
-  fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
-    let object_ray = self.transformation().inverse() * *ray;
-    let sphere_to_ray = object_ray.origin - Point::origin();
-    let direction = object_ray.direction;
+  fn intersect_object_space(&self, ray: &Ray) -> Vec<f64> {
+    let sphere_to_ray = ray.origin - Point::origin();
+    let direction = ray.direction;
 
     let a = direction.dot(&direction);
     let b = 2. * direction.dot(&sphere_to_ray);
     let c = sphere_to_ray.dot(&sphere_to_ray) - 1.;
 
-    let intersections = quadratic(a, b, c);
-    return match intersections {
-      Some((x1, x2)) => {
-        let x1_point = ray.position(x1);
-        let x2_point = ray.position(x2);
-        return vec![
-          Intersection::new(x1, x1_point, *self.material(), self.normal_at(&x1_point)),
-          Intersection::new(x2, x2_point, *self.material(), self.normal_at(&x2_point)),
-        ];
-      }
+    let intersection_times = quadratic(a, b, c);
+    return match intersection_times {
+      Some((t1, t2)) => vec![t1, t2],
       None => vec![],
     };
   }

@@ -12,7 +12,18 @@ pub trait Shape {
   fn transformation(&self) -> &Matrix;
   fn set_transformation(&mut self, transformation: Matrix);
 
-  fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
+  fn intersect_object_space(&self, ray: &Ray) -> Vec<f64>;
+  fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
+    let ray_object = self.transformation().inverse() * *ray;
+    let intersection_times = self.intersect_object_space(&ray_object);
+    return intersection_times
+      .into_iter()
+      .map(|time| {
+        let point = ray.position(time);
+        return Intersection::new(time, point, *self.material(), self.normal_at(&point));
+      })
+      .collect();
+  }
 
   fn normal_at_object_space(&self, point: &Point) -> Vector;
   fn normal_at(&self, point: &Point) -> Vector {
