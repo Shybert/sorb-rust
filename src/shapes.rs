@@ -5,6 +5,9 @@ use std::cmp::Ordering::Equal;
 mod sphere;
 pub use sphere::*;
 
+mod plane;
+pub use plane::*;
+
 pub trait Shape {
   fn material(&self) -> &Material;
   fn set_material(&mut self, material: Material);
