@@ -1,5 +1,6 @@
 use super::Shape;
 use crate::geometry::{Material, Matrix, Point, Ray, Vector};
+use crate::utils::EPSILON;
 
 #[derive(Default)]
 pub struct Plane {
@@ -30,7 +31,11 @@ impl Shape for Plane {
   }
 
   fn intersect_object_space(&self, ray: &Ray) -> Vec<f64> {
-    todo!();
+    if ray.direction.y.abs() < EPSILON {
+      return vec![];
+    }
+
+    return vec![-ray.origin.y / ray.direction.y];
   }
 
   fn normal_at_object_space(&self, _point: &Point) -> Vector {
@@ -74,6 +79,77 @@ mod tests {
     let translation = Matrix::identity().translate(5., 4., 3.);
     plane.set_transformation(translation);
     assert_eq!(plane.transformation(), &translation);
+  }
+
+  #[test]
+  fn intersect_parallel_ray() {
+    let plane = Plane::default();
+    let ray = Ray::new(Point::new(0., 10., 0.), Vector::new(0., 0., 1.));
+    let intersection = plane.intersect(&ray);
+    assert_eq!(intersection.len(), 0);
+  }
+
+  #[test]
+  fn intersect_coplanar_ray() {
+    let plane = Plane::default();
+    let ray = Ray::new(Point::origin(), Vector::new(0., 0., 1.));
+    let intersection = plane.intersect(&ray);
+    assert_eq!(intersection.len(), 0);
+  }
+
+  #[test]
+  fn intersect_from_above() {
+    let plane = Plane::default();
+    let ray = Ray::new(Point::new(0., 1., 0.), Vector::new(0., -1., 0.));
+    let intersection = plane.intersect(&ray);
+    assert_eq!(intersection.len(), 1);
+    assert_eq!(intersection[0].time, 1.);
+  }
+
+  #[test]
+  fn intersect_from_below() {
+    let plane = Plane::default();
+    let ray = Ray::new(Point::new(0., -1., 0.), Vector::new(0., 1., 0.));
+    let intersection = plane.intersect(&ray);
+    assert_eq!(intersection.len(), 1);
+    assert_eq!(intersection[0].time, 1.);
+  }
+
+  #[test]
+  fn intersect_transformed_plane() {
+    let plane = Plane::new(
+      Material::default(),
+      Matrix::identity().rotate_x(PI / 2.).translate(0., 0., 5.),
+    );
+    let ray = Ray::new(Point::origin(), Vector::new(0., 3., 1.));
+    let intersection = plane.intersect(&ray);
+    assert_eq!(intersection.len(), 1);
+    assert_eq!(intersection[0].time, 5.);
+  }
+
+  #[test]
+  fn intersection_has_intersection_point() {
+    let ray = Ray::new(Point::new(1., 5., 3.), Vector::new(0., 1., 0.));
+    let intersection = Plane::default().intersect(&ray);
+    assert_eq!(intersection.len(), 1);
+    assert_eq!(intersection[0].point, Point::new(1., 0., 3.));
+  }
+
+  #[test]
+  fn intersection_has_sphere_material() {
+    let ray = Ray::new(Point::new(1., 5., 3.), Vector::new(0., 1., 0.));
+    let intersection = Plane::default().intersect(&ray);
+
+    assert_eq!(intersection.len(), 1);
+    assert_eq!(intersection[0].material, Material::default());
+  }
+
+  #[test]
+  fn intersection_has_normal_at_intersection() {
+    let ray = Ray::new(Point::new(1., 5., 3.), Vector::new(1., 1., 0.));
+    let intersection = Plane::default().intersect(&ray);
+    assert_eq!(intersection.len(), 1);
+    assert_eq!(intersection[0].normal, Vector::new(0., 1., 0.));
   }
 
   #[test]
