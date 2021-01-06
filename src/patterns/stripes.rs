@@ -24,6 +24,14 @@ impl Pattern for Stripes {
     };
   }
 }
+impl Default for Stripes {
+  fn default() -> Self {
+    return Self {
+      a: Color::white(),
+      b: Color::black(),
+    };
+  }
+}
 
 #[cfg(test)]
 mod tests {
@@ -39,8 +47,17 @@ mod tests {
   }
 
   #[test]
+  fn init_default() {
+    let stripes = Stripes::default();
+    let colors = stripes.get_colors();
+    assert_eq!(colors.len(), 2);
+    assert_eq!(colors[0], &Color::white());
+    assert_eq!(colors[1], &Color::black());
+  }
+
+  #[test]
   fn color_at_alternates_in_x() {
-    let stripes = Stripes::new(Color::white(), Color::black());
+    let stripes = Stripes::default();
     assert_eq!(stripes.color_at(&Point::origin()), Color::white());
     assert_eq!(stripes.color_at(&Point::new(0.9, 0., 0.)), Color::white());
     assert_eq!(stripes.color_at(&Point::new(1., 0., 0.)), Color::black());
@@ -51,7 +68,7 @@ mod tests {
 
   #[test]
   fn color_at_constant_in_y() {
-    let stripes = Stripes::new(Color::white(), Color::black());
+    let stripes = Stripes::default();
     assert_eq!(stripes.color_at(&Point::origin()), Color::white());
     assert_eq!(stripes.color_at(&Point::new(0., 0.9, 0.)), Color::white());
     assert_eq!(stripes.color_at(&Point::new(0., 1., 0.)), Color::white());
@@ -62,7 +79,7 @@ mod tests {
 
   #[test]
   fn color_at_constant_in_z() {
-    let stripes = Stripes::new(Color::white(), Color::black());
+    let stripes = Stripes::default();
     assert_eq!(stripes.color_at(&Point::origin()), Color::white());
     assert_eq!(stripes.color_at(&Point::new(0., 0., 0.9)), Color::white());
     assert_eq!(stripes.color_at(&Point::new(0., 0., 1.)), Color::white());
