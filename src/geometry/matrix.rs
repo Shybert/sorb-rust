@@ -662,7 +662,7 @@ mod tests {
 
   #[test]
   fn look_at_default_orientation() {
-    let from = Point::new(0., 0., 0.);
+    let from = Point::origin();
     let to = Point::new(0., 0., -1.);
     let up = Vector::new(0., 1., 0.);
     let camera_to_world = Matrix::look_at(&from, &to, &up);
@@ -671,7 +671,7 @@ mod tests {
 
   #[test]
   fn look_at_look_behind() {
-    let from = Point::new(0., 0., 0.);
+    let from = Point::origin();
     let to = Point::new(0., 0., 1.);
     let up = Vector::new(0., 1., 0.);
     let camera_to_world = Matrix::look_at(&from, &to, &up);
@@ -681,7 +681,7 @@ mod tests {
   #[test]
   fn look_at_back_towards_origin() {
     let from = Point::new(0., 0., 8.);
-    let to = Point::new(0., 0., 0.);
+    let to = Point::origin();
     let up = Vector::new(0., 1., 0.);
     let camera_to_world = Matrix::look_at(&from, &to, &up);
     assert_eq!(camera_to_world, Matrix::identity().translate(0., 0., 8.));

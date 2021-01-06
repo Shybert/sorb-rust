@@ -149,7 +149,7 @@ mod tests {
 
   #[test]
   fn intersection_ray_inside() {
-    let ray = Ray::new(Point::new(0., 0., 0.), Vector::new(0., 0., 1.));
+    let ray = Ray::new(Point::origin(), Vector::new(0., 0., 1.));
     let intersections = Sphere::default().intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
