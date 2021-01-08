@@ -2,6 +2,7 @@ use crate::geometry::Point;
 use crate::patterns::Pattern;
 use crate::Color;
 
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Stripes {
   a: Color,
   b: Color,
@@ -53,6 +54,29 @@ mod tests {
     assert_eq!(colors.len(), 2);
     assert_eq!(colors[0], &Color::white());
     assert_eq!(colors[1], &Color::black());
+  }
+
+  #[test]
+  fn equality_identical() {
+    let color_a = Color::new(0.3, 0.3, 0.6);
+    let color_b = Color::new(0.6, 0.2, 0.1);
+    let a = Stripes::new(color_a, color_b);
+    let b = Stripes::new(color_a, color_b);
+
+    assert_eq!(a, b);
+
+    let b = Stripes::new(
+      color_a,
+      Color::new(color_b.r + 0.0000001, color_b.g, color_b.b),
+    );
+    assert_eq!(a, b);
+  }
+
+  #[test]
+  fn equality_different() {
+    let a = Stripes::new(Color::yellow(), Color::cyan());
+    let b = Stripes::new(Color::red(), Color::green());
+    assert_ne!(a, b);
   }
 
   #[test]
