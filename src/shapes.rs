@@ -23,7 +23,7 @@ pub trait Shape {
       .into_iter()
       .map(|time| {
         let point = ray.position(time);
-        return Intersection::new(time, point, *self.material(), self.normal_at(&point));
+        return Intersection::new(time, point, self.normal_at(&point), self.material());
       })
       .collect();
   }
@@ -37,20 +37,20 @@ pub trait Shape {
   }
 }
 
-#[derive(Clone, Copy, Debug)]
-pub struct Intersection {
+#[derive(Debug)]
+pub struct Intersection<'a> {
   pub time: f64,
   pub point: Point,
-  pub material: Material,
   pub normal: Vector,
+  pub material: &'a Material,
 }
-impl Intersection {
-  pub fn new(time: f64, point: Point, material: Material, normal: Vector) -> Self {
+impl<'a> Intersection<'a> {
+  pub fn new(time: f64, point: Point, normal: Vector, material: &'a Material) -> Self {
     return Self {
       time,
       point,
-      material,
       normal,
+      material,
     };
   }
 
@@ -59,7 +59,7 @@ impl Intersection {
   }
 }
 
-pub fn find_hit(intersections: &[Intersection]) -> Option<&Intersection> {
+pub fn find_hit<'a>(intersections: &'a [Intersection]) -> Option<&'a Intersection<'a>> {
   return intersections
     .iter()
     .filter(|intersection| intersection.time >= 0.)
@@ -75,56 +75,59 @@ mod tests {
     let time = 5.;
     let point = Point::new(-1., 1., -1.);
     let material = Material::default();
-    let vector = Vector::new(1., -1., 1.);
+    let normal = Vector::new(1., -1., 1.);
 
-    let intersection = Intersection::new(time, point, material, vector);
+    let intersection = Intersection::new(time, point, normal, &material);
     assert_eq!(intersection.time, time);
     assert_eq!(intersection.point, point);
-    assert_eq!(intersection.material, material);
-    assert_eq!(intersection.normal, vector);
+    assert_eq!(intersection.material.color(), material.color());
+    assert_eq!(intersection.normal, normal);
   }
 
   #[test]
   fn intersection_point_over() {
+    let material = Material::default();
     let point = Point::new(1., 1., 1.);
     let normal = Vector::new(0., 1., 0.);
-    let intersection = Intersection::new(0., point, Material::default(), normal);
+    let intersection = Intersection::new(0., point, normal, &material);
     assert_eq!(intersection.point_over(), Point::new(1., 1. + EPSILON, 1.));
   }
 
-  fn intersection_time(time: f64) -> Intersection {
-    return Intersection::new(time, Point::origin(), Material::default(), Vector::zero());
+  fn intersections_time<'a>(times: &[f64], material: &'a Material) -> Vec<Intersection<'a>> {
+    return times
+      .iter()
+      .map(|&time| Intersection::new(time, Point::origin(), Vector::zero(), material))
+      .collect();
   }
 
   #[test]
   fn hit_when_all_positive() {
-    let intersections = vec![intersection_time(1.), intersection_time(2.)];
+    let material = Material::default();
+    let intersections = intersections_time(&vec![1., 2.], &material);
     let hit = find_hit(&intersections).expect("Expected hit");
     assert_eq!(hit.time, 1.);
   }
 
   #[test]
   fn hit_when_some_negative() {
-    let intersections = vec![intersection_time(-1.), intersection_time(1.)];
+    let material = Material::default();
+    let intersections = intersections_time(&vec![-1., 1.], &material);
     let hit = find_hit(&intersections).expect("Expected hit");
     assert_eq!(hit.time, 1.);
   }
 
   #[test]
   fn hit_when_all_negative() {
-    let intersections = vec![intersection_time(-2.), intersection_time(-1.)];
+    let material = Material::default();
+    let intersections = intersections_time(&vec![-2., -1.], &material);
     let hit = find_hit(&intersections);
     assert!(hit.is_none());
   }
 
   #[test]
   fn hit_intersection_order_does_not_matter() {
-    let intersections = vec![
-      intersection_time(5.),
-      intersection_time(7.),
-      intersection_time(-3.),
-      intersection_time(2.),
-    ];
+    let material = Material::default();
+    let intersections = intersections_time(&vec![5., 7., -3., 2.], &material);
     let hit = find_hit(&intersections).expect("Expected hit");
     assert_eq!(hit.time, 2.);
   }

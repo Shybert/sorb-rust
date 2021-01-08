@@ -54,14 +54,14 @@ mod tests {
     let material = Material::new(Color::yellow(), 0.3, 0.3, 0.3, 70.);
     let scaling = Matrix::identity().scale(2., 2., 2.);
     let plane = Plane::new(material, scaling);
-    assert_eq!(plane.material(), &material);
+    assert_eq!(plane.material().color(), &Color::yellow());
     assert_eq!(plane.transformation(), &scaling);
   }
 
   #[test]
   fn init_default() {
     let plane = Plane::default();
-    assert_eq!(plane.material(), &Material::default());
+    assert_eq!(plane.material().color(), Material::default().color());
     assert_eq!(plane.transformation(), &Matrix::identity());
   }
 
@@ -70,7 +70,7 @@ mod tests {
     let mut plane = Plane::default();
     let material = Material::new(Color::cyan(), 0.1, 0.4, 0.5, 50.);
     plane.set_material(material);
-    assert_eq!(plane.material(), &material);
+    assert_eq!(plane.material().color(), &Color::cyan());
   }
 
   #[test]
@@ -129,25 +129,28 @@ mod tests {
 
   #[test]
   fn intersection_has_intersection_point() {
+    let plane = Plane::default();
     let ray = Ray::new(Point::new(1., 5., 3.), Vector::new(0., 1., 0.));
-    let intersection = Plane::default().intersect(&ray);
+    let intersection = plane.intersect(&ray);
     assert_eq!(intersection.len(), 1);
     assert_eq!(intersection[0].point, Point::new(1., 0., 3.));
   }
 
   #[test]
-  fn intersection_has_sphere_material() {
+  fn intersection_has_plane_material() {
+    let plane = Plane::default();
     let ray = Ray::new(Point::new(1., 5., 3.), Vector::new(0., 1., 0.));
-    let intersection = Plane::default().intersect(&ray);
+    let intersection = plane.intersect(&ray);
 
     assert_eq!(intersection.len(), 1);
-    assert_eq!(intersection[0].material, Material::default());
+    assert_eq!(intersection[0].material.color(), plane.material().color());
   }
 
   #[test]
   fn intersection_has_normal_at_intersection() {
+    let plane = Plane::default();
     let ray = Ray::new(Point::new(1., 5., 3.), Vector::new(1., 1., 0.));
-    let intersection = Plane::default().intersect(&ray);
+    let intersection = plane.intersect(&ray);
     assert_eq!(intersection.len(), 1);
     assert_eq!(intersection[0].normal, Vector::new(0., 1., 0.));
   }
