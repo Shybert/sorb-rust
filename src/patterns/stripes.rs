@@ -8,7 +8,7 @@ pub struct Stripes {
   b: Color,
 }
 impl Stripes {
-  fn new(a: Color, b: Color) -> Self {
+  pub fn new(a: Color, b: Color) -> Self {
     return Self { a, b };
   }
 }
