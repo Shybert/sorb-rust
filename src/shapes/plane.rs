@@ -51,26 +51,29 @@ mod tests {
 
   #[test]
   fn init_new() {
-    let material = Material::new(Color::yellow(), 0.3, 0.3, 0.3, 70.);
+    let material = Material::with_color(Color::yellow(), 0.3, 0.3, 0.3, 70.);
     let scaling = Matrix::identity().scale(2., 2., 2.);
     let plane = Plane::new(material, scaling);
-    assert_eq!(plane.material().color(), &Color::yellow());
+    assert_eq!(plane.material().color_at(&Point::origin()), Color::yellow());
     assert_eq!(plane.transformation(), &scaling);
   }
 
   #[test]
   fn init_default() {
     let plane = Plane::default();
-    assert_eq!(plane.material().color(), Material::default().color());
+    assert_eq!(
+      plane.material().color_at(&Point::origin()),
+      Material::default().color_at(&Point::origin())
+    );
     assert_eq!(plane.transformation(), &Matrix::identity());
   }
 
   #[test]
   fn get_set_material() {
     let mut plane = Plane::default();
-    let material = Material::new(Color::cyan(), 0.1, 0.4, 0.5, 50.);
+    let material = Material::with_color(Color::cyan(), 0.1, 0.4, 0.5, 50.);
     plane.set_material(material);
-    assert_eq!(plane.material().color(), &Color::cyan());
+    assert_eq!(plane.material().color_at(&Point::origin()), Color::cyan());
   }
 
   #[test]
@@ -143,7 +146,10 @@ mod tests {
     let intersection = plane.intersect(&ray);
 
     assert_eq!(intersection.len(), 1);
-    assert_eq!(intersection[0].material.color(), plane.material().color());
+    assert_eq!(
+      intersection[0].material.color_at(&Point::origin()),
+      plane.material().color_at(&Point::origin())
+    );
   }
 
   #[test]

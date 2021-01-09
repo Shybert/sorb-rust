@@ -59,26 +59,32 @@ mod tests {
 
   #[test]
   fn init_new() {
-    let material = Material::new(Color::yellow(), 0.3, 0.3, 0.3, 70.);
+    let material = Material::with_color(Color::yellow(), 0.3, 0.3, 0.3, 70.);
     let scaling = Matrix::identity().scale(2., 2., 2.);
     let sphere = Sphere::new(material, scaling);
-    assert_eq!(sphere.material().color(), &Color::yellow());
+    assert_eq!(
+      sphere.material().color_at(&Point::origin()),
+      Color::yellow()
+    );
     assert_eq!(sphere.transformation(), &scaling);
   }
 
   #[test]
   fn init_default() {
     let sphere = Sphere::default();
-    assert_eq!(sphere.material().color(), Material::default().color());
+    assert_eq!(
+      sphere.material().color_at(&Point::origin()),
+      Material::default().color_at(&Point::origin())
+    );
     assert_eq!(sphere.transformation(), &Matrix::identity());
   }
 
   #[test]
   fn get_set_material() {
     let mut sphere = Sphere::default();
-    let material = Material::new(Color::cyan(), 0.1, 0.4, 0.5, 50.);
+    let material = Material::with_color(Color::cyan(), 0.1, 0.4, 0.5, 50.);
     sphere.set_material(material);
-    assert_eq!(sphere.material().color(), &Color::cyan());
+    assert_eq!(sphere.material().color_at(&Point::origin()), Color::cyan());
   }
 
   #[test]
@@ -107,8 +113,14 @@ mod tests {
     let intersections = sphere.intersect(&ray);
 
     assert_eq!(intersections.len(), 2);
-    assert_eq!(intersections[0].material.color(), sphere.material().color());
-    assert_eq!(intersections[1].material.color(), sphere.material().color());
+    assert_eq!(
+      intersections[0].material.color_at(&Point::origin()),
+      sphere.material().color_at(&Point::origin())
+    );
+    assert_eq!(
+      intersections[1].material.color_at(&Point::origin()),
+      sphere.material().color_at(&Point::origin())
+    );
   }
 
   #[test]

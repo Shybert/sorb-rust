@@ -10,7 +10,7 @@ pub fn lighting(
   normal: &Vector,
   in_shadow: bool,
 ) -> Color {
-  let effective_color = *material.color() * *light.color();
+  let effective_color = material.color_at(position) * *light.color();
   let light_to_point = (*light.position() - *position).normalize();
 
   let ambient = effective_color * *material.ambience();

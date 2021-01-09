@@ -80,7 +80,10 @@ mod tests {
     let intersection = Intersection::new(time, point, normal, &material);
     assert_eq!(intersection.time, time);
     assert_eq!(intersection.point, point);
-    assert_eq!(intersection.material.color(), material.color());
+    assert_eq!(
+      intersection.material.color_at(&Point::origin()),
+      material.color_at(&Point::origin())
+    );
     assert_eq!(intersection.normal, normal);
   }
 
