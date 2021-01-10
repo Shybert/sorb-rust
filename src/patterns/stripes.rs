@@ -27,10 +27,7 @@ impl Pattern for Stripes {
 }
 impl Default for Stripes {
   fn default() -> Self {
-    return Self {
-      a: Color::white(),
-      b: Color::black(),
-    };
+    return Self::new(Color::white(), Color::black());
   }
 }
 
@@ -65,10 +62,7 @@ mod tests {
 
     assert_eq!(a, b);
 
-    let b = Stripes::new(
-      color_a,
-      Color::new(color_b.r + 0.0000001, color_b.g, color_b.b),
-    );
+    let b = Stripes::new(color_a, Color::new(0.6000001, 0.2, 0.1));
     assert_eq!(a, b);
   }
 
