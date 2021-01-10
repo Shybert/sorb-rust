@@ -54,6 +54,9 @@ impl<'a> Intersection<'a> {
     };
   }
 
+  /// Returns the intersection point shifted [`EPSILON`](EPSILON) in the direction of the normal vector.
+  ///
+  /// Used to prevent shadow acne.
   pub fn point_over(&self) -> Point {
     return self.point + self.normal * EPSILON;
   }

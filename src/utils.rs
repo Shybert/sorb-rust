@@ -1,3 +1,4 @@
+/// Constant used to accommodate for floating-point rounding error.
 pub const EPSILON: f64 = 0.00001;
 pub fn approx_equals(a: f64, b: f64) -> bool {
   return (a - b).abs() < EPSILON;
