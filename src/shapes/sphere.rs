@@ -107,6 +107,34 @@ mod tests {
   }
 
   #[test]
+  fn intersection_has_outgoing_vector() {
+    let sphere = Sphere::default();
+    let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+    let intersections = sphere.intersect(&ray);
+
+    assert_eq!(intersections.len(), 2);
+    assert_eq!(intersections[0].outgoing, Vector::new(0., 0., -1.));
+    assert_eq!(intersections[1].outgoing, Vector::new(0., 0., -1.));
+  }
+
+  #[test]
+  fn intersection_outgoing_vector_is_normalized() {
+    let sphere = Sphere::default();
+    let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+    let intersections = sphere.intersect(&ray);
+
+    assert_eq!(intersections.len(), 2);
+    assert_eq!(
+      intersections[0].outgoing,
+      intersections[0].outgoing.normalize()
+    );
+    assert_eq!(
+      intersections[1].outgoing,
+      intersections[1].outgoing.normalize()
+    );
+  }
+
+  #[test]
   fn intersection_has_sphere_material() {
     let sphere = Sphere::default();
     let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));

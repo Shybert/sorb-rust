@@ -140,6 +140,27 @@ mod tests {
   }
 
   #[test]
+  fn intersection_has_outgoing_vector() {
+    let plane = Plane::default();
+    let ray = Ray::new(Point::new(1., 5., 3.), Vector::new(0., 1., 0.));
+    let intersection = plane.intersect(&ray);
+    assert_eq!(intersection.len(), 1);
+    assert_eq!(intersection[0].outgoing, Vector::new(0., -1., 0.));
+  }
+
+  #[test]
+  fn intersection_outgoing_vector_is_normalized() {
+    let plane = Plane::default();
+    let ray = Ray::new(Point::new(1., 5., 3.), Vector::new(0., 1., 0.));
+    let intersection = plane.intersect(&ray);
+    assert_eq!(intersection.len(), 1);
+    assert_eq!(
+      intersection[0].outgoing,
+      intersection[0].outgoing.normalize()
+    );
+  }
+
+  #[test]
   fn intersection_has_plane_material() {
     let plane = Plane::default();
     let ray = Ray::new(Point::new(1., 5., 3.), Vector::new(0., 1., 0.));

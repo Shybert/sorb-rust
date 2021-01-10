@@ -23,7 +23,13 @@ pub trait Shape {
       .into_iter()
       .map(|time| {
         let point = ray.position(time);
-        return Intersection::new(time, point, self.normal_at(&point), self.material());
+        return Intersection::new(
+          time,
+          point,
+          -ray.direction.normalize(),
+          self.normal_at(&point),
+          self.material(),
+        );
       })
       .collect();
   }
@@ -41,14 +47,22 @@ pub trait Shape {
 pub struct Intersection<'a> {
   pub time: f64,
   pub point: Point,
+  pub outgoing: Vector,
   pub normal: Vector,
   pub material: &'a Material,
 }
 impl<'a> Intersection<'a> {
-  pub fn new(time: f64, point: Point, normal: Vector, material: &'a Material) -> Self {
+  pub fn new(
+    time: f64,
+    point: Point,
+    outgoing: Vector,
+    normal: Vector,
+    material: &'a Material,
+  ) -> Self {
     return Self {
       time,
       point,
+      outgoing,
       normal,
       material,
     };
@@ -77,12 +91,14 @@ mod tests {
   fn intersection_init() {
     let time = 5.;
     let point = Point::new(-1., 1., -1.);
+    let outgoing = Vector::new(0., 1., 0.);
     let material = Material::default();
     let normal = Vector::new(1., -1., 1.);
 
-    let intersection = Intersection::new(time, point, normal, &material);
+    let intersection = Intersection::new(time, point, outgoing, normal, &material);
     assert_eq!(intersection.time, time);
     assert_eq!(intersection.point, point);
+    assert_eq!(intersection.outgoing, outgoing);
     assert_eq!(
       intersection.material.color_at(&Point::origin()),
       material.color_at(&Point::origin())
@@ -95,14 +111,22 @@ mod tests {
     let material = Material::default();
     let point = Point::new(1., 1., 1.);
     let normal = Vector::new(0., 1., 0.);
-    let intersection = Intersection::new(0., point, normal, &material);
+    let intersection = Intersection::new(0., point, Vector::zero(), normal, &material);
     assert_eq!(intersection.point_over(), Point::new(1., 1. + EPSILON, 1.));
   }
 
   fn intersections_time<'a>(times: &[f64], material: &'a Material) -> Vec<Intersection<'a>> {
     return times
       .iter()
-      .map(|&time| Intersection::new(time, Point::origin(), Vector::zero(), material))
+      .map(|&time| {
+        Intersection::new(
+          time,
+          Point::origin(),
+          Vector::zero(),
+          Vector::zero(),
+          material,
+        )
+      })
       .collect();
   }
 

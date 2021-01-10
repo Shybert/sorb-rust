@@ -45,8 +45,7 @@ impl World {
     };
   }
 
-  fn shade_hit(&self, ray: &Ray, hit: &Intersection) -> Color {
-    let eye_vector = (ray.origin - hit.point).normalize();
+  fn shade_hit(&self, hit: &Intersection) -> Color {
     return self
       .lights()
       .iter()
@@ -55,7 +54,7 @@ impl World {
           &hit.material,
           &hit.point,
           light,
-          &eye_vector,
+          &hit.outgoing,
           &hit.normal,
           self.is_shadowed(&hit.point_over(), light),
         )
@@ -67,7 +66,7 @@ impl World {
     let hit = find_hit(&intersections);
     return match hit {
       None => Color::black(),
-      Some(intersection) => self.shade_hit(ray, intersection),
+      Some(intersection) => self.shade_hit(intersection),
     };
   }
 }
