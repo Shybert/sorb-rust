@@ -51,7 +51,7 @@ mod tests {
 
   #[test]
   fn init_new() {
-    let material = Material::with_color(Color::yellow(), 0.3, 0.3, 0.3, 70.);
+    let material = Material::new(Box::new(Color::yellow()), 0.3, 0.3, 0.3, 70.);
     let scaling = Matrix::identity().scale(2., 2., 2.);
     let plane = Plane::new(material, scaling);
     assert_eq!(plane.material().color_at(&Point::origin()), Color::yellow());
@@ -71,7 +71,7 @@ mod tests {
   #[test]
   fn get_set_material() {
     let mut plane = Plane::default();
-    let material = Material::with_color(Color::cyan(), 0.1, 0.4, 0.5, 50.);
+    let material = Material::new(Box::new(Color::cyan()), 0.1, 0.4, 0.5, 50.);
     plane.set_material(material);
     assert_eq!(plane.material().color_at(&Point::origin()), Color::cyan());
   }

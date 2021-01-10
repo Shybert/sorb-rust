@@ -83,11 +83,11 @@ mod tests {
     return World::new(
       vec![
         Box::new(Sphere::new(
-          Material::with_color(Color::new(0.8, 1., 0.6), 0.1, 0.7, 0.2, 200.),
+          Material::new(Box::new(Color::new(0.8, 1., 0.6)), 0.1, 0.7, 0.2, 200.),
           Matrix::identity(),
         )),
         Box::new(Sphere::new(
-          Material::with_color(Color::red(), 1., 0., 0., 0.),
+          Material::new(Box::new(Color::red()), 1., 0., 0., 0.),
           Matrix::identity().scale(0.5, 0.5, 0.5),
         )),
         Box::new(Sphere::new(
