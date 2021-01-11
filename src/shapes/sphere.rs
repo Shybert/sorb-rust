@@ -5,13 +5,13 @@ use crate::utils::quadratic;
 #[derive(Default)]
 pub struct Sphere {
   material: Material,
-  transformation: Matrix,
+  object_to_world: Matrix,
 }
 impl Sphere {
-  pub fn new(material: Material, transformation: Matrix) -> Self {
+  pub fn new(material: Material, object_to_world: Matrix) -> Self {
     return Self {
       material,
-      transformation,
+      object_to_world,
     };
   }
 }
@@ -23,11 +23,11 @@ impl Shape for Sphere {
     self.material = material;
   }
 
-  fn transformation(&self) -> &Matrix {
-    return &self.transformation;
+  fn object_to_world(&self) -> &Matrix {
+    return &self.object_to_world;
   }
-  fn set_transformation(&mut self, transformation: Matrix) {
-    self.transformation = transformation;
+  fn set_object_to_world(&mut self, object_to_world: Matrix) {
+    self.object_to_world = object_to_world;
   }
 
   fn intersect_object_space(&self, ray: &Ray) -> Vec<f64> {
@@ -66,7 +66,7 @@ mod tests {
       sphere.material().color_at(&Point::origin()),
       Color::yellow()
     );
-    assert_eq!(sphere.transformation(), &scaling);
+    assert_eq!(sphere.object_to_world(), &scaling);
   }
 
   #[test]
@@ -76,7 +76,7 @@ mod tests {
       sphere.material().color_at(&Point::origin()),
       Material::default().color_at(&Point::origin())
     );
-    assert_eq!(sphere.transformation(), &Matrix::identity());
+    assert_eq!(sphere.object_to_world(), &Matrix::identity());
   }
 
   #[test]
@@ -88,11 +88,11 @@ mod tests {
   }
 
   #[test]
-  fn get_set_transformation() {
+  fn get_set_object_to_world() {
     let mut sphere = Sphere::default();
     let translation = Matrix::identity().translate(5., 4., 3.);
-    sphere.set_transformation(translation);
-    assert_eq!(sphere.transformation(), &translation);
+    sphere.set_object_to_world(translation);
+    assert_eq!(sphere.object_to_world(), &translation);
   }
 
   #[test]
@@ -219,7 +219,7 @@ mod tests {
   fn intersection_scaled_sphere() {
     let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
     let mut sphere = Sphere::default();
-    sphere.set_transformation(Matrix::identity().scale(2., 2., 2.));
+    sphere.set_object_to_world(Matrix::identity().scale(2., 2., 2.));
 
     let intersections = sphere.intersect(&ray);
     assert_eq!(intersections.len(), 2);
@@ -231,7 +231,7 @@ mod tests {
   fn intersection_translated_sphere() {
     let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
     let mut sphere = Sphere::default();
-    sphere.set_transformation(Matrix::identity().translate(5., 0., 0.));
+    sphere.set_object_to_world(Matrix::identity().translate(5., 0., 0.));
 
     let intersections = sphere.intersect(&ray);
     assert_eq!(intersections.len(), 0);
@@ -286,7 +286,7 @@ mod tests {
   #[test]
   fn normal_of_translated_sphere() {
     let mut sphere = Sphere::default();
-    sphere.set_transformation(Matrix::identity().translate(0., 1., 0.));
+    sphere.set_object_to_world(Matrix::identity().translate(0., 1., 0.));
     let normal = sphere.normal_at(&Point::new(0., (2_f64.sqrt() / 2.) + 1., 2_f64.sqrt() / 2.));
     assert_eq!(
       normal,
@@ -297,7 +297,7 @@ mod tests {
   #[test]
   fn normal_of_transformed_sphere() {
     let mut sphere = Sphere::default();
-    sphere.set_transformation(Matrix::identity().rotate_z(PI / 5.).scale(1., 0.5, 1.));
+    sphere.set_object_to_world(Matrix::identity().rotate_z(PI / 5.).scale(1., 0.5, 1.));
     let normal = sphere.normal_at(&Point::new(0., 2_f64.sqrt() / 2., -(2_f64.sqrt() / 2.)));
     assert_eq!(normal, Vector::new(0., 0.97014, -0.24254))
   }

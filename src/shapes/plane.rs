@@ -5,13 +5,13 @@ use crate::utils::EPSILON;
 #[derive(Default)]
 pub struct Plane {
   material: Material,
-  transformation: Matrix,
+  object_to_world: Matrix,
 }
 impl Plane {
-  pub fn new(material: Material, transformation: Matrix) -> Self {
+  pub fn new(material: Material, object_to_world: Matrix) -> Self {
     return Self {
       material,
-      transformation,
+      object_to_world,
     };
   }
 }
@@ -23,11 +23,11 @@ impl Shape for Plane {
     self.material = material;
   }
 
-  fn transformation(&self) -> &Matrix {
-    return &self.transformation;
+  fn object_to_world(&self) -> &Matrix {
+    return &self.object_to_world;
   }
-  fn set_transformation(&mut self, transformation: Matrix) {
-    self.transformation = transformation;
+  fn set_object_to_world(&mut self, object_to_world: Matrix) {
+    self.object_to_world = object_to_world;
   }
 
   fn intersect_object_space(&self, ray: &Ray) -> Vec<f64> {
@@ -55,7 +55,7 @@ mod tests {
     let scaling = Matrix::identity().scale(2., 2., 2.);
     let plane = Plane::new(material, scaling);
     assert_eq!(plane.material().color_at(&Point::origin()), Color::yellow());
-    assert_eq!(plane.transformation(), &scaling);
+    assert_eq!(plane.object_to_world(), &scaling);
   }
 
   #[test]
@@ -65,7 +65,7 @@ mod tests {
       plane.material().color_at(&Point::origin()),
       Material::default().color_at(&Point::origin())
     );
-    assert_eq!(plane.transformation(), &Matrix::identity());
+    assert_eq!(plane.object_to_world(), &Matrix::identity());
   }
 
   #[test]
@@ -77,11 +77,11 @@ mod tests {
   }
 
   #[test]
-  fn get_set_transformation() {
+  fn get_set_object_to_world() {
     let mut plane = Plane::default();
     let translation = Matrix::identity().translate(5., 4., 3.);
-    plane.set_transformation(translation);
-    assert_eq!(plane.transformation(), &translation);
+    plane.set_object_to_world(translation);
+    assert_eq!(plane.object_to_world(), &translation);
   }
 
   #[test]

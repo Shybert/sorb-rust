@@ -12,12 +12,12 @@ pub trait Shape {
   fn material(&self) -> &Material;
   fn set_material(&mut self, material: Material);
 
-  fn transformation(&self) -> &Matrix;
-  fn set_transformation(&mut self, transformation: Matrix);
+  fn object_to_world(&self) -> &Matrix;
+  fn set_object_to_world(&mut self, object_to_world: Matrix);
 
   fn intersect_object_space(&self, ray: &Ray) -> Vec<f64>;
   fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
-    let ray_object = self.transformation().inverse() * *ray;
+    let ray_object = self.object_to_world().inverse() * *ray;
     let intersection_times = self.intersect_object_space(&ray_object);
     return intersection_times
       .into_iter()
@@ -36,9 +36,9 @@ pub trait Shape {
 
   fn normal_at_object_space(&self, point: &Point) -> Vector;
   fn normal_at(&self, point: &Point) -> Vector {
-    let point_object = self.transformation().inverse() * *point;
+    let point_object = self.object_to_world().inverse() * *point;
     let normal_object = self.normal_at_object_space(&point_object);
-    let normal_world = self.transformation().inverse().transpose() * normal_object;
+    let normal_world = self.object_to_world().inverse().transpose() * normal_object;
     return normal_world.normalize();
   }
 }
