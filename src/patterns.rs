@@ -6,16 +6,10 @@ mod stripes;
 pub use stripes::*;
 
 pub trait Pattern: Debug {
-  fn get_colors(&self) -> Vec<&Color>;
-
   fn color_at(&self, point: &Point) -> Color;
 }
 
 impl Pattern for Color {
-  fn get_colors(&self) -> Vec<&Color> {
-    return vec![self];
-  }
-
   fn color_at(&self, _point: &Point) -> Color {
     return *self;
   }
@@ -24,12 +18,6 @@ impl Pattern for Color {
 #[cfg(test)]
 mod tests {
   use super::*;
-
-  #[test]
-  fn color_get_colors() {
-    let color = Color::cyan();
-    assert_eq!(color.get_colors()[0], &Color::cyan());
-  }
 
   #[test]
   fn color_color_at_is_constant() {

@@ -11,12 +11,12 @@ impl Stripes {
   pub fn new(a: Color, b: Color) -> Self {
     return Self { a, b };
   }
+
+  pub fn colors(&self) -> (&Color, &Color) {
+    return (&self.a, &self.b);
+  }
 }
 impl Pattern for Stripes {
-  fn get_colors(&self) -> Vec<&Color> {
-    return vec![&self.a, &self.b];
-  }
-
   fn color_at(&self, point: &Point) -> Color {
     return if point.x.rem_euclid(2.).floor() == 0. {
       self.a
@@ -38,19 +38,13 @@ mod tests {
   #[test]
   fn init_new() {
     let stripes = Stripes::new(Color::cyan(), Color::red());
-    let colors = stripes.get_colors();
-    assert_eq!(colors.len(), 2);
-    assert_eq!(colors[0], &Color::cyan());
-    assert_eq!(colors[1], &Color::red());
+    assert_eq!(stripes.colors(), (&Color::cyan(), &Color::red()));
   }
 
   #[test]
   fn init_default() {
     let stripes = Stripes::default();
-    let colors = stripes.get_colors();
-    assert_eq!(colors.len(), 2);
-    assert_eq!(colors[0], &Color::white());
-    assert_eq!(colors[1], &Color::black());
+    assert_eq!(stripes.colors(), (&Color::white(), &Color::black()));
   }
 
   #[test]
