@@ -1,10 +1,10 @@
 use crate::geometry::Point;
-use crate::patterns::Pattern;
+use crate::textures::Texture;
 use crate::Color;
 
 #[derive(Debug)]
 pub struct Material {
-  pattern: Box<dyn Pattern>,
+  texture: Box<dyn Texture>,
   ambience: f64,
   diffuse: f64,
   specular: f64,
@@ -12,14 +12,14 @@ pub struct Material {
 }
 impl Material {
   pub fn new(
-    pattern: Box<dyn Pattern>,
+    texture: Box<dyn Texture>,
     ambience: f64,
     diffuse: f64,
     specular: f64,
     shininess: f64,
   ) -> Self {
     return Self {
-      pattern,
+      texture,
       ambience,
       diffuse,
       specular,
@@ -28,7 +28,7 @@ impl Material {
   }
 
   pub fn color_at(&self, point: &Point) -> Color {
-    return self.pattern.color_at(point);
+    return self.texture.color_at(point);
   }
 
   pub fn ambience(&self) -> &f64 {

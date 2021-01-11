@@ -5,11 +5,11 @@ use std::fmt::Debug;
 mod stripes;
 pub use stripes::*;
 
-pub trait Pattern: Debug {
+pub trait Texture: Debug {
   fn color_at(&self, point: &Point) -> Color;
 }
 
-impl Pattern for Color {
+impl Texture for Color {
   fn color_at(&self, _point: &Point) -> Color {
     return *self;
   }

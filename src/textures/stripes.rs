@@ -1,5 +1,5 @@
 use crate::geometry::Point;
-use crate::patterns::Pattern;
+use crate::textures::Texture;
 use crate::Color;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -16,7 +16,7 @@ impl Stripes {
     return (&self.a, &self.b);
   }
 }
-impl Pattern for Stripes {
+impl Texture for Stripes {
   fn color_at(&self, point: &Point) -> Color {
     return if point.x.rem_euclid(2.).floor() == 0. {
       self.a

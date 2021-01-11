@@ -4,7 +4,7 @@ fn main() {
 
 mod color;
 mod geometry;
-mod patterns;
 mod render;
 mod shapes;
+mod textures;
 mod utils;
