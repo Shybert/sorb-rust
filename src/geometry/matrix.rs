@@ -31,7 +31,7 @@ impl Matrix {
 
   pub fn inverse(&self) -> Self {
     let mut inverse = Self::identity();
-    let mut copy = self.clone();
+    let mut copy = *self;
 
     for i in 0..4 {
       let mut pivot = copy[(i, i)];
