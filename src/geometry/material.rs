@@ -43,6 +43,16 @@ impl Material {
   pub fn shininess(&self) -> f64 {
     return self.shininess;
   }
+
+  pub fn to_tuple_at(&self, point: &Point) -> (Color, f64, f64, f64, f64) {
+    return (
+      self.color_at(point),
+      self.ambience(),
+      self.diffuse(),
+      self.specular(),
+      self.shininess(),
+    );
+  }
 }
 impl Default for Material {
   fn default() -> Self {
@@ -72,5 +82,14 @@ mod tests {
     assert_eq!(material.diffuse(), 0.9);
     assert_eq!(material.specular(), 0.9);
     assert_eq!(material.shininess(), 200.);
+  }
+
+  #[test]
+  fn to_tuple_at() {
+    let material = Material::default();
+    assert_eq!(
+      material.to_tuple_at(&Point::origin()),
+      (Color::white(), 0.1, 0.9, 0.9, 200.)
+    );
   }
 }
