@@ -1,5 +1,5 @@
 use crate::geometry::{Point, Ray};
-use crate::render::{lighting, PointLight};
+use crate::render::{phong, PointLight};
 use crate::shapes::{find_hit, Intersection, Shape};
 use crate::Color;
 use std::cmp::Ordering::Equal;
@@ -50,12 +50,11 @@ impl World {
       .lights()
       .iter()
       .map(|light| {
-        lighting(
-          &hit.material,
-          &hit.point,
-          light,
-          &hit.outgoing,
-          &hit.normal,
+        let light_vector = (*light.position() - hit.point).normalize();
+        phong(
+          hit.material.to_tuple_at(&hit.point),
+          (light_vector, hit.normal, hit.outgoing),
+          *light.color(),
           self.is_shadowed(&hit.point_over(), light),
         )
       })
