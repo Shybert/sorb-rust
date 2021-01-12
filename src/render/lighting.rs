@@ -13,19 +13,19 @@ pub fn lighting(
   let effective_color = material.color_at(position) * *light.color();
   let light_to_point = (*light.position() - *position).normalize();
 
-  let ambient = effective_color * *material.ambience();
+  let ambient = effective_color * material.ambience();
   let mut diffuse = Color::black();
   let mut specular = Color::black();
 
   let light_dot_normal = light_to_point.dot(&normal);
   if !in_shadow && light_dot_normal > 0. {
-    diffuse = light_dot_normal * *material.diffuse() * effective_color;
+    diffuse = light_dot_normal * material.diffuse() * effective_color;
 
     let reflection = (-light_to_point).reflect(&normal);
     let reflection_dot_eye = eye_vector.dot(&reflection);
     if reflection_dot_eye > 0. {
       specular =
-        reflection_dot_eye.powf(*material.shininess()) * *material.specular() * *light.color();
+        reflection_dot_eye.powf(material.shininess()) * material.specular() * *light.color();
     };
   };
 
