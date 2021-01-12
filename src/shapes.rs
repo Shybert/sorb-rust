@@ -1,5 +1,6 @@
 use crate::geometry::{Material, Matrix, Point, Ray, Vector};
 use crate::utils::EPSILON;
+use crate::Color;
 use std::cmp::Ordering::Equal;
 
 mod sphere;
@@ -68,6 +69,11 @@ impl<'a> Intersection<'a> {
     };
   }
 
+  /// Returns the base color at the intersection point, before shading is applied.
+  pub fn base_color(&self) -> Color {
+    return self.material.color_at(&self.point);
+  }
+
   /// Returns the intersection point shifted [`EPSILON`](EPSILON) in the direction of the normal vector.
   ///
   /// Used to prevent shadow acne.
@@ -86,6 +92,7 @@ pub fn find_hit<'a>(intersections: &'a [Intersection]) -> Option<&'a Intersectio
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::textures::Stripes;
 
   #[test]
   fn intersection_init() {
@@ -106,11 +113,30 @@ mod tests {
     assert_eq!(intersection.normal, normal);
   }
 
+  fn test_base_color(material: Material, point: Point) {
+    let intersection = Intersection::new(0., point, Vector::zero(), Vector::zero(), &material);
+    assert_eq!(intersection.base_color(), material.color_at(&point));
+  }
+
+  #[test]
+  fn intersection_base_color() {
+    test_base_color(Material::default(), Point::origin());
+  }
+
+  #[test]
+  fn intersection_base_color_stripes_texture() {
+    test_base_color(
+      Material::new(Box::new(Stripes::default()), 0., 0., 0., 0.),
+      Point::new(1.5, 0., 0.),
+    );
+  }
+
   #[test]
   fn intersection_point_over() {
     let material = Material::default();
     let point = Point::new(1., 1., 1.);
     let normal = Vector::new(0., 1., 0.);
+
     let intersection = Intersection::new(0., point, Vector::zero(), normal, &material);
     assert_eq!(intersection.point_over(), Point::new(1., 1. + EPSILON, 1.));
   }
