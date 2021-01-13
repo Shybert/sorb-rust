@@ -24,9 +24,11 @@ pub trait Shape {
       .into_iter()
       .map(|time| {
         let point = ray.position(time);
+        let point_object = ray_object.position(time);
         return Intersection::new(
           time,
           point,
+          point_object,
           -ray.direction.normalize(),
           self.normal_at(&point),
           self.material(),
@@ -48,6 +50,7 @@ pub trait Shape {
 pub struct Intersection<'a> {
   pub time: f64,
   pub point: Point,
+  pub point_object: Point,
   pub outgoing: Vector,
   pub normal: Vector,
   pub material: &'a Material,
@@ -56,6 +59,7 @@ impl<'a> Intersection<'a> {
   pub fn new(
     time: f64,
     point: Point,
+    point_object: Point,
     outgoing: Vector,
     normal: Vector,
     material: &'a Material,
@@ -63,15 +67,16 @@ impl<'a> Intersection<'a> {
     return Self {
       time,
       point,
+      point_object,
       outgoing,
       normal,
       material,
     };
   }
 
-  /// Returns the base color at the intersection point, before shading is applied.
+  /// Returns the base color at the intersection point in object space, before shading is applied.
   pub fn base_color(&self) -> Color {
-    return self.material.color_at(&self.point);
+    return self.material.color_at(&self.point_object);
   }
 
   /// Returns the intersection point shifted [`EPSILON`](EPSILON) in the direction of the normal vector.
@@ -98,13 +103,15 @@ mod tests {
   fn intersection_init() {
     let time = 5.;
     let point = Point::new(-1., 1., -1.);
+    let point_object = Point::new(1., -1., 1.);
     let outgoing = Vector::new(0., 1., 0.);
     let material = Material::default();
     let normal = Vector::new(1., -1., 1.);
 
-    let intersection = Intersection::new(time, point, outgoing, normal, &material);
+    let intersection = Intersection::new(time, point, point_object, outgoing, normal, &material);
     assert_eq!(intersection.time, time);
     assert_eq!(intersection.point, point);
+    assert_eq!(intersection.point_object, point_object);
     assert_eq!(intersection.outgoing, outgoing);
     assert_eq!(
       intersection.material.color_at(&Point::origin()),
@@ -113,9 +120,16 @@ mod tests {
     assert_eq!(intersection.normal, normal);
   }
 
-  fn test_base_color(material: Material, point: Point) {
-    let intersection = Intersection::new(0., point, Vector::zero(), Vector::zero(), &material);
-    assert_eq!(intersection.base_color(), material.color_at(&point));
+  fn test_base_color(material: Material, point_object: Point) {
+    let intersection = Intersection::new(
+      0.,
+      Point::origin(),
+      point_object,
+      Vector::zero(),
+      Vector::zero(),
+      &material,
+    );
+    assert_eq!(intersection.base_color(), material.color_at(&point_object));
   }
 
   #[test]
@@ -137,7 +151,14 @@ mod tests {
     let point = Point::new(1., 1., 1.);
     let normal = Vector::new(0., 1., 0.);
 
-    let intersection = Intersection::new(0., point, Vector::zero(), normal, &material);
+    let intersection = Intersection::new(
+      0.,
+      point,
+      Point::origin(),
+      Vector::zero(),
+      normal,
+      &material,
+    );
     assert_eq!(intersection.point_over(), Point::new(1., 1. + EPSILON, 1.));
   }
 
@@ -148,6 +169,7 @@ mod tests {
       .map(|&time| {
         Intersection::new(
           time,
+          Point::origin(),
           Point::origin(),
           Vector::zero(),
           Vector::zero(),

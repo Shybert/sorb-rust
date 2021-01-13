@@ -76,7 +76,8 @@ mod tests {
   use super::*;
   use crate::geometry::{Material, Matrix, Point, Vector};
   use crate::render::PointLight;
-  use crate::shapes::Sphere;
+  use crate::shapes::{Plane, Sphere};
+  use crate::textures::Stripes;
   use crate::Color;
 
   fn test_world() -> World {
@@ -199,5 +200,39 @@ mod tests {
     let ray = Ray::new(Point::new(1., -1., 1.), Vector::new(-1., 1., -1.));
     let color = world.color_at(&ray);
     assert_eq!(color, Color::new(0.08, 0.1, 0.06));
+  }
+
+  fn test_plane_world(plane_transformation: Matrix) -> World {
+    return World::new(
+      vec![Box::new(Plane::new(
+        Material::new(Box::new(Stripes::default()), 1., 0., 0., 0.),
+        plane_transformation,
+      ))],
+      vec![PointLight::new(Point::new(0., 1., 0.), Color::white())],
+    );
+  }
+  #[test]
+  fn color_at_texture() {
+    let world = test_plane_world(Matrix::identity());
+
+    let mut ray = Ray::new(Point::new(0., 1., 0.), Vector::new(0., -1., 0.));
+    let color = world.color_at(&ray);
+    assert_eq!(color, Color::white());
+
+    ray.origin.x = 1.5;
+    let color = world.color_at(&ray);
+    assert_eq!(color, Color::black());
+  }
+  #[test]
+  fn color_at_transformed_texture() {
+    let world = test_plane_world(Matrix::identity().translate(1., 0., 0.));
+
+    let mut ray = Ray::new(Point::new(0., 1., 0.), Vector::new(0., -1., 0.));
+    let color = world.color_at(&ray);
+    assert_eq!(color, Color::black());
+
+    ray.origin.x = 1.5;
+    let color = world.color_at(&ray);
+    assert_eq!(color, Color::white());
   }
 }
