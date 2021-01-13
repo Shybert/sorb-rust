@@ -73,17 +73,6 @@ impl<'a> Intersection<'a> {
   pub fn base_color(&self) -> Color {
     return self.material.color_at(&self.point);
   }
-  /// Returns the intersection's material's shading properties as a convenient tuple.
-  ///
-  /// The tuple is formatted as `(ambience, diffuse, specular, shininess)`.
-  pub fn shading_properties(&self) -> (f64, f64, f64, f64) {
-    return (
-      self.material.ambience(),
-      self.material.diffuse(),
-      self.material.specular(),
-      self.material.shininess(),
-    );
-  }
 
   /// Returns the intersection point shifted [`EPSILON`](EPSILON) in the direction of the normal vector.
   ///
@@ -140,27 +129,6 @@ mod tests {
       Material::new(Box::new(Stripes::default()), 0., 0., 0., 0.),
       Point::new(1.5, 0., 0.),
     );
-  }
-
-  #[test]
-  fn intersection_shading_properties() {
-    let material = Material::new(Box::new(Color::white()), 0.3, 0.5, 0.7, 16.);
-    let intersection = Intersection::new(
-      0.,
-      Point::origin(),
-      Vector::zero(),
-      Vector::zero(),
-      &material,
-    );
-
-    let actual = intersection.shading_properties();
-    let expected = (
-      material.ambience(),
-      material.diffuse(),
-      material.specular(),
-      material.shininess(),
-    );
-    assert_eq!(actual, expected);
   }
 
   #[test]

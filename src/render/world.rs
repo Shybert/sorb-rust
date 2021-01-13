@@ -52,7 +52,8 @@ impl World {
       .map(|light| {
         let light_vector = (*light.position() - hit.point).normalize();
         phong(
-          hit.material.to_tuple_at(&hit.point),
+          hit.base_color(),
+          hit.material.shading_properties(),
           (light_vector, hit.normal, hit.outgoing),
           *light.color(),
           self.is_shadowed(&hit.point_over(), light),

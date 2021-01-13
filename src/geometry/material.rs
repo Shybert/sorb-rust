@@ -44,9 +44,11 @@ impl Material {
     return self.shininess;
   }
 
-  pub fn to_tuple_at(&self, point: &Point) -> (Color, f64, f64, f64, f64) {
+  /// Returns the material's shading properties as a convenient tuple.
+  ///
+  /// The tuple is formatted as `(ambience, diffuse, specular, shininess)`.  
+  pub fn shading_properties(&self) -> (f64, f64, f64, f64) {
     return (
-      self.color_at(point),
       self.ambience(),
       self.diffuse(),
       self.specular(),
@@ -85,11 +87,8 @@ mod tests {
   }
 
   #[test]
-  fn to_tuple_at() {
+  fn shading_properties() {
     let material = Material::default();
-    assert_eq!(
-      material.to_tuple_at(&Point::origin()),
-      (Color::white(), 0.1, 0.9, 0.9, 200.)
-    );
+    assert_eq!(material.shading_properties(), (0.1, 0.9, 0.9, 200.));
   }
 }

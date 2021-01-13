@@ -2,12 +2,13 @@ use crate::geometry::Vector;
 use crate::Color;
 
 pub fn phong(
-  (surface_color, ambience, diffuse, specular, shininess): (Color, f64, f64, f64, f64),
+  base_color: Color,
+  (ambience, diffuse, specular, shininess): (f64, f64, f64, f64),
   (light_vector, normal, eye_vector): (Vector, Vector, Vector),
   light_color: Color,
   in_shadow: bool,
 ) -> Color {
-  let effective_color = surface_color * light_color;
+  let effective_color = base_color * light_color;
 
   let ambient_color = effective_color * ambience;
   let mut diffuse_color = Color::black();
@@ -37,7 +38,8 @@ mod tests {
     in_shadow: bool,
   ) -> Color {
     return phong(
-      Material::default().to_tuple_at(&Point::origin()),
+      Material::default().color_at(&Point::origin()),
+      Material::default().shading_properties(),
       (light_vector, normal, eye_vector),
       Color::white(),
       in_shadow,
