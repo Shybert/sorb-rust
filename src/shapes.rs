@@ -173,8 +173,9 @@ mod tests {
     assert_eq!(intersection.point_over(), Point::new(1., 1. + EPSILON, 1.));
   }
 
-  fn intersections_time<'a>(times: &[f64], material: &'a Material) -> Vec<Intersection<'a>> {
-    return times
+  fn test_find_hit(times: &[f64], expected_hit_time: Option<f64>) {
+    let material = Material::default();
+    let intersections: Vec<Intersection> = times
       .iter()
       .map(|&time| {
         Intersection::new(
@@ -182,41 +183,43 @@ mod tests {
           Point::origin(),
           Vector::zero(),
           Vector::zero(),
-          material,
+          &material,
         )
       })
       .collect();
+
+    let hit = find_hit(&intersections);
+    match expected_hit_time {
+      Some(expected_time) => assert_eq!(hit.expect("Expected hit").time, expected_time),
+      None => assert!(hit.is_none()),
+    }
   }
 
   #[test]
   fn hit_when_all_positive() {
-    let material = Material::default();
-    let intersections = intersections_time(&vec![1., 2.], &material);
-    let hit = find_hit(&intersections).expect("Expected hit");
-    assert_eq!(hit.time, 1.);
+    let times = vec![1., 2.];
+    let expected_hit_time = Some(1.);
+    test_find_hit(&times, expected_hit_time);
   }
 
   #[test]
   fn hit_when_some_negative() {
-    let material = Material::default();
-    let intersections = intersections_time(&vec![-1., 1.], &material);
-    let hit = find_hit(&intersections).expect("Expected hit");
-    assert_eq!(hit.time, 1.);
+    let times = vec![-1., 1.];
+    let expected_hit_time = Some(1.);
+    test_find_hit(&times, expected_hit_time);
   }
 
   #[test]
   fn hit_when_all_negative() {
-    let material = Material::default();
-    let intersections = intersections_time(&vec![-2., -1.], &material);
-    let hit = find_hit(&intersections);
-    assert!(hit.is_none());
+    let times = vec![-2., -1.];
+    let expected_hit_time = None;
+    test_find_hit(&times, expected_hit_time);
   }
 
   #[test]
   fn hit_intersection_order_does_not_matter() {
-    let material = Material::default();
-    let intersections = intersections_time(&vec![5., 7., -3., 2.], &material);
-    let hit = find_hit(&intersections).expect("Expected hit");
-    assert_eq!(hit.time, 2.);
+    let times = vec![5., 7., -3., 2.];
+    let expected_hit_time = Some(2.);
+    test_find_hit(&times, expected_hit_time);
   }
 }
