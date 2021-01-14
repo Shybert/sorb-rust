@@ -43,6 +43,19 @@ pub fn quadratic(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
   return Some((x1, x2));
 }
 
+pub trait Lerp {
+  type Scalar;
+
+  fn lerp(&self, other: &Self, t: &Self::Scalar) -> Self;
+}
+impl Lerp for f64 {
+  type Scalar = f64;
+
+  fn lerp(&self, other: &Self, t: &Self::Scalar) -> Self {
+    return self * (1. - t) + other * t;
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -111,5 +124,16 @@ mod tests {
     let (x1, x2) = roots.expect("Expected roots");
     assert_ae!(x1, -0.00227);
     assert_ae!(x2, 1310.23435);
+  }
+
+  #[test]
+  fn lerp_f64() {
+    assert_eq!(20_f64.lerp(&80., &0.), 20.);
+    assert_eq!(20_f64.lerp(&80., &1.), 80.);
+    assert_eq!(20_f64.lerp(&80., &0.5), 50.);
+    assert_eq!(80_f64.lerp(&20., &0.75), 35.);
+    assert_eq!((-1_f64).lerp(&1., &0.25), -0.5);
+    assert_eq!((-1_f64).lerp(&1., &0.5), 0.);
+    assert_eq!((-1_f64).lerp(&1., &0.75), 0.5);
   }
 }

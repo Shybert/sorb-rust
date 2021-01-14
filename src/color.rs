@@ -1,4 +1,4 @@
-use crate::utils::approx_equals;
+use crate::utils::{approx_equals, Lerp};
 use std::iter::Sum;
 use std::ops::{Add, Mul, Sub};
 
@@ -117,6 +117,17 @@ impl Mul for Color {
 
   fn mul(self, other: Self) -> Self {
     return Self::new(self.r * other.r, self.g * other.g, self.b * other.b);
+  }
+}
+impl Lerp for Color {
+  type Scalar = f64;
+
+  fn lerp(&self, other: &Self, t: &Self::Scalar) -> Self {
+    return Color::new(
+      self.r.lerp(&other.r, t),
+      self.g.lerp(&other.g, t),
+      self.b.lerp(&other.b, t),
+    );
   }
 }
 
@@ -244,5 +255,19 @@ mod tests {
     let new = Color::new(-0.3, 0.45, 1.);
     old.set(&new);
     assert_eq!(old, new);
+  }
+
+  #[test]
+  fn lerp() {
+    assert_eq!(
+      Color::black().lerp(&Color::white(), &0.5),
+      Color::new(0.5, 0.5, 0.5)
+    );
+    assert_eq!(Color::red().lerp(&Color::blue(), &1.), Color::blue());
+    assert_eq!(Color::red().lerp(&Color::blue(), &0.), Color::red());
+    assert_eq!(
+      Color::new(0.6, 0.3, 0.8).lerp(&Color::new(0.9, 0.2, 0.5), &0.75),
+      Color::new(0.825, 0.225, 0.575)
+    );
   }
 }
