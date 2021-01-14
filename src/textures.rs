@@ -4,6 +4,8 @@ use std::fmt::Debug;
 
 mod stripes;
 pub use stripes::*;
+mod gradient;
+pub use gradient::*;
 
 pub trait Texture: Debug {
   fn color_at(&self, point: &Point) -> Color;
