@@ -2,10 +2,8 @@ use crate::geometry::{Matrix, Point};
 use crate::Color;
 use std::fmt::Debug;
 
-mod stripes;
-pub use stripes::*;
-mod gradient;
-pub use gradient::*;
+mod pattern;
+pub use pattern::*;
 
 pub trait Texture: Debug {
   fn texture_to_world(&self) -> &Matrix;

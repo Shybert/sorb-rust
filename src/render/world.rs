@@ -77,7 +77,7 @@ mod tests {
   use crate::geometry::{Material, Matrix, Point, Vector};
   use crate::render::PointLight;
   use crate::shapes::{Plane, Sphere};
-  use crate::textures::Stripes;
+  use crate::textures::{stripes, Pattern};
   use crate::Color;
 
   fn test_world() -> World {
@@ -205,7 +205,7 @@ mod tests {
   fn test_plane_world(plane_transformation: Matrix) -> World {
     return World::new(
       vec![Box::new(Plane::new(
-        Material::new(Box::new(Stripes::default()), 1., 0., 0., 0.),
+        Material::new(Box::new(Pattern::with_fn(stripes)), 1., 0., 0., 0.),
         plane_transformation,
       ))],
       vec![PointLight::new(Point::new(0., 1., 0.), Color::white())],

@@ -97,7 +97,7 @@ pub fn find_hit<'a>(intersections: &'a [Intersection]) -> Option<&'a Intersectio
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::textures::Stripes;
+  use crate::textures::{stripes, Pattern};
 
   #[test]
   fn intersection_init() {
@@ -140,7 +140,7 @@ mod tests {
   #[test]
   fn intersection_base_color_stripes_texture() {
     test_base_color(
-      Material::new(Box::new(Stripes::default()), 0., 0., 0., 0.),
+      Material::new(Box::new(Pattern::with_fn(stripes)), 0., 0., 0., 0.),
       Point::new(1.5, 0., 0.),
     );
   }
