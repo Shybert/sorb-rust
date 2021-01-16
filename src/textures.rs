@@ -1,4 +1,4 @@
-use crate::geometry::Point;
+use crate::geometry::{Matrix, Point};
 use crate::Color;
 use std::fmt::Debug;
 
@@ -8,18 +8,38 @@ mod gradient;
 pub use gradient::*;
 
 pub trait Texture: Debug {
-  fn color_at(&self, point: &Point) -> Color;
+  fn texture_to_world(&self) -> &Matrix;
+
+  fn color_at_texture_space(&self, point: &Point) -> Color;
+  fn color_at(&self, point: &Point) -> Color {
+    let point_texture = self.texture_to_world().inverse() * *point;
+    return self.color_at_texture_space(&point_texture);
+  }
 }
 
 impl Texture for Color {
-  fn color_at(&self, _point: &Point) -> Color {
+  fn texture_to_world(&self) -> &Matrix {
+    panic!("Colors can not have a transformation.");
+  }
+
+  fn color_at_texture_space(&self, _point: &Point) -> Color {
     return *self;
+  }
+  fn color_at(&self, point: &Point) -> Color {
+    return self.color_at_texture_space(point);
   }
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  #[should_panic(expected = "transformation")]
+  fn color_texture_to_world_always_panics() {
+    let color = Color::default();
+    color.texture_to_world();
+  }
 
   #[test]
   fn color_color_at_is_constant() {

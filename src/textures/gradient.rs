@@ -1,4 +1,4 @@
-use crate::geometry::Point;
+use crate::geometry::{Matrix, Point};
 use crate::textures::Texture;
 use crate::utils::Lerp;
 use crate::Color;
@@ -7,10 +7,18 @@ use crate::Color;
 pub struct Gradient {
   a: Color,
   b: Color,
+  texture_to_world: Matrix,
 }
 impl Gradient {
+  pub fn with_transformation(a: Color, b: Color, texture_to_world: Matrix) -> Self {
+    return Self {
+      a,
+      b,
+      texture_to_world,
+    };
+  }
   pub fn new(a: Color, b: Color) -> Self {
-    return Self { a, b };
+    return Self::with_transformation(a, b, Matrix::identity());
   }
 
   pub fn colors(&self) -> (&Color, &Color) {
@@ -18,7 +26,11 @@ impl Gradient {
   }
 }
 impl Texture for Gradient {
-  fn color_at(&self, point: &Point) -> Color {
+  fn texture_to_world(&self) -> &Matrix {
+    return &self.texture_to_world;
+  }
+
+  fn color_at_texture_space(&self, point: &Point) -> Color {
     if point.x.abs().rem_euclid(2.).floor() == 0. {
       return self.a.lerp(&self.b, &point.x.abs().fract());
     } else {
@@ -35,6 +47,7 @@ impl Default for Gradient {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use std::f64::consts::PI;
 
   #[test]
   fn init_new() {
@@ -128,5 +141,25 @@ mod tests {
     assert_eq!(gradient.color_at(&Point::new(0., 0., -0.1)), Color::white());
     assert_eq!(gradient.color_at(&Point::new(0., 0., -1.)), Color::white());
     assert_eq!(gradient.color_at(&Point::new(0., 0., -1.1)), Color::white());
+  }
+
+  #[test]
+  fn color_at_with_transformation() {
+    let gradient = Gradient::with_transformation(
+      Color::white(),
+      Color::black(),
+      Matrix::identity().rotate_z(PI / 2.),
+    );
+    assert_eq!(gradient.color_at(&Point::origin()), Color::white());
+    assert_eq!(
+      gradient.color_at(&Point::new(0., 0.25, 0.)),
+      Color::new(0.75, 0.75, 0.75)
+    );
+    assert_eq!(
+      gradient.color_at(&Point::new(0., 0.75, 0.)),
+      Color::new(0.25, 0.25, 0.25)
+    );
+    assert_eq!(gradient.color_at(&Point::new(0.25, 0., 0.)), Color::white());
+    assert_eq!(gradient.color_at(&Point::new(0.75, 0., 0.)), Color::white());
   }
 }

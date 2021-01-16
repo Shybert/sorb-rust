@@ -1,4 +1,4 @@
-use crate::geometry::Point;
+use crate::geometry::{Matrix, Point};
 use crate::textures::Texture;
 use crate::Color;
 
@@ -6,10 +6,18 @@ use crate::Color;
 pub struct Stripes {
   a: Color,
   b: Color,
+  texture_to_world: Matrix,
 }
 impl Stripes {
+  pub fn with_transformation(a: Color, b: Color, texture_to_world: Matrix) -> Self {
+    return Self {
+      a,
+      b,
+      texture_to_world,
+    };
+  }
   pub fn new(a: Color, b: Color) -> Self {
-    return Self { a, b };
+    return Self::with_transformation(a, b, Matrix::identity());
   }
 
   pub fn colors(&self) -> (&Color, &Color) {
@@ -17,7 +25,11 @@ impl Stripes {
   }
 }
 impl Texture for Stripes {
-  fn color_at(&self, point: &Point) -> Color {
+  fn texture_to_world(&self) -> &Matrix {
+    return &self.texture_to_world;
+  }
+
+  fn color_at_texture_space(&self, point: &Point) -> Color {
     return if point.x.rem_euclid(2.).floor() == 0. {
       self.a
     } else {
@@ -34,17 +46,28 @@ impl Default for Stripes {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use std::f64::consts::PI;
+
+  #[test]
+  fn init_with_transformation() {
+    let transformation = Matrix::identity().translate(5., -5., 5.);
+    let stripes = Stripes::with_transformation(Color::cyan(), Color::red(), transformation);
+    assert_eq!(stripes.colors(), (&Color::cyan(), &Color::red()));
+    assert_eq!(stripes.texture_to_world(), &transformation);
+  }
 
   #[test]
   fn init_new() {
     let stripes = Stripes::new(Color::cyan(), Color::red());
     assert_eq!(stripes.colors(), (&Color::cyan(), &Color::red()));
+    assert_eq!(stripes.texture_to_world(), &Matrix::identity());
   }
 
   #[test]
   fn init_default() {
     let stripes = Stripes::default();
     assert_eq!(stripes.colors(), (&Color::white(), &Color::black()));
+    assert_eq!(stripes.texture_to_world(), &Matrix::identity());
   }
 
   #[test]
@@ -98,5 +121,19 @@ mod tests {
     assert_eq!(stripes.color_at(&Point::new(0., 0., -0.1)), Color::white());
     assert_eq!(stripes.color_at(&Point::new(0., 0., -1.)), Color::white());
     assert_eq!(stripes.color_at(&Point::new(0., 0., -1.1)), Color::white());
+  }
+
+  #[test]
+  fn color_at_with_transformation() {
+    let stripes = Stripes::with_transformation(
+      Color::white(),
+      Color::black(),
+      Matrix::identity().rotate_z(PI / 2.),
+    );
+    assert_eq!(stripes.color_at(&Point::origin()), Color::white());
+    assert_eq!(stripes.color_at(&Point::new(0., 1., 0.)), Color::black());
+    assert_eq!(stripes.color_at(&Point::new(0., 2., 0.)), Color::white());
+    assert_eq!(stripes.color_at(&Point::new(1., 0., 0.)), Color::white());
+    assert_eq!(stripes.color_at(&Point::new(-0.1, 0., 0.)), Color::white());
   }
 }
