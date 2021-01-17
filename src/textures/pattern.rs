@@ -69,6 +69,15 @@ pub fn gradient(point: Point, a: Color, b: Color) -> Color {
   }
 }
 
+pub fn ring(point: Point, a: Color, b: Color) -> Color {
+  let radius = (point.x.powi(2) + point.z.powi(2)).sqrt();
+  if radius.rem_euclid(2.).floor() == 0. {
+    return a;
+  } else {
+    return b;
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -253,5 +262,35 @@ mod tests {
     assert_eq!(gradient_default(Point::new(0., 0., -0.1)), Color::white());
     assert_eq!(gradient_default(Point::new(0., 0., -1.)), Color::white());
     assert_eq!(gradient_default(Point::new(0., 0., -1.1)), Color::white());
+  }
+
+  fn ring_default(point: Point) -> Color {
+    return ring(point, Color::white(), Color::black());
+  }
+  #[test]
+  fn ring_alternates_in_x_and_z() {
+    assert_eq!(ring_default(Point::origin()), Color::white());
+    assert_eq!(ring_default(Point::new(-1.5, 0., 0.)), Color::black());
+    assert_eq!(ring_default(Point::new(1.5, 0., 0.)), Color::black());
+    assert_eq!(ring_default(Point::new(-2.5, 0., 0.)), Color::white());
+    assert_eq!(ring_default(Point::new(2.5, 0., 0.)), Color::white());
+
+    assert_eq!(ring_default(Point::new(0., 0., -1.5)), Color::black());
+    assert_eq!(ring_default(Point::new(0., 0., 1.5)), Color::black());
+    assert_eq!(ring_default(Point::new(0., 0., -2.5)), Color::white());
+    assert_eq!(ring_default(Point::new(0., 0., 2.5)), Color::white());
+
+    assert_eq!(ring_default(Point::new(0.708, 0., 0.708)), Color::black());
+    assert_eq!(ring_default(Point::new(-0.708, 0., -0.708)), Color::black());
+    assert_eq!(ring_default(Point::new(1.415, 0., 1.415)), Color::white());
+    assert_eq!(ring_default(Point::new(-1.415, 0., -1.415)), Color::white());
+  }
+
+  #[test]
+  fn ring_constant_in_y() {
+    assert_eq!(ring_default(Point::new(0., -1.5, 0.,)), Color::white());
+    assert_eq!(ring_default(Point::new(0., 1.5, 0.,)), Color::white());
+    assert_eq!(ring_default(Point::new(0., -2.5, 0.,)), Color::white());
+    assert_eq!(ring_default(Point::new(0., 2.5, 0.,)), Color::white());
   }
 }
