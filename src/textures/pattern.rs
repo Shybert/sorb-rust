@@ -7,19 +7,22 @@ use std::fmt::Debug;
 type FnPattern = fn(Point, Color, Color) -> Color;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub struct Pattern {
+pub struct Pattern<A, B>
+where
+  A: Texture,
+  B: Texture,
+{
   fn_pattern: FnPattern,
-  a: Color,
-  b: Color,
+  a: A,
+  b: B,
   pattern_to_world: Matrix,
 }
-impl Pattern {
-  pub fn with_transformation(
-    fn_pattern: FnPattern,
-    a: Color,
-    b: Color,
-    pattern_to_world: Matrix,
-  ) -> Self {
+impl<A, B> Pattern<A, B>
+where
+  A: Texture,
+  B: Texture,
+{
+  pub fn with_transformation(fn_pattern: FnPattern, a: A, b: B, pattern_to_world: Matrix) -> Self {
     return Self {
       fn_pattern,
       a,
@@ -27,6 +30,18 @@ impl Pattern {
       pattern_to_world,
     };
   }
+  pub fn new(fn_pattern: FnPattern, a: A, b: B) -> Self {
+    return Self::with_transformation(fn_pattern, a, b, Matrix::identity());
+  }
+
+  pub fn textures(&self) -> (&A, &B) {
+    return (&self.a, &self.b);
+  }
+  pub fn pattern_to_world(&self) -> &Matrix {
+    return &self.pattern_to_world;
+  }
+}
+impl Pattern<Color, Color> {
   pub fn with_fn(fn_pattern: FnPattern) -> Self {
     return Self::with_transformation(
       fn_pattern,
@@ -35,21 +50,19 @@ impl Pattern {
       Matrix::identity(),
     );
   }
-  pub fn new(fn_pattern: FnPattern, a: Color, b: Color) -> Self {
-    return Self::with_transformation(fn_pattern, a, b, Matrix::identity());
-  }
-
-  pub fn colors(&self) -> (&Color, &Color) {
-    return (&self.a, &self.b);
-  }
 }
-impl Texture for Pattern {
-  fn texture_to_world(&self) -> &Matrix {
-    return &self.pattern_to_world;
-  }
-
-  fn color_at_texture_space(&self, point: &Point) -> Color {
-    return (self.fn_pattern)(*point, self.a, self.b);
+impl<A, B> Texture for Pattern<A, B>
+where
+  A: Texture,
+  B: Texture,
+{
+  fn color_at(&self, point: &Point) -> Color {
+    let point_pattern = self.pattern_to_world().inverse() * *point;
+    return (self.fn_pattern)(
+      point_pattern,
+      self.a.color_at(&point_pattern),
+      self.b.color_at(&point_pattern),
+    );
   }
 }
 
@@ -106,9 +119,9 @@ mod tests {
       Color::black(),
       Matrix::identity().scale(5., -5., 5.),
     );
-    assert_eq!(pattern.colors(), (&Color::white(), &Color::black()));
+    assert_eq!(pattern.textures(), (&Color::white(), &Color::black()));
     assert_eq!(
-      pattern.texture_to_world(),
+      pattern.pattern_to_world(),
       &Matrix::identity().scale(5., -5., 5.)
     );
   }
@@ -116,15 +129,15 @@ mod tests {
   #[test]
   fn init_with_func() {
     let pattern = Pattern::with_fn(test_fn_pattern);
-    assert_eq!(pattern.colors(), (&Color::white(), &Color::black()));
-    assert_eq!(pattern.texture_to_world(), &Matrix::identity());
+    assert_eq!(pattern.textures(), (&Color::white(), &Color::black()));
+    assert_eq!(pattern.pattern_to_world(), &Matrix::identity());
   }
 
   #[test]
   fn init_new() {
     let pattern = Pattern::new(test_fn_pattern, Color::cyan(), Color::red());
-    assert_eq!(pattern.colors(), (&Color::cyan(), &Color::red()));
-    assert_eq!(pattern.texture_to_world(), &Matrix::identity());
+    assert_eq!(pattern.textures(), (&Color::cyan(), &Color::red()));
+    assert_eq!(pattern.pattern_to_world(), &Matrix::identity());
   }
 
   #[test]
