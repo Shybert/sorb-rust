@@ -78,6 +78,14 @@ pub fn ring(point: Point, a: Color, b: Color) -> Color {
   }
 }
 
+pub fn checkers(point: Point, a: Color, b: Color) -> Color {
+  if (point.x.floor() + point.y.floor() + point.z.floor()).rem_euclid(2.) == 0. {
+    return a;
+  } else {
+    return b;
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -292,5 +300,27 @@ mod tests {
     assert_eq!(ring_default(Point::new(0., 1.5, 0.,)), Color::white());
     assert_eq!(ring_default(Point::new(0., -2.5, 0.,)), Color::white());
     assert_eq!(ring_default(Point::new(0., 2.5, 0.,)), Color::white());
+  }
+
+  fn checkers_default(point: Point) -> Color {
+    return checkers(point, Color::white(), Color::black());
+  }
+  #[test]
+  fn checkers_alternates_in_x() {
+    assert_eq!(checkers_default(Point::new(-0.5, 0., 0.)), Color::black());
+    assert_eq!(checkers_default(Point::new(0.5, 0., 0.)), Color::white());
+    assert_eq!(checkers_default(Point::new(1.5, 0., 0.)), Color::black());
+  }
+  #[test]
+  fn checkers_alternates_in_y() {
+    assert_eq!(checkers_default(Point::new(0., -0.5, 0.)), Color::black());
+    assert_eq!(checkers_default(Point::new(0., 0.5, 0.)), Color::white());
+    assert_eq!(checkers_default(Point::new(0., 1.5, 0.)), Color::black());
+  }
+  #[test]
+  fn checkers_alternates_in_z() {
+    assert_eq!(checkers_default(Point::new(0., 0., -0.5)), Color::black());
+    assert_eq!(checkers_default(Point::new(0., 0., 0.5)), Color::white());
+    assert_eq!(checkers_default(Point::new(0., 0., 1.5)), Color::black());
   }
 }
