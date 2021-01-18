@@ -231,7 +231,7 @@ impl Mul<Ray> for Matrix {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use std::f64::consts::PI;
+  use std::f64::consts::{PI, SQRT_2};
 
   #[test]
   fn init_new() {
@@ -574,7 +574,7 @@ mod tests {
 
     assert_eq!(
       quarter_rotation * point,
-      Point::new(0., 2_f64.sqrt() / 2., 2_f64.sqrt() / 2.),
+      Point::new(0., SQRT_2 / 2., SQRT_2 / 2.),
     );
     assert_eq!(half_rotation * point, Point::new(0., 0., 1.),);
   }
@@ -594,7 +594,7 @@ mod tests {
 
     assert_eq!(
       quarter_rotation * point,
-      Point::new(2_f64.sqrt() / 2., 0., 2_f64.sqrt() / 2.),
+      Point::new(SQRT_2 / 2., 0., SQRT_2 / 2.),
     );
     assert_eq!(half_rotation * point, Point::new(1., 0., 0.),);
   }
@@ -614,7 +614,7 @@ mod tests {
 
     assert_eq!(
       quarter_rotation * point,
-      Point::new(2_f64.sqrt() / 2., 2_f64.sqrt() / 2., 0.),
+      Point::new(SQRT_2 / 2., SQRT_2 / 2., 0.),
     );
     assert_eq!(half_rotation * point, Point::new(0., 1., 0.),);
   }

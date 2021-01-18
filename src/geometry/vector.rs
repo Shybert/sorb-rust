@@ -99,6 +99,7 @@ impl Div<f64> for Vector {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use std::f64::consts::SQRT_2;
 
   #[test]
   fn init_new() {
@@ -207,7 +208,7 @@ mod tests {
   #[test]
   fn reflect_off_slanted_surface() {
     let vector = Vector::new(0., -1., 0.);
-    let normal = Vector::new(2_f64.sqrt() / 2., 2_f64.sqrt() / 2., 0.);
+    let normal = Vector::new(SQRT_2 / 2., SQRT_2 / 2., 0.);
     assert_eq!(vector.reflect(&normal), Vector::new(1., 0., 0.));
   }
 

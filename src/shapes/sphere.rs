@@ -55,7 +55,7 @@ mod tests {
   use super::*;
   use crate::geometry::{Point, Vector};
   use crate::Color;
-  use std::f64::consts::PI;
+  use std::f64::consts::{PI, SQRT_2};
 
   #[test]
   fn init_new() {
@@ -287,18 +287,15 @@ mod tests {
   fn normal_of_translated_sphere() {
     let mut sphere = Sphere::default();
     sphere.set_object_to_world(Matrix::identity().translate(0., 1., 0.));
-    let normal = sphere.normal_at(&Point::new(0., (2_f64.sqrt() / 2.) + 1., 2_f64.sqrt() / 2.));
-    assert_eq!(
-      normal,
-      Vector::new(0., 2_f64.sqrt() / 2., 2_f64.sqrt() / 2.)
-    );
+    let normal = sphere.normal_at(&Point::new(0., (SQRT_2 / 2.) + 1., SQRT_2 / 2.));
+    assert_eq!(normal, Vector::new(0., SQRT_2 / 2., SQRT_2 / 2.));
   }
 
   #[test]
   fn normal_of_transformed_sphere() {
     let mut sphere = Sphere::default();
     sphere.set_object_to_world(Matrix::identity().rotate_z(PI / 5.).scale(1., 0.5, 1.));
-    let normal = sphere.normal_at(&Point::new(0., 2_f64.sqrt() / 2., -(2_f64.sqrt() / 2.)));
+    let normal = sphere.normal_at(&Point::new(0., SQRT_2 / 2., -(SQRT_2 / 2.)));
     assert_eq!(normal, Vector::new(0., 0.97014, -0.24254))
   }
 }
