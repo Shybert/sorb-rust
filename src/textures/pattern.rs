@@ -99,6 +99,10 @@ pub fn checkers(point: Point, a: Color, b: Color) -> Color {
   }
 }
 
+pub fn blend(_point: Point, a: Color, b: Color) -> Color {
+  return a.blend(&b);
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -335,5 +339,43 @@ mod tests {
     assert_eq!(checkers_default(Point::new(0., 0., -0.5)), Color::black());
     assert_eq!(checkers_default(Point::new(0., 0., 0.5)), Color::white());
     assert_eq!(checkers_default(Point::new(0., 0., 1.5)), Color::black());
+  }
+
+  fn blend_origin(a: Color, b: Color) -> Color {
+    return blend(Point::origin(), a, b);
+  }
+  #[test]
+  fn blend_averages_colors() {
+    assert_eq!(
+      blend_origin(Color::red(), Color::blue()),
+      Color::new(0.5, 0., 0.5)
+    );
+    assert_eq!(
+      blend_origin(Color::new(-0.4, 0.7, 0.3), Color::new(0.6, 0.3, 0.1)),
+      Color::new(0.1, 0.5, 0.2)
+    );
+    assert_eq!(
+      blend_origin(Color::new(-1.2, -0.3, -0.5), Color::new(-0.6, -0.1, -0.7)),
+      Color::new(-0.9, -0.2, -0.6)
+    );
+  }
+
+  fn blend_white_black(point: Point) -> Color {
+    return blend(point, Color::white(), Color::black());
+  }
+  #[test]
+  fn blend_independent_of_point() {
+    assert_eq!(
+      blend_white_black(Point::new(-1., 1., -1.)),
+      Color::new(0.5, 0.5, 0.5)
+    );
+    assert_eq!(
+      blend_white_black(Point::new(-250., 1.33337, -1.5)),
+      Color::new(0.5, 0.5, 0.5)
+    );
+    assert_eq!(
+      blend_white_black(Point::new(1.5, -1.000001, -1200.5)),
+      Color::new(0.5, 0.5, 0.5)
+    );
   }
 }
