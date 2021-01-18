@@ -50,6 +50,15 @@ impl Color {
     self.g = new.g;
     self.b = new.b;
   }
+
+  /// Blends two colors by averaging their respective values.
+  pub fn blend(&self, other: &Self) -> Self {
+    return Color::new(
+      (self.r + other.r) / 2.,
+      (self.g + other.g) / 2.,
+      (self.b + other.b) / 2.,
+    );
+  }
 }
 
 impl Default for Color {
@@ -255,6 +264,19 @@ mod tests {
     let new = Color::new(-0.3, 0.45, 1.);
     old.set(&new);
     assert_eq!(old, new);
+  }
+
+  #[test]
+  fn blend() {
+    assert_eq!(Color::red().blend(&Color::blue()), Color::new(0.5, 0., 0.5));
+    assert_eq!(
+      Color::new(-0.4, 0.7, 0.3).blend(&Color::new(0.6, 0.3, 0.1)),
+      Color::new(0.1, 0.5, 0.2)
+    );
+    assert_eq!(
+      Color::new(-1.2, -0.3, -0.5).blend(&Color::new(-0.6, -0.1, -0.7)),
+      Color::new(-0.9, -0.2, -0.6)
+    );
   }
 
   #[test]
